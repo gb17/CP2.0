@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login">
+
+    <LinearLayout
+        android:layout_width="450dp"
+        android:layout_height="120dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/layout_bg"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/userid"
+            android:layout_width="445sp"
+            android:layout_height="58dp"
+            android:layout_marginLeft="13sp"
+            android:background="@android:color/transparent"
+            android:gravity="center_vertical"
+            android:hint="UserName"
+            android:maxLines="1"
+            android:text="Hirak@cirrius.com"
+            android:textSize="16dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2sp"
+            android:layout_marginLeft="5sp"
+            android:layout_marginRight="5sp"
+            android:layout_marginTop="3sp"
+            android:background="#D1D0CE" />
+
+        <RelativeLayout
+            android:layout_width="450sp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp">
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="400sp"
+                android:layout_height="58dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="13sp"
+                android:background="@android:color/transparent"
+                android:gravity="center_vertical"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:text="aaaa"
+                android:textSize="16dp" />
+
+            <ImageView
+                android:id="@+id/loginclick"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="4dp"
+                android:layout_marginRight="14sp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/loginbutton" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

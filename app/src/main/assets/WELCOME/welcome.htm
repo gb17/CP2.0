@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=yes">
+	<title>Untitled</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<script src="jquery/jquery-1.10.1.min.js"></script>
+<script src="jquery/jquery-ui.js"></script>
+<script>
+    function SendCLID(id)
+	{
+
+	    cpjs.sendToAndroid(id);
+	}
+	function OnHSPClick(ID, redirPage) {
+
+	        var IDPREF = ID;
+	        if (ID != 'NextBrand')
+
+	            SendCLID(IDPREF);
+
+
+   
+	}
+</script>
+</head>
+<style>
+BODY {
+	margin:0;
+}
+.img-responsive {
+	width:100%;
+	height:auto;
+}
+.welcome {
+	background-position:100% auto;
+}
+</style>
+<body>
+<div class="welcome"><IMG src="images/welcome2.jpg" class="img-responsive" onclick="OnHSPClick('cefixime','cefixime.htm');"/> </div>
+<div id="ht1" style="position: absolute; width: 97px; height: 143px; z-index: 30; top: 75%; left: 91%;" ></div>
+</body>
+</html>

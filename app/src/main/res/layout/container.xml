@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="#FF0000" />
+
+    <android.gesture.GestureOverlayView
+        android:id="@+id/gestures2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:background="@android:color/transparent"
+        android:fadeEnabled="false"
+        android:fadeOffset="10000"
+        android:gestureColor="#00000000"
+        android:gestureStrokeType="single"
+        android:uncertainGestureColor="#00000000"
+        android:visibility="gone" />
+
+    <android.gesture.GestureOverlayView
+        android:id="@+id/gestures"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:background="@android:color/transparent"
+        android:fadeEnabled="false"
+        android:fadeOffset="1000000"
+        android:gestureStrokeType="multiple"
+        android:gestureStrokeWidth="10"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/previousbrand"
+        android:layout_width="80dp"
+        android:layout_height="300dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="20dp" />
+
+    <ImageView
+        android:id="@+id/nextbrand"
+        android:layout_width="80dp"
+        android:layout_height="300dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/handle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/navigateup" />
+
+        <LinearLayout
+            android:id="@+id/mainid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/icons_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/menubar"
+                android:orientation="horizontal"></LinearLayout>
+
+            <HorizontalScrollView
+                android:id="@+id/myscroll1"
+                android:layout_width="match_parent"
+                android:layout_height="195dp"
+                android:background="#BF000000"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+                <LinearLayout
+                    android:id="@+id/content2"
+                    android:layout_width="match_parent"
+                    android:layout_height="192dp"
+                    android:layout_marginBottom="7dp"
+                    android:layout_marginTop="7dp"
+                    android:orientation="horizontal">
+
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:id="@+id/myscroll2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-7dp"
+            android:background="#BF000000"
+            android:paddingLeft="10dp"
+            android:visibility="gone"
+            android:paddingRight="10dp">
+
+            <LinearLayout
+                android:id="@+id/content3"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginBottom="7dp"
+                android:layout_marginTop="7dp"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/annot2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="90dp"
+        android:visibility="gone" />
+
+    <SeekBar
+        android:id="@+id/seek"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="-50dp"
+        android:layout_marginTop="230dp"
+        android:background="#4D000000"
+        android:max="20"
+        android:rotation="270"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/colorw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/seek"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="100dp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="21dp"
+        android:src="@drawable/closeblk" />
+
+    <ImageView
+        android:id="@+id/refrence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="21dp"
+        android:layout_toLeftOf="@id/close"
+        android:src="@drawable/attach"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/preview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="21dp"
+        android:background="#212121"
+        android:text="YOU ARE IN PREVIEW MODE"
+        android:textColor="#FFFFFF"
+        android:visibility="gone"
+        android:textSize="32sp" />
+
+</RelativeLayout>

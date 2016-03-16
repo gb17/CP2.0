@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_for_search"
+        android:layout_width="match_parent"
+        android:layout_height="175dp"
+        android:layout_marginTop="5dp"
+        android:scrollbars="horizontal"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recycler_view_for_search"
+        android:fontFamily="sans-serif-light"
+        android:text="Header"
+        android:textColor="#757575"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_for_hr"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/header"
+        android:layout_marginTop="5dp"
+        android:scrollbars="horizontal" />
+
+    <RelativeLayout
+        android:id="@+id/sublist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recycler_view_for_hr"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/closepage"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:gravity="right"
+            android:text="@string/cross"
+            android:textColor="#757575"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_for_hr_sub"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:layout_below="@+id/closepage"
+            android:scrollbars="horizontal"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/sublistfor_ref"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sublist"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/closepage_ref"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:gravity="right"
+
+            android:textColor="#757575"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_for_hr_sub_ref"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:layout_below="@+id/closepage_ref"
+            android:scrollbars="horizontal"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

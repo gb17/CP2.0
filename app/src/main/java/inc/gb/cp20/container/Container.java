@@ -1,0 +1,1291 @@
+package inc.gb.cp20.container;
+
+import android.app.Dialog;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.gesture.Gesture;
+import android.gesture.GestureOverlayView;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Vector;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import inc.gb.cp20.AlphaList.AlphaListActivity;
+import inc.gb.cp20.AlphaList.AlphabetsList;
+import inc.gb.cp20.AlphaList.DrList_POJO;
+import inc.gb.cp20.AlphaList.UserService;
+import inc.gb.cp20.DB.DBHandler;
+import inc.gb.cp20.Landing.LandingPage;
+import inc.gb.cp20.R;
+import inc.gb.cp20.Util.Utility;
+import inc.gb.cp20.widget.ColorPickerDialog;
+
+/**
+ * Created by Shubham on 2/8/16.
+ */
+public class Container extends AlphaListActivity implements View.OnClickListener {
+    //    String play_id = "";
+//    String play_name = "";
+    private LinearLayout iconsBar;
+    HorizontalScrollView myscroll1, myscroll2;
+    Button open = null;
+    ImageView annot2, prevBrand, nextBrand, reference, close;
+    LinearLayout mylinear, content2, content3;
+    GestureOverlayView gesturesView, gesturesView2;
+    SeekBar seek;
+    ImageView colorw;
+    WebView webView;
+    private String playstData[][];
+    private String brandData[][];
+    int count = 0;
+    int actualPlayIndex = 0;
+    private int savingCount = 0;
+    private long startTime = 0;
+    private String startTimeString = "";
+    private long endTime = 0;
+    private long duration = 0;
+    static int refEmailPos = 0;
+    DBHandler handler;
+    String brandcode = "";
+    private long startTimeForReference = 0;
+    private String startTimeStringForRef = "";
+
+    String[][] iconsData = {{"101", "Back to playlist", "icon1.png", "1"}, {"102", "email", "icon6.png", "2"}, {"103", "Annotation", "icon7.png", "3"}, {"104", "Like", "icon8.png", "3"}, {"105", "Dislike", "icon9.png", "3"}, {"106", "Search", "icon10.png", "4"}, {"107", "Close", "icon11.png", "4"}};
+    int groupId = 0;
+    private Typeface font;
+    int playIndex = 0;
+    String currentDate;
+    private String emailFlag = "0";
+    private String likedislikeFlag = "0";
+    private static Dialog refDialog, dialog;
+    private int position = 0;
+    String refData[][];
+    String[] cgDataDPL = null;
+    String[] cgCodeDPL = null;
+    String[] cgDataDSP = null;
+    String[] cgCodeDSP = null;
+    String[] cgDataDDC = null;
+    String[] cgCodeDDC = null;
+
+    String randomNumber = "";
+    private String customer_id = "";
+    private String customer_name = "";
+    private String category_code = "";
+    private String category_name = "";
+    private String thumbnail_category = "";
+
+    private ListView leftList, rightList;
+    AlphabetsList list, list2;
+
+    Vector<DrList_POJO> userCopyVector;
+
+    ImageView done;
+    String index = "0";
+
+    int PLAYLISTINDEX = 101;
+    int REFERENCEINDEX = 102;
+    TextView preview;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
+        randomNumber = Utility.getUniqueNo();
+        font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
+        Bundle extras = getIntent().getExtras();
+
+        customer_id = extras.getString("customer_id");
+        customer_name = extras.getString("customer_name");
+        category_code = extras.getString("category_code");
+        category_name = extras.getString("category_name");
+        thumbnail_category = extras.getString("thumbnail_category");
+        index = extras.getString("index");
+
+        if (customer_id == null)
+            customer_id = "";
+        if (customer_name == null)
+            customer_name = "";
+        if (index == null)
+            index = "0";
+
+        handler = DBHandler.getInstance(this);
+        SQLiteDatabase db = handler.getWritableDatabase();
+        db.delete("TBNAME", null, null);
+
+        if (!customer_id.equals("")) {
+            String query = "insert into TBNAME SELECT * FROM TBPARTY where COL0 = '" + customer_id + "'";
+            db.execSQL(query);
+        }
+
+        userCopyVector = UserService.getUserList(this, "TBPARTY");
+
+        Date date = new Date();
+        currentDate = new SimpleDateFormat("dd-MM-yyyy").format(date);
+
+        fillPlaystData();
+        String brandQuery = "SELECT COL0, COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8 FROM TBBRAND";
+//        if (customer_id.equals(""))
+//            brandQuery = "SELECT * FROM TBBRND where col_4 <> '" + category_code + "'";
+
+        brandData = handler.genericSelect(brandQuery, 9);
+        setContentView(R.layout.container);
+
+        prevBrand = (ImageView) findViewById(R.id.previousbrand);
+        nextBrand = (ImageView) findViewById(R.id.nextbrand);
+        prevBrand.setOnClickListener(prevNextLsitener);
+        nextBrand.setOnClickListener(prevNextLsitener);
+
+        preview = (TextView) findViewById(R.id.preview);
+        if (index.equals("3"))
+            preview.setVisibility(View.VISIBLE);
+
+        close = (ImageView) findViewById(R.id.close);
+        close.setOnClickListener(this);
+        close.setId(107);
+        reference = (ImageView) findViewById(R.id.refrence);
+        reference.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String content_id = view.getTag().toString();
+                refData = handler.genericSelect("Select COL1, COL2, COL15 from TBDRG where COL0 = '" + content_id + "'", 3);
+                if (refData != null) {
+                    refDialog = new Dialog(Container.this);
+                    refDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    refDialog.setContentView(R.layout.listnil);
+                    ListView lv = (ListView) refDialog.findViewById(R.id.listView);
+                    Custom_grid adaptor = new Custom_grid(Container.this,
+                            refData);
+                    lv.setAdapter(adaptor);
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view,
+                                                int position, long id) {
+                            Container.this.position = position;
+                            startTimeForReference = System.currentTimeMillis();
+                            Date date = new Date();
+                            DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
+                            startTimeStringForRef = formatter.format(date);
+                            if (refData[position][2].toLowerCase().equals("mp4")) {
+                                Intent intent = new Intent(Container.this,
+                                        VideoPlay.class);
+                                intent.putExtra("fileName", refData[position][0]);
+                                startActivityForResult(intent, 1001);
+                            } else if (refData[position][2].toLowerCase().equals("pdf")) {
+                                String path1 = Container.this.getFilesDir().getAbsolutePath() + "/"
+                                        + refData[position][0];
+                                File file1 = new File(path1);
+                                if (file1.exists()) {
+                                    file1.setReadable(true, false);
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                                    intent.setDataAndType(Uri.fromFile(file1), "application/pdf");
+                                    try {
+                                        startActivityForResult(intent, 1001);
+                                    } catch (Exception e) {
+                                        System.out.println("PDF Exception = = = >" + e.toString());
+                                    }
+                                } else {
+                                    Toast.makeText(Container.this,
+                                            "Please wait PDF being downloaded.....", Toast.LENGTH_SHORT)
+                                            .show();
+                                }
+                            }
+
+                        }
+                    });
+
+                    Window window = refDialog.getWindow();
+
+                    WindowManager.LayoutParams wmlp = refDialog.getWindow().getAttributes();
+
+                    wmlp.gravity = Gravity.TOP | Gravity.RIGHT;
+                    wmlp.x = 60; // x position
+                    wmlp.y = 20;
+                    window.setBackgroundDrawable(new ColorDrawable(
+                            Color.TRANSPARENT));
+                    refDialog.getWindow().setLayout(210, 450);
+                    refDialog.getWindow().clearFlags(
+                            WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                    refDialog.show();
+                }
+            }
+        });
+
+        myscroll2 = (HorizontalScrollView) findViewById(R.id.myscroll2);
+        myscroll1 = (HorizontalScrollView) findViewById(R.id.myscroll1);
+        mylinear = (LinearLayout) findViewById(R.id.mainid);
+        webView = (WebView) findViewById(R.id.webView);
+        gesturesView = (GestureOverlayView) findViewById(R.id.gestures);
+        gesturesView2 = (GestureOverlayView) findViewById(R.id.gestures2);
+        gesturesView.addOnGesturePerformedListener(listener);
+        gesturesView2.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                if (gesturesView2.getVisibility() == View.VISIBLE) {
+                    gesturesView2.setVisibility(View.GONE);
+                    Animation animation = AnimationUtils.loadAnimation(
+                            Container.this, R.anim.top_to_bottom);
+                    animation.setAnimationListener(new Animation.AnimationListener() {
+
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                            // TODO Auto-generated method stub
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+                            // TODO Auto-generated method stub
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            // TODO Auto-generated method stub
+                            mylinear.setVisibility(View.GONE);
+                            myscroll2.setVisibility(View.GONE);
+                        }
+                    });
+                    mylinear.startAnimation(animation);
+                }
+            }
+        });
+        content2 = (LinearLayout) findViewById(R.id.content2);
+        content3 = (LinearLayout) findViewById(R.id.content3);
+
+        annot2 = (ImageView) findViewById(R.id.annot2);
+        seek = (SeekBar) findViewById(R.id.seek);
+        colorw = (ImageView) findViewById(R.id.colorw);
+        colorw.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                ColorPickerDialog colorPickerDialog = new ColorPickerDialog(
+                        Container.this, Color.parseColor("#00ff09"),
+                        new ColorPickerDialog.OnColorSelectedListener() {
+
+                            @Override
+                            public void onColorSelected(int color) {
+                                gesturesView.setGestureColor(color);
+                            }
+
+                        });
+                colorPickerDialog.show();
+            }
+        });
+        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress,
+                                          boolean fromUser) {
+                // TODO Auto-generated method stub
+                gesturesView.setGestureStrokeWidth(progress);
+            }
+        });
+
+        iconsBar = (LinearLayout) findViewById(R.id.icons_bar);
+
+        for (int i = 0; i < iconsData.length - 1; i++) {
+            ImageView icons = new ImageView(this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(20, 20, 20, 20);
+            icons.setLayoutParams(params);
+            icons.setId(Integer.parseInt(iconsData[i][0]));
+            String filePath = new File(getFilesDir(), iconsData[i][2]).getAbsolutePath();
+            //String filePath = getFilesDir() + "/" + iconsData[i][2];
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+            icons.setTag("1");
+            icons.setImageBitmap(bitmap);
+            icons.setOnClickListener(this);
+            iconsBar.addView(icons);
+            groupId = Integer.parseInt(iconsData[i][3]);
+            if (i < iconsData.length - 1)
+                if (groupId != Integer.parseInt(iconsData[i + 1][3])) {
+                    View view = new View(this);
+                    LinearLayout.LayoutParams viewparam = new LinearLayout.LayoutParams(1, LinearLayout.LayoutParams.MATCH_PARENT);
+                    viewparam.setMargins(0, 20, 0, 20);
+                    view.setLayoutParams(viewparam);
+                    view.setBackgroundColor(Color.WHITE);
+                    iconsBar.addView(view);
+                }
+        }
+
+        open = (Button) findViewById(R.id.handle);
+        open.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                if (mylinear.getVisibility() == View.GONE) {
+                    gesturesView2.setVisibility(View.VISIBLE);
+                    open.setVisibility(View.INVISIBLE);
+                    // webView.setClickable(false);
+                    mylinear.setVisibility(View.VISIBLE);
+                    myscroll2.setVisibility(View.VISIBLE);
+                    myscroll2.startAnimation(AnimationUtils.loadAnimation(
+                            Container.this, R.anim.bottom_to_top));
+                    Animation animation = AnimationUtils.loadAnimation(
+                            Container.this, R.anim.bottom_to_top);
+                    animation.setAnimationListener(new Animation.AnimationListener() {
+
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                            // TODO Auto-generated method stub
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+                            // TODO Auto-generated method stub
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            // TODO Auto-generated method stub
+                            open.setBackgroundResource(R.drawable.navigated);
+                            open.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    mylinear.startAnimation(animation);
+                    annot2.setVisibility(View.GONE);
+                } else {
+                    gesturesView2.setVisibility(View.GONE);
+                    open.setVisibility(View.INVISIBLE);
+                    // webView.setClickable(true);
+                    Animation animation = AnimationUtils.loadAnimation(
+                            Container.this, R.anim.top_to_bottom);
+                    animation.setAnimationListener(new Animation.AnimationListener() {
+
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                            // TODO Auto-generated method stub
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+                            // TODO Auto-generated method stub
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            // TODO Auto-generated method stub
+                            open.setBackgroundResource(R.drawable.navigateup);
+                            open.setVisibility(View.VISIBLE);
+                            mylinear.setVisibility(View.GONE);
+                            myscroll2.setVisibility(View.GONE);
+                        }
+                    });
+                    mylinear.startAnimation(animation);
+
+                }
+            }
+        });
+        fillPlayList(0);
+        fillBrandList();
+    }
+
+    public static void disMiss(int pos) {
+        refEmailPos = pos;
+        refDialog.dismiss();
+    }
+
+    private void fillPlayList(int index) {
+        content2.removeAllViews();
+        if (playstData != null)
+            for (int i = 0; i < playstData.length; i++) {
+                LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View view = inflater.inflate(R.layout.playlist_groups, null);
+                //view.setId(Integer.parseInt(playstData[i][0]));
+                view.setId(i);
+                String filePath = new File(getFilesDir() + "/done/", FilenameUtils.removeExtension(playstData[i][2]) + ".png").getAbsolutePath();
+                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                ImageView img = (ImageView) view.findViewById(R.id.img);
+                img.setImageBitmap(bitmap);
+                TextView name = (TextView) view.findViewById(R.id.name);
+                name.setText(playstData[i][3]);
+                view.setOnClickListener(pagesListener);
+                if (index == 0 && i == 0) {
+                    view.setBackgroundColor(Color.parseColor("#67E0ED"));
+                    displayFocussedBrands(0);
+                } else if (index == 1 && i == playIndex) {
+                    view.setBackgroundColor(Color.parseColor("#67E0ED"));
+                    displayFocussedBrands(playIndex);
+                }
+                content2.addView(view);
+            }
+    }
+
+    private void fillBrandList() {
+        content3.removeAllViews();
+        for (int i = 0; i < brandData.length; i++) {
+            LayoutInflater inflater = (LayoutInflater) Container.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View childView = inflater.inflate(R.layout.subgroups, null);
+            String filePath = new File(getFilesDir() + "/done/", brandData[i][4] + ".png").getAbsolutePath();
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+            ImageView sub_img = (ImageView) childView.findViewById(R.id.sub_img);
+            sub_img.setImageBitmap(bitmap);
+
+            TextView name = (TextView) childView.findViewById(R.id.namesub);
+            name.setText(brandData[i][2]);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(160, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(5, 0, 5, 0);
+            childView.setLayoutParams(params);
+            childView.setId(Integer.parseInt(brandData[i][3]));
+            childView.setOnClickListener(brandListener);
+            content3.addView(childView);
+//            myscroll2.setVisibility(View.VISIBLE);
+//            myscroll2.startAnimation(AnimationUtils.loadAnimation(
+//                    Container.this, R.anim.bottom_to_top));
+        }
+    }
+
+    View.OnClickListener brandListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            brandcode = "" + view.getId();
+            if (count == 0)
+                actualPlayIndex = playIndex;
+            count++;
+            for (int i = 0; i < content3.getChildCount(); i++) {
+                content3.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+            }
+            view.setBackgroundColor(Color.parseColor("#67E0ED"));
+            playIndex = 0;
+            playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16 from TBDPS a , TBDPG b\n" +
+                    "        where a.col5 = b.col0\n" +
+                    "        and a.COL3 = '" + brandcode + "' and a.COL9 = '" + thumbnail_category + "' order by  CAST (a.col2 AS INTEGER) ASC ", 7);
+            fillPlayList(0);
+            hideDrawer();
+        }
+    };
+
+    View.OnClickListener pagesListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            for (int i = 0; i < content2.getChildCount(); i++) {
+                content2.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+            }
+            view.setBackgroundColor(Color.parseColor("#67E0ED"));
+            playIndex = view.getId();
+            displayFocussedBrands(playIndex);
+            hideDrawer();
+        }
+    };
+
+    View.OnClickListener prevNextLsitener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            int id = view.getId();
+            if (id == R.id.previousbrand) {
+                if (playIndex > 0) {
+                    playIndex--;
+                    for (int i = 0; i < content2.getChildCount(); i++) {
+                        content2.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+                    }
+                    content2.getChildAt(playIndex).setBackgroundColor(Color.parseColor("#67E0ED"));
+                    displayFocussedBrands(playIndex);
+                }
+            } else if (id == R.id.nextbrand) {
+                if (playIndex < playstData.length - 1) {
+                    playIndex++;
+                    for (int i = 0; i < content2.getChildCount(); i++) {
+                        content2.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+                    }
+                    content2.getChildAt(playIndex).setBackgroundColor(Color.parseColor("#67E0ED"));
+                    displayFocussedBrands(playIndex);
+                }
+            }
+            hideDrawer();
+        }
+    };
+
+    private void hideDrawer() {
+        if (mylinear.getVisibility() == View.VISIBLE) {
+            gesturesView2.setVisibility(View.GONE);
+            open.setVisibility(View.INVISIBLE);
+            // webView.setClickable(true);
+            Animation animation = AnimationUtils.loadAnimation(
+                    Container.this, R.anim.top_to_bottom);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    // TODO Auto-generated method stub
+                    open.setBackgroundResource(R.drawable.navigateup);
+                    open.setVisibility(View.VISIBLE);
+                    mylinear.setVisibility(View.GONE);
+                    myscroll2.setVisibility(View.GONE);
+                }
+            });
+            mylinear.startAnimation(animation);
+        }
+    }
+
+    public void displayFocussedBrands(int playIndex) {
+        if (savingCount == 0) {
+            startTime = System.currentTimeMillis();
+            Date date = new Date();
+            DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
+            startTimeString = formatter.format(date);
+            savingCount = 1;
+        } else {
+            saveData(PLAYLISTINDEX);
+            startTime = System.currentTimeMillis();
+            Date date = new Date();
+            DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+            startTimeString = formatter.format(date);
+
+            emailFlag = "0";
+            likedislikeFlag = "0";
+            String filePath = "";
+            Bitmap bitmap = null;
+            filePath = new File(getFilesDir(), "icon6.png").getAbsolutePath();
+            bitmap = BitmapFactory.decodeFile(filePath);
+            iconsBar.getChildAt(2).setTag("1");
+            ((ImageView) iconsBar.getChildAt(2)).setImageBitmap(bitmap);
+
+            filePath = new File(getFilesDir(), "icon8.png").getAbsolutePath();
+            bitmap = BitmapFactory.decodeFile(filePath);
+            iconsBar.getChildAt(5).setTag("1");
+            ((ImageView) iconsBar.getChildAt(5)).setImageBitmap(bitmap);
+
+            filePath = new File(getFilesDir(), "icon9.png").getAbsolutePath();
+            bitmap = BitmapFactory.decodeFile(filePath);
+            iconsBar.getChildAt(6).setTag("1");
+            ((ImageView) iconsBar.getChildAt(6)).setImageBitmap(bitmap);
+
+            bitmap = null;
+        }
+
+        webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setAllowFileAccess(true);
+        webView.setWebViewClient(new WebViewClient());
+        final String url = "file://" + getFilesDir().getAbsolutePath() + "/" + FilenameUtils.removeExtension(playstData[playIndex][2]).toUpperCase() + "/" + playstData[playIndex][2];
+
+        if (playstData[playIndex][5].equals("1"))//Emailable
+            iconsBar.getChildAt(2).setVisibility(View.VISIBLE);
+        else
+            iconsBar.getChildAt(2).setVisibility(View.GONE);
+
+        if (playstData[playIndex][6].equals("1")) {//Reference
+            reference.setVisibility(View.VISIBLE);
+            reference.setTag(playstData[playIndex][0]);
+        } else
+            reference.setVisibility(View.GONE);
+        // startTime = System.currentTimeMillis();
+        webView.post(new Runnable() {
+            @Override
+            public void run() {
+                webView.loadUrl(url);
+            }
+        });
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if (view instanceof ImageView) {
+            ImageView imgView = (ImageView) view;
+            String imgName = "";
+            String filePath = "";
+            Bitmap bitmap = null;
+
+            String imgName2 = "";
+            String filePath2 = "";
+
+            switch (id) {
+                case 101: // Back to Playlist
+                    playIndex = actualPlayIndex;
+                    count = 0;
+                    for (int i = 0; i < content3.getChildCount(); i++) {
+                        content3.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+                    }
+                    fillPlaystData();
+                    fillPlayList(1);
+                    RelativeLayout rlView = (RelativeLayout) content2.getChildAt(playIndex);
+                    int x = rlView.getRight();
+                    int y = rlView.getTop();
+                    myscroll1.scrollTo(x, y);
+                    break;
+                case 102: //Email
+                    if (imgView.getTag().equals("1")) {
+                        imgName = "icon66.png";//glow
+                        view.setTag("2");
+                        emailFlag = "1";
+                    } else if (imgView.getTag().equals("2")) {
+                        imgName = "icon6.png";
+                        view.setTag("1");
+                        emailFlag = "0";
+                    }
+                    filePath = new File(getFilesDir(), imgName).getAbsolutePath();
+                    bitmap = BitmapFactory.decodeFile(filePath);
+                    imgView.setImageBitmap(bitmap);
+                    break;
+                case 103: //annotation
+                    if (imgView.getTag().equals("2")) {
+                        imgName = "icon7.png";
+                        filePath = new File(getFilesDir(), imgName).getAbsolutePath();
+                        bitmap = BitmapFactory.decodeFile(filePath);
+                        imgView.setImageBitmap(bitmap);
+                        //imgView.setImageResource(R.drawable.annoticon); //normal
+                        if (gesturesView.getVisibility() == View.VISIBLE) {
+                            gesturesView.cancelClearAnimation();
+                            gesturesView.clear(true);
+                            gesturesView.setVisibility(View.GONE);
+                        }
+                        annot2.setVisibility(View.GONE);
+                        seek.setVisibility(View.GONE);
+                        colorw.setVisibility(View.GONE);
+                        view.setTag("1");
+                    } else if (imgView.getTag().equals("1")) {
+                        imgName = "icon77.png";
+                        filePath = new File(getFilesDir(), imgName).getAbsolutePath();
+                        bitmap = BitmapFactory.decodeFile(filePath);
+                        imgView.setImageBitmap(bitmap);
+                        gesturesView.setGestureColor(Color.parseColor("#00ff09"));
+                        //imgView.setImageResource(R.drawable.annoticon); //glow
+                        annot2.setVisibility(View.VISIBLE);
+                        gesturesView.setVisibility(View.VISIBLE);
+                        colorw.setVisibility(View.VISIBLE);
+                        seek.setVisibility(View.VISIBLE);
+                        view.setTag("2");
+                    }
+                    break;
+                case 104: //like
+                    if (imgView.getTag().equals("1")) {
+                        imgName = "icon88.png";//glow
+                        view.setTag("2");
+
+                        imgName2 = "icon9.png";
+                        iconsBar.getChildAt(6).setTag("1");
+                        filePath2 = new File(getFilesDir(), imgName2).getAbsolutePath();
+                        bitmap = BitmapFactory.decodeFile(filePath2);
+                        ((ImageView) iconsBar.getChildAt(6)).setImageBitmap(bitmap);
+
+                    } else if (imgView.getTag().equals("2")) {
+                        imgName = "icon8.png";
+                        view.setTag("1");
+                    }
+                    filePath = new File(getFilesDir(), imgName).getAbsolutePath();
+                    bitmap = BitmapFactory.decodeFile(filePath);
+                    imgView.setImageBitmap(bitmap);
+                    likedislikeFlag = "1";
+                    break;
+                case 105: //dislike
+                    if (imgView.getTag().equals("1")) {
+                        imgName = "icon99.png";//glow
+                        view.setTag("2");
+
+                        imgName2 = "icon8.png";
+                        iconsBar.getChildAt(5).setTag("1");
+                        filePath2 = new File(getFilesDir(), imgName2).getAbsolutePath();
+                        bitmap = BitmapFactory.decodeFile(filePath2);
+                        ((ImageView) iconsBar.getChildAt(5)).setImageBitmap(bitmap);
+                    } else if (imgView.getTag().equals("2")) {
+                        imgName = "icon9.png";
+                        view.setTag("1");
+                    }
+                    filePath = new File(getFilesDir(), imgName).getAbsolutePath();
+                    bitmap = BitmapFactory.decodeFile(filePath);
+                    imgView.setImageBitmap(bitmap);
+                    likedislikeFlag = "2";
+                    break;
+                case 106: //library
+//                    Intent intent1 = new Intent(this, ContentLIb.class);
+//                    startActivity(intent1);
+                    break;
+                case 107: //close
+                    if (!index.equals("3")) {
+                        showAlertForDetailing();
+                    }
+                    break;
+            }
+        }
+    }
+
+    GestureOverlayView.OnGesturePerformedListener listener = new GestureOverlayView.OnGesturePerformedListener() {
+        @Override
+        public void onGesturePerformed(GestureOverlayView overlay,
+                                       Gesture gesture) {
+
+        }
+
+    };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        saveData(REFERENCEINDEX);
+    }
+
+    @Override
+    public void onItemListClick(DrList_POJO objDrListPOJO, View view) {
+        super.onItemListClick(objDrListPOJO, view);
+        ListView listView = (ListView) view.getParent().getParent();
+        SQLiteDatabase db = handler.getWritableDatabase();
+        if (listView == leftList) {
+            ContentValues cv = new ContentValues();
+            cv.put("COL0", objDrListPOJO.getCOL0());
+            cv.put("COL1", objDrListPOJO.getCOL1());
+            cv.put("COL2", objDrListPOJO.getCOL2());
+            cv.put("COL3", objDrListPOJO.getCOL3());
+            cv.put("COL4", objDrListPOJO.getCOL4());
+            cv.put("COL5", objDrListPOJO.getCOL5());
+            cv.put("COL6", objDrListPOJO.getCOL6());
+            cv.put("COL7", objDrListPOJO.getCOL7());
+            cv.put("COL8", objDrListPOJO.getCOL8());
+            cv.put("COL9", objDrListPOJO.getCOL9());
+            cv.put("COL10", objDrListPOJO.getCOL10());
+            cv.put("COL11", objDrListPOJO.getCOL11());
+            cv.put("COL12", objDrListPOJO.getCOL12());
+            cv.put("COL13", objDrListPOJO.getCOL13());
+            cv.put("COL14", objDrListPOJO.getCOL14());
+            cv.put("COL15", objDrListPOJO.getCOL15());
+            db.insert("TBNAME", null, cv);
+            list.userVector.remove(objDrListPOJO);
+        } else if (listView == rightList) {
+            if (!objDrListPOJO.getCOL0().equals(customer_id)) {
+                String whereClause = "COL0=?";
+                String[] whereArgs = new String[]{objDrListPOJO.getCOL0()};
+                if (objDrListPOJO.getCOL0().startsWith("-")) {
+                    db.delete("TBNAME", whereClause, whereArgs);
+                } else {
+                    String[][] tbData = handler.genericSelect("SELECT * FROM TBNAME where COL0 > '0' order by COL14 ", 16);
+                    int count = 0;
+                    for (int j = 0; j < tbData.length; j++) {
+                        if (tbData[j][0].equals(objDrListPOJO.getCOL0())) {
+                            count = j;
+                            break;
+                        }
+                    }
+                    DrList_POJO newPojo;
+                    int newCount = 0;
+                    for (int m = 0; m < userCopyVector.size(); m++) {
+                        newPojo = userCopyVector.get(m);
+                        if (newPojo.getCOL0().equals(objDrListPOJO.getCOL0())) {
+                            newCount = m;
+                        }
+                    }
+
+                    int position = newCount - count;
+
+                    list.userVector.add(position, objDrListPOJO);
+
+                    db.delete("TBNAME", whereClause, whereArgs);
+                }
+            }
+        }
+
+        String sts[][] = handler.genericSelect("SELECT COUNT(1) FROM TBNAME", 1);
+        if (sts[0][0].equals("0"))
+            done.setVisibility(View.GONE);
+        else
+            done.setVisibility(View.VISIBLE);
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        list2.setAdapter(0, rightList, "TBNAME", false, false, false);
+                        list.setAdapter(1, leftList, "TBPARTY", false, false, true);
+
+                    }
+                });
+            }
+        }, 400);
+    }
+
+
+    public void fillPlaystData() {
+        if (customer_id.equals(""))
+            playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16 from TBDPS a , TBDPG b\n" +
+                    "        where a.col5 = b.col0\n" +
+                    "        and a.COL3 = '" + category_code + "' and a.COL9 = '" + category_name + "' order by  CAST (a.col2 AS INTEGER) ASC ", 7);
+        else {
+            String[][] countData = handler.genericSelect("Select count(1) from TBDPS2 where col10 = '" + customer_id + "'", 1);
+            if (countData[0][0].equals("0")) {
+                //select and insert
+                SQLiteDatabase db = handler.getWritableDatabase();
+                db.execSQL(" insert into TBDPS2 select A.COL0, A.COL1, A.COL2, A.COL3, A.COL4, A.COL5, A.COL6, A.COL7, A.COL8, A.COL9, '" + customer_id + "' from TBDPS A WHERE COL3 = '" + category_code + "' and COL9 = '" + category_name + "'");
+            }
+            //initialize playlist
+            playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16 from TBDPS2 a , TBDPG b\n" +
+                    "        where a.col5 = b.col0\n" +
+                    "        and a.COL3 = '" + category_code + "' and a.COL9 = '" + category_name + "' order by  CAST (a.col2 AS INTEGER) ASC ", 7);
+
+        }
+    }
+
+    private void showAlertForDetailing() {
+        SweetAlertDialog sDialog = new SweetAlertDialog(Container.this, SweetAlertDialog.WARNING_TYPE);
+        sDialog.setTitleText("Do you want to end this session?")
+                .setCancelText("Cancel!")
+                .setConfirmText("Save!")
+                .setNeutralText("Don't Save!")
+                .showCancelButton(true)
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.cancel();
+                    }
+                })
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.cancel();
+                        saveData(PLAYLISTINDEX);
+                        if (!customer_id.equals(""))
+                            showAddDocDialog();
+                        else
+                            showAddDocScreen();
+                    }
+                })
+                .setNeutralClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.cancel();
+                        saveData(PLAYLISTINDEX);
+                        SQLiteDatabase db = handler.getWritableDatabase();
+                        db.execSQL("update  TXN102  set COL20 = '-1' where COL18 = '" + randomNumber + "'");
+                        Intent intent = new Intent(Container.this, LandingPage.class);
+                        startActivity(intent);
+                    }
+                })
+                .show();
+    }
+
+    private void showAddDocDialog() {
+        SweetAlertDialog dialog = new SweetAlertDialog(Container.this, SweetAlertDialog.WARNING_TYPE);
+        dialog.setTitleText("Do you want to add more doctors?")
+                .setCancelText("No!")
+                .setConfirmText("Yes!")
+                .showCancelButton(true)
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        if (!customer_id.equals("")) {
+                            SQLiteDatabase db = handler.getWritableDatabase();
+                            try {
+                                db.execSQL("CREATE TABLE IF NOT EXISTS TBPHTAG (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text)");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            ContentValues cv = new ContentValues();
+                            cv.put("COL0", randomNumber); // A unique code from UPW
+                            cv.put("COL1", customer_id);
+                            cv.put("COL2", customer_name);
+                            cv.put("COL3", "");
+                            cv.put("COL4", "");
+                            cv.put("COL5", "");
+                            db.insert("TBPHTAG", null, cv);
+                        }
+                        sDialog.cancel();
+                    }
+                })
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        showAddDocScreen();
+                    }
+                })
+                .show();
+    }
+
+    private void showAddDocScreen() {
+        final SQLiteDatabase db = handler.getWritableDatabase();
+
+
+        dialog = new Dialog(Container.this);
+        dialog.getWindow();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.add_doc);
+        dialog.getWindow().setBackgroundDrawable(
+                new ColorDrawable(
+                        Color.TRANSPARENT));
+        Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE))
+                .getDefaultDisplay();
+        // dialog.setCancelable(false);
+        int width = display.getWidth();
+        int height = display.getHeight();
+        dialog.getWindow().setLayout((29 * width) / 30,
+                (height * 9) / 10);
+        LinearLayout first = (LinearLayout) dialog
+                .findViewById(R.id.first);
+        list = new AlphabetsList(Container.this);
+        View view1 = list.getAlphabestListView("TBPARTY", false, false, true);
+        first.addView(view1);
+        leftList = (ListView) ((LinearLayout) ((RelativeLayout) view1).getChildAt(1)).getChildAt(0);
+
+        LinearLayout second = (LinearLayout) dialog
+                .findViewById(R.id.second);
+        list2 = new AlphabetsList(Container.this);
+        View view2 = list2.getAlphabestListView("TBNAME", false, false, false);
+        second.addView(view2);
+        list2.setSidepannel(View.GONE);
+        list2.SerachViewVis(View.GONE);
+        rightList = (ListView) ((LinearLayout) ((RelativeLayout) view2).getChildAt(1)).getChildAt(0);
+
+        final Spinner patch = (Spinner) dialog.findViewById(R.id.patch);
+        final Spinner speciality = (Spinner) dialog.findViewById(R.id.speciality);
+        final Spinner clas = (Spinner) dialog.findViewById(R.id.clas);
+
+        String[][] strData = handler.getTagData("TBDPL");
+        if (strData != null) {
+            cgDataDPL = new String[strData.length];
+            cgCodeDPL = new String[strData.length];
+
+            for (int j = 0; j < strData.length; j++) {
+                cgDataDPL[j] = strData[j][1];
+                cgCodeDPL[j] = strData[j][0];
+            }
+            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDPL);
+            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            patch.setAdapter(spinnerArrayAdapter);
+        }
+        String[][] strData2 = handler.getTagData("TBDSP");
+        if (strData2 != null) {
+            cgDataDSP = new String[strData2.length];
+            cgCodeDSP = new String[strData2.length];
+
+            for (int j = 0; j < strData2.length; j++) {
+                cgDataDSP[j] = strData2[j][1];
+                cgCodeDSP[j] = strData2[j][0];
+            }
+            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDSP);
+            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            speciality.setAdapter(spinnerArrayAdapter);
+        }
+        String[][] strData3 = handler.getTagData("TBDDC");
+        if (strData3 != null) {
+            cgDataDDC = new String[strData3.length];
+            cgCodeDDC = new String[strData3.length];
+
+            for (int j = 0; j < strData3.length; j++) {
+                cgDataDDC[j] = strData3[j][1];
+                cgCodeDDC[j] = strData3[j][0];
+            }
+            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDDC);
+            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            clas.setAdapter(spinnerArrayAdapter);
+        }
+        done = (ImageView) dialog.findViewById(R.id.done);
+        if (!customer_id.equals(""))
+            done.setVisibility(View.VISIBLE);
+
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String sts[][] = handler.genericSelect("SELECT COL0, COL1 FROM TBNAME", 13);
+                if (sts != null) {
+                    for (int i = 0; i < sts.length; i++) {
+                        ContentValues cv = new ContentValues();
+                        cv.put("COL0", randomNumber); // A unique code from UPW
+                        cv.put("COL1", sts[i][0]);
+                        cv.put("COL2", sts[i][1]);
+                        cv.put("COL3", "");
+                        cv.put("COL4", "");
+                        cv.put("COL5", "");
+                        db.insert("TBPHTAG", null, cv);
+                    }
+                }
+                dialog.dismiss();
+                Intent intent = new Intent(Container.this, LandingPage.class);
+                startActivity(intent);
+            }
+        });
+        final EditText phy_name = (EditText) dialog.findViewById(R.id.phy_name);
+        ImageView move = (ImageView) dialog.findViewById(R.id.move);
+        move.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        String str = phy_name.getText().toString();
+                                        phy_name.setText("");
+                                        if (!str.equals("")) {
+                                            String patStr = cgDataDPL[patch.getSelectedItemPosition()];
+                                            String specStr = cgDataDSP[speciality.getSelectedItemPosition()];
+                                            String clasStr = cgDataDDC[clas.getSelectedItemPosition()];
+                                            String patCodeStr = cgCodeDPL[patch.getSelectedItemPosition()];
+                                            String specCodeStr = cgCodeDSP[speciality.getSelectedItemPosition()];
+                                            String clasCodeStr = cgCodeDDC[clas.getSelectedItemPosition()];
+
+                                            ContentValues cv = new ContentValues();
+
+                                            String data[][] = handler.genericSelect("Select COL2 FROM TBCVR", 1);
+                                            String[] cvrData = data[0][0].split("\\^");
+                                            String rnumber = cvrData[4];
+
+                                            String data2[][] = handler.genericSelect("Select COL2 FROM TBUPW", 1);
+                                            String[] upwData = data2[0][0].split("\\^");
+                                            String territory_code = upwData[6];
+
+                                            cv.put("COL0", rnumber); // A unique code from UPW
+                                            cv.put("COL1", str);
+                                            cv.put("COL2", patCodeStr);
+                                            cv.put("COL3", "");
+                                            cv.put("COL4", "");
+                                            cv.put("COL5", specCodeStr);
+                                            cv.put("COL6", "");
+                                            cv.put("COL7", patStr);
+                                            cv.put("COL8", "");
+                                            cv.put("COL9", "");
+                                            cv.put("COL10", specStr);
+                                            cv.put("COL11", clasStr);
+                                            cv.put("COL12", "");
+                                            cv.put("COL13", territory_code);
+                                            cv.put("COL14", str);
+
+                                            db.insert("TBNAME", null, cv);
+
+                                            String sts[][] = handler.genericSelect("SELECT COUNT(1) FROM TBNAME", 1);
+                                            if (sts[0][0].equals("0"))
+                                                done.setVisibility(View.GONE);
+                                            else
+                                                done.setVisibility(View.VISIBLE);
+
+                                            final Handler handler = new Handler();
+                                            handler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    runOnUiThread(new Runnable() {
+
+                                                        @Override
+                                                        public void run() {
+                                                            list2.setAdapter(0, rightList, "TBNAME", false, false, false);
+                                                            //rightList.invalidateViews();
+                                                            // TODO Auto-generated method stub
+
+                                                        }
+                                                    });
+                                                }
+                                            }, 400);
+                                            patch.setSelection(0);
+                                            speciality.setSelection(0);
+                                            clas.setSelection(0);
+
+                                        }
+                                    }
+                                }
+        );
+
+        TextView close = (TextView) dialog
+                .findViewById(R.id.close);
+        close.setTypeface(font);
+        close.setOnClickListener(new View.OnClickListener()
+
+                                 {
+
+                                     @Override
+                                     public void onClick(View v) {
+                                         // TODO Auto-generated method stub
+                                         showAlertForTagDoc();
+                                     }
+                                 }
+
+        );
+        dialog.show();
+    }
+
+    private void showAlertForTagDoc() {
+        SweetAlertDialog sDialog = new SweetAlertDialog(Container.this, SweetAlertDialog.WARNING_TYPE);
+        sDialog.setTitleText("Save Data?")
+                .setCancelText("No!")
+                .setConfirmText("Yes!")
+                .setNeutralText("Discard!")
+                .showCancelButton(true)
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.cancel();
+                    }
+                })
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.cancel();
+                        SQLiteDatabase db = handler.getWritableDatabase();
+                        String sts[][] = handler.genericSelect("SELECT COL0, COL1 FROM TBNAME", 13);
+                        if (sts != null) {
+                            for (int i = 0; i < sts.length; i++) {
+                                ContentValues cv = new ContentValues();
+                                cv.put("COL0", randomNumber); // A unique code from UPW
+                                cv.put("COL1", sts[i][0]);
+                                cv.put("COL2", sts[i][1]);
+                                cv.put("COL3", "");
+                                cv.put("COL4", "");
+                                cv.put("COL5", "");
+                                db.insert("TBPHTAG", null, cv);
+                            }
+                        }
+                        dialog.dismiss();
+                        Intent intent = new Intent(Container.this, LandingPage.class);
+                        startActivity(intent);
+                    }
+                })
+                .setNeutralClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.cancel();
+                        SQLiteDatabase db = handler.getWritableDatabase();
+                        db.execSQL("update  TXN102  set COL20 = '-1' where COL18 = '" + randomNumber + "'");
+                        Intent intent = new Intent(Container.this, LandingPage.class);
+                        startActivity(intent);
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (index.equals("3")) {
+            saveData(PLAYLISTINDEX);
+            super.onBackPressed();
+        } else if (playstData != null) {
+            showAlertForDetailing();
+        }
+//        Intent returnIntent = new Intent();
+//        returnIntent.putExtra("result", "1");
+//        setResult(Activity.RESULT_OK, returnIntent);
+//        finish();
+        //super.onBackPressed();
+    }
+
+    private void saveData(int dataIndex) {
+        int flag = 0;
+        endTime = System.currentTimeMillis();
+        if (dataIndex == PLAYLISTINDEX) {//backpress//displayfocussedbrand
+            duration = endTime - startTime;
+        } else if (dataIndex == REFERENCEINDEX) {//onactivityresult
+            duration = endTime - startTimeForReference;
+            if (position == refEmailPos)
+                flag = 1;
+        }
+        SQLiteDatabase db = handler.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("COL0", "2"); //BU
+        values.put("COL1", "124165"); //Territory
+        values.put("COL2", "7"); //Patch
+        values.put("COL3", currentDate); //Date
+        values.put("COL4", category_code);
+        values.put("COL5", category_name);
+        values.put("COL6", brandcode); //brandcode
+
+        if (dataIndex == PLAYLISTINDEX) {
+            values.put("COL7", playstData[playIndex][0]); //pagecode
+        } else if (dataIndex == REFERENCEINDEX) {
+            values.put("COL7", refData[position][0]); //referenceid
+        }
+
+        values.put("COL8", duration); //duration
+        values.put("COL9", "18.9750"); //latitude
+        values.put("COL10", "72.8258"); //longitude
+        values.put("COL11", "0"); //Syncflag
+        values.put("COL12", "1"); //hardcode
+
+        if (dataIndex == PLAYLISTINDEX) {
+            values.put("COL13", emailFlag); //Email
+            values.put("COL14", startTimeString); //start time
+        } else if (dataIndex == REFERENCEINDEX) {
+            values.put("COL13", flag); //Email
+            values.put("COL14", startTimeStringForRef); //start time
+        }
+
+        if (index.equals("1"))
+            values.put("COL15", "D"); //Doctor
+        else if (index.equals("2"))
+            values.put("COL15", "R"); //RightSide
+        else if (index.equals("3"))
+            values.put("COL15", "P"); //playList
+        else if (index.equals("4"))
+            values.put("COL15", "L"); //Library
+
+        if (dataIndex == PLAYLISTINDEX) {
+            values.put("COL16", likedislikeFlag); //like/dislike
+            values.put("COL17", ""); //reference pageid
+        } else if (dataIndex == REFERENCEINDEX) {
+            values.put("COL16", ""); //like/dislike
+            values.put("COL17", playstData[playIndex][0]); //reference pageid
+        }
+
+        values.put("COL18", randomNumber); //randrom number
+        values.put("COL19", Utility.getUniqueNo());
+        values.put("COL20", "0");
+
+        db.insert("TXN102", null, values);
+        db.close();
+    }
+
+}

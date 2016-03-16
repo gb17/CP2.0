@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="thumbnail_productname_title">#424242</color>
+    <color name="thumbnail_producname_backgrounf">#e7e6e5</color>
+    <color name="page_count">#0a937f</color>
+    <color name="rhs_header">#010103</color>
+</resources>

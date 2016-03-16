@@ -1,0 +1,44 @@
+<!-- [ Mirror metadata ] generatedAt: 1457950172144 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <_content layout="@layout/list">
+        <!-- TextView Examples:
+        <cnt_category text="@string/string_resource" />
+        <cnt_category text="Text literal" textSize="14sp" /> -->
+        <cnt_category />
+        <sub_category />
+        <cnt_type />
+        <page_name />
+        <effect_date />
+        <file_size />
+        <list>
+            <items layout="@android:layout/simple_list_item_1" >
+                <_item>
+                    <text1>Dalmatian</text1>
+                </_item>
+                <_item>
+                    <text1>Great Dane</text1>
+                </_item>
+                <_item>
+                    <text1>Shi Tzu</text1>
+                </_item>
+                <_item>
+                    <text1>Corgi</text1>
+                </_item>
+                <_item>
+                    <text1>Labrador</text1>
+                </_item>
+                <_item>
+                    <text1>Doberman</text1>
+                </_item>
+                <_item>
+                    <text1>Chihuahua</text1>
+                </_item>
+            </items>
+                </list>
+    </_content>
+</screen>

@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">CP2.0</string>
+    <string name="menu_ellipsis">&#xf142;</string>
+    <string name="play">&#xf04b;</string>
+    <string name="tick">&#xf00c;</string>
+    <string name="cross">&#xf00d;</string>
+    <string name="threebar">&#xf0c9;</string>
+    <string name="clientid">CTD</string>
+    <string name="version">4.0</string>
+    <string name="refresh">&#xf021;</string>
+
+    <string name="icon_pen">&#xf040;</string>
+    <string name="play_icon">&#xf01d;</string>
+    <string name="html_icon">&#xf13b;</string>
+    <string name="pdf_icon">&#xf1c1;</string>
+
+    <string name="icon_tick">&#xf00c;</string>
+    <string name="icon_cross">&#xf057;</string>
+    <string name="search">&#xf002;</string>
+    <string name="close">&#xf00d;</string>
+
+</resources>

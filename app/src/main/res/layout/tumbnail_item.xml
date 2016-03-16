@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="213dp"
+    android:layout_height="wrap_content">
+
+
+    <ImageView
+        android:id="@+id/bandimage"
+        android:layout_width="216dp"
+        android:layout_height="150dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/newcfix1" />
+
+    <RelativeLayout
+        android:id="@+id/relativeforpage"
+        android:layout_width="216dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/bandimage"
+        android:background="@color/thumbnail_producname_backgrounf"
+        android:paddingBottom="8dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:fontFamily="sans-serif-medium"
+            android:includeFontPadding="false"
+            android:text="Fade pill"
+            android:textColor="@color/thumbnail_productname_title"
+            android:textSize="16sp" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/pagelayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="130dp">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/page_icon"
+            app:backgroundTint="@android:color/darker_gray"
+            app:fabSize="mini" />
+
+        <TextView
+            android:id="@+id/pagecount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/page"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal"
+            android:includeFontPadding="false"
+            android:text="9"
+            android:textColor="@color/page_count"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/reflayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="130dp"
+        android:layout_toLeftOf="@+id/pagelayout">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/ref"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/attach"
+            app:backgroundTint="@android:color/darker_gray"
+            app:fabSize="mini" />
+
+        <TextView
+            android:id="@+id/refcount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ref"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="8dp"
+            android:includeFontPadding="false"
+            android:text="1"
+            android:textColor="@color/page_count"
+            android:textSize="16sp" />
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/newtag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp"
+        android:background="#3e783d"
+        android:padding="4dp"
+        android:text="NEW"
+        android:textColor="@android:color/white"
+        android:textSize="10dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="#BF000000"
+        android:gravity="right"
+        android:text="@string/cross"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="normal"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:id="@+id/childScroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/close"
+        android:background="#BF000000"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/layoutsc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </RelativeLayout>
+    </ScrollView>
+
+
+</RelativeLayout>
