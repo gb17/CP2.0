@@ -41,7 +41,7 @@ public class LightContainer extends Activity {
         Bundle extras = getIntent().getExtras();
         customer_id = extras.getString("customer_id");
         customer_name = extras.getString("customer_name");
-        category_code = extras.getString("category_code");
+         category_code = extras.getString("category_code");
         category_name = extras.getString("category_name");
         thumbnail_category = extras.getString("thumbnail_category");
         index = extras.getString("index");

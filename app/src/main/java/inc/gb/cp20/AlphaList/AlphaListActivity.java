@@ -10,7 +10,7 @@ public class AlphaListActivity extends AppCompatActivity implements AlphaListInt
     }
 
     @Override
-    public void onItemListMenuClick(DrList_POJO objDrListPOJO) {
+    public void onItemListMenuClick(DrList_POJO objDrListPOJO, View view) {
 
     }
 

@@ -22,6 +22,7 @@ import inc.gb.cp20.Models.TBDPG;
 import inc.gb.cp20.Models.TBDPS;
 import inc.gb.cp20.Models.TBDSP;
 import inc.gb.cp20.Models.TBDTH;
+import inc.gb.cp20.Models.TBIMG;
 import inc.gb.cp20.Models.TBPARTY;
 import inc.gb.cp20.Models.TBTBC;
 
@@ -38,6 +39,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public static String TBUPW = "TBUPW";
     public static String TBCVR = "TBCVR";
     public static String TBBRAND = "TBBRAND";
+    public static String TBDPG = "TBDPG";
 
     private DBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -59,6 +61,7 @@ public class DBHandler extends SQLiteOpenHelper {
         cupboard().register(TBDPS.class);
         cupboard().register(TBBRAND.class);
         cupboard().register(TBDMENU.class);
+        cupboard().register(TBIMG.class);
 
 
     }
@@ -181,12 +184,11 @@ public class DBHandler extends SQLiteOpenHelper {
             db.execSQL("CREATE TABLE " + TBUPW
                     + "( USERNAME TEXT,VERSION TEXT,OLDPWD TEXT,VAL TEXT,CLIENTID TEXT,CONTROLNO TEXT)");
             cupboard().withDatabase(db).createTables();
-            db.execSQL("CREATE TABLE IF NOT EXISTS TBNAME (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text, COL12 text, COL13 text, COL14 text, COL15 text, COL16 text)");
+            db.execSQL("CREATE TABLE IF NOT EXISTS TBNAME (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text, COL12 text, COL13 text, COL14 text, COL15 text, COL16 text, COL17 text, COL18 text, COL19 text)");
             db.execSQL("CREATE TABLE IF NOT EXISTS TBPHTAG (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text)");
-            //db.execSQL("DELETE FROM TBNAME");
             db.execSQL("CREATE TABLE IF NOT EXISTS TXN102 (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text, COL12 text, COL13 text, COL14 text, COL15 text, COL16 text, COL17 text, COL18 text, COL19 text, COL20 text)");
-
-
+            db.execSQL("CREATE TABLE IF NOT EXISTS TBDPS2 (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text)");
+            db.execSQL("CREATE TABLE IF NOT EXISTS TBDPS3 (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text, COL12 text, COL13 text, COL14 text, COL15 text)");
         } catch (Exception exp) {
             System.out.println("Error in table creation " + exp);
             exp.printStackTrace();
@@ -279,6 +281,13 @@ public class DBHandler extends SQLiteOpenHelper {
 
     }
 
+    public int GenricUpdates(String TabelName, String UpdateCol, String dataString, String KEY_COL, String WhereString) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(UpdateCol, dataString);
+        return db.update(TabelName, values, KEY_COL + " = ?", new String[]{WhereString});
+    }
+
     public Cursor getCusrsor(String SQl) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery(SQl, new String[]{});
@@ -343,6 +352,34 @@ public class DBHandler extends SQLiteOpenHelper {
         }
 
         return strReturn;
+    }
+	
+	public void deletealltable() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cur = null;
+        try {
+            cur = db.rawQuery(
+                    "SELECT name FROM sqlite_master WHERE type='table'", null);
+
+            if (cur.moveToFirst()) {
+                while (!cur.isAfterLast()) {
+                    String tablename = cur
+                            .getString(cur.getColumnIndex("name"));
+                    if (!tablename.equals("sqlite_sequence"))
+                        db.execSQL("DROP TABLE IF EXISTS " + tablename);
+
+                    cur.moveToNext();
+                }
+            }
+
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        } finally {
+            if (cur != null && !cur.isClosed())
+                cur.close();
+            // db.close();
+            close();
+        }
     }
 
     public String insertDATA(String tablename, String data[]) {

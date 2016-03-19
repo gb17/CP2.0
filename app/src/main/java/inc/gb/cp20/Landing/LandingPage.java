@@ -7,19 +7,23 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,12 +36,15 @@ import inc.gb.cp20.AlphaList.DrList_POJO;
 import inc.gb.cp20.DB.DBHandler;
 import inc.gb.cp20.List_Utilities.ContentAdapter;
 import inc.gb.cp20.Models.IRCSFResponsePOJO;
+import inc.gb.cp20.Models.TBBRAND;
 import inc.gb.cp20.R;
 import inc.gb.cp20.RecylerView.HorizontalRecylerView;
 import inc.gb.cp20.Util.Utility;
+import inc.gb.cp20.changepwd.ChangePasswordAcitvity;
 import inc.gb.cp20.container.LightContainer;
 import inc.gb.cp20.interfaces.DownloadInterface;
 import inc.gb.cp20.interfaces.RecyclerViewClickListener;
+import inc.gb.cp20.playlist.Playlist;
 import inc.gb.cp20.sync.Sync;
 
 
@@ -45,7 +52,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
 
     View view;
     LinearLayout RHS_Deatailing;
-
+    List<IRCSFResponsePOJO> list;
 
     Sync sync;
     SweetAlertDialog dialog;
@@ -60,14 +67,45 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
 
     DBHandler dbHandler;
 
+    LinearLayout drawerLinearLayout;
+    LinearLayout complLinearLayout;
+    Button drawerButton;
+
+    String CALLSYNC = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_landing_screen);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        try {
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null)
+                CALLSYNC = bundle.getString("CALLSYNC");
+            else
+                CALLSYNC = "";
+        } catch (Exception e) {
+            CALLSYNC = "";
+        }
+
+
         font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         dbHandler = DBHandler.getInstance(this);
+        drawerLinearLayout = (LinearLayout) findViewById(R.id.drawer);
+        drawerButton = (Button) findViewById(R.id.dr_btn);
+
+        complLinearLayout = (LinearLayout) findViewById(R.id.compl);
+
+
+        drawerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GetDrawer();
+            }
+        });
+
 
         //  backupDatabase();
         view = findViewById(R.id.viewid);
@@ -82,23 +120,119 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         alphabetsList.SerachViewVis(View.VISIBLE);
         defaultLayout();
 
+        if (CALLSYNC.equals("1")) {
+            //   CallDownloadContainer();
 
+        }
+
+
+    }
+
+    public void CallDownloadContainer() {
         sync = new Sync(this);
         sync.downloadContentUrl(this);
-
         dialog = new SweetAlertDialog(LandingPage.this, SweetAlertDialog.PROGRESS_TYPE);
         dialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
         dialog.setTitleText("Loading....");
         dialog.setContentText("Please Wait....");
         dialog.setCancelable(false);
         dialog.show();
+    }
+
+    public void changePassowrd_dialog(View v) {
+
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.change_password);
+        dialog.setTitle("Change Password");
+        dialog.show();
 
 
     }
 
+    public void GetDrawer() {
+        drawerLinearLayout.removeAllViews();
+        if (drawerLinearLayout.getVisibility() == View.GONE) {
+            TranslateAnimation animate = new TranslateAnimation(complLinearLayout.getHeight(), 0, 0, 0);
+            animate.setDuration(700);
+            animate.setFillAfter(true);
+            complLinearLayout.setAnimation(animate);
+            drawerLinearLayout.setVisibility(View.VISIBLE);
+        } else {
+
+            TranslateAnimation animate = new TranslateAnimation(0, complLinearLayout.getWidth(), 0, 0);
+            animate.setDuration(700);
+            animate.setFillAfter(true);
+            //   complLinearLayout.setAnimation(animate);
+            drawerLinearLayout.setVisibility(View.GONE);
+        }
+        int prevTextViewId = 0;
+
+        String[][] menudata = dbHandler.genericSelect("Select * From TBDMENU where COL4='0'", 3);
+        for (int i = 0; i < menudata.length; i++) {
+            final TextView textView = new TextView(this);
+
+            textView.setTextColor(Color.parseColor("#FFFFFF"));
+            textView.setPadding(10, 17, 0, 0);
+            textView.setTextSize(20);
+            textView.setId(Integer.parseInt(menudata[i][1]));
+            textView.setTypeface(font);
+            switch (Integer.parseInt(menudata[i][1])) {
+                case 142://Change Password
+                    textView.setText(LandingPage.this.getResources().getString(R.string.icon_pen) + "  " + menudata[i][2]);
+                    break;
+                case 4://Synchronize
+                    textView.setText(LandingPage.this.getResources().getString(R.string.refresh) + "  " + menudata[i][2]);
+                    break;
+                case 197://LogOut
+                    textView.setText(LandingPage.this.getResources().getString(R.string.icon_power) + "  " + menudata[i][2]);
+                    break;
+                case 198://Download Container
+                    textView.setText(LandingPage.this.getResources().getString(R.string.icon_download) + "  " + menudata[i][2]);
+                    break;
+            }
+            textView.setOnClickListener(DrawerListner);
+            int curTextViewId = prevTextViewId + 1;
+            // textView.setId(curTextViewId);
+            final RelativeLayout.LayoutParams params =
+                    new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                            RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+            params.addRule(RelativeLayout.BELOW, prevTextViewId);
+            //    params.setMargins(10, 80, 10, 10);
+            textView.setLayoutParams(params);
+
+            prevTextViewId = curTextViewId;
+            drawerLinearLayout.addView(textView);
+        }
+    }
+
+
+    private View.OnClickListener DrawerListner = new View.OnClickListener() {
+        public void onClick(View v) {
+            switch (v.getId())
+
+            {
+                case 142://Change Password
+                    Intent ChangePwdIntent = new Intent(LandingPage.this, ChangePasswordAcitvity.class);
+                    startActivity(ChangePwdIntent);
+                    break;
+                case 4://Synchronize
+
+                    break;
+                case 197://LogOut
+                    finish();
+
+                    break;
+                case 198://Download Container
+                    CallDownloadContainer();
+                    break;
+            }
+        }
+    };
+
 
     public void defaultLayout() {
-        String[][] pdatat = dbHandler.genericSelect("SELECT * FROM TBBRAND group by COL1", 9);
+        String[][] pdatat = dbHandler.genericSelect("SELECT * FROM " + DBHandler.TBBRAND + " group by COL1", 9);
         if (RHS_Deatailing != null)
             RHS_Deatailing.removeAllViews();
 
@@ -152,12 +286,13 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
 //
 //
 //    }
-    void showContentDownloadDialog(final List<IRCSFResponsePOJO> list) {
+    void showContentDownloadDialog(List<IRCSFResponsePOJO> listP) {
+        list = listP;
         content_dialog = new Dialog(LandingPage.this);
         content_dialog.getWindow();
         content_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         content_dialog.setContentView(R.layout.list);
-
+        content_dialog.setCancelable(false);
         content_dialog.getWindow().setBackgroundDrawable(
                 new ColorDrawable(Color.WHITE));
         Display display = ((WindowManager) LandingPage.this
@@ -171,10 +306,6 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         TextView header = (TextView) content_dialog.findViewById(R.id.header);
         header.setText(getResources().getString(R.string.refresh) + " Content update available (" + list.size() + " update)");
         header.setTypeface(font);
-        for (int s = 0; s < list.size(); s++) {
-            IRCSFResponsePOJO pojo = list.get(s);
-            totalSize = totalSize + Integer.parseInt(pojo.getFILE_SIZE());
-        }
         listView = (ListView) content_dialog.findViewById(R.id.list);
         listView.setAdapter(new ContentAdapter(LandingPage.this, list));
 
@@ -186,18 +317,20 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                 if (compoundButton.isChecked()) {
                     compoundButton.setChecked(true);
                     for (int i = 0; i < adapter.getCount(); i++) {
-                        LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i);
-                        CheckBox cb = (CheckBox) itemLayout.getChildAt(0);
-                        cb.setChecked(true);
+//                        LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i);
+//                        CheckBox cb = (CheckBox) itemLayout.getChildAt(0);
+//                        cb.setChecked(true);
                         adapter.mCheckedState[i] = compoundButton.isChecked();
+                        adapter.notifyDataSetChanged();
                     }
                 } else {
                     compoundButton.setChecked(false);
                     for (int i = 0; i < adapter.getCount(); i++) {
-                        LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i);
-                        CheckBox cb = (CheckBox) itemLayout.getChildAt(0);
-                        cb.setChecked(false);
+//                        LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i);
+//                        CheckBox cb = (CheckBox) itemLayout.getChildAt(0);
+//                        cb.setChecked(false);
                         adapter.mCheckedState[i] = compoundButton.isChecked();
+                        adapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -214,22 +347,24 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         download_now.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                total.setVisibility(View.VISIBLE);
-                files.setVisibility(View.VISIBLE);
-                progress.setVisibility(View.VISIBLE);
-                download_now.setVisibility(View.GONE);
-                download_later.setVisibility(View.GONE);
-                cancel.setVisibility(View.VISIBLE);
-                Status_bar.setVisibility(View.VISIBLE);
+
                 ContentAdapter adapter = (ContentAdapter) listView.getAdapter();
                 ArrayList<String[]> urlString = new ArrayList<>();
                 for (int i = 0; i < list.size(); i++) {
                     if (adapter.mCheckedState[i]) {
                         IRCSFResponsePOJO pojo = list.get(i);
-                        urlString.add(new String[]{pojo.getENTRYNO(), pojo.getPATH(), pojo.getFILE_SIZE()});
+                        urlString.add(new String[]{pojo.getENTRYNO(), pojo.getPATH(), pojo.getFILE_SIZE(), i + ""});
+                        totalSize = totalSize + Integer.parseInt(pojo.getFILE_SIZE());
                     }
                 }
                 if (urlString.size() > 0) {
+                    total.setVisibility(View.VISIBLE);
+                    files.setVisibility(View.VISIBLE);
+                    progress.setVisibility(View.VISIBLE);
+                    download_now.setVisibility(View.GONE);
+                    download_later.setVisibility(View.GONE);
+                    cancel.setVisibility(View.VISIBLE);
+                    Status_bar.setVisibility(View.VISIBLE);
                     downloadAsync = new DownloadContentAsync(urlString);
                     downloadAsync.execute();
                 }
@@ -260,8 +395,8 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         bundle.putString("customer_id", objDrListPOJO.getCOL0());
         bundle.putString("customer_name", objDrListPOJO.getCOL1());
         bundle.putString("category_code", objDrListPOJO.getCOL5());
-        bundle.putString("category_name", objDrListPOJO.getCOL10());
-        bundle.putString("thumbnail_category", objDrListPOJO.getCOL16());
+        bundle.putString("category_name", objDrListPOJO.getCOL16());
+        bundle.putString("thumbnail_category", "B");
         bundle.putString("index", "1");
         intent.putExtras(bundle);
         startActivity(intent);
@@ -270,26 +405,43 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
     }
 
     @Override
-    public void onItemListMenuClick(DrList_POJO objDrListPOJO) {
-        super.onItemListMenuClick(objDrListPOJO);
-        // Create custom dialog object
-        final Dialog dialog = new Dialog(this);
-        // Include dialog.xml file
-        dialog.setContentView(R.layout.hotlink);
-        // Set dialog title
+    public void onItemListMenuClick(final DrList_POJO objDrListPOJO, View view) {
+        super.onItemListMenuClick(objDrListPOJO, view);
 
-        dialog.show();
-        Toast.makeText(LandingPage.this, "objDrListPOJO" + objDrListPOJO.getCOL7(), Toast.LENGTH_SHORT).show();
+        PopupMenu popup = new PopupMenu(LandingPage.this, view);
+        //Inflating the Popup using xml file
+        popup.getMenuInflater().inflate(R.menu.menu_main, popup.getMenu());
+        //registering popup with OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent intent = new Intent(LandingPage.this, Playlist.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("customer_id", objDrListPOJO.getCOL0());
+                bundle.putString("customer_name", objDrListPOJO.getCOL1());
+                bundle.putString("category_code", objDrListPOJO.getCOL5());
+                bundle.putString("category_name", objDrListPOJO.getCOL10());
+                bundle.putString("thumbnail_category", objDrListPOJO.getCOL16());
+                bundle.putString("index", "3");
+                intent.putExtras(bundle);
+                startActivity(intent);
+                return true;
+            }
+        });
 
+        popup.show();
     }
 
 
     @Override
-    public void recyclerViewListClicked(View v, int position) {
-
-        Toast.makeText(LandingPage.this, "Coool--->" + position, Toast.LENGTH_SHORT).show();
-//        Intent intent = new Intent(LandingPage.this, ContentLibrary.class);
-//        startActivity(intent);
+    public void onItemClick(TBBRAND item) {
+        Intent intent = new Intent(LandingPage.this, Playlist.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("category_code", item.getCOL3());
+        bundle.putString("category_name", item.getCOL0());
+        bundle.putString("thumbnail_category", "B");
+        bundle.putString("index", "2");
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override
@@ -297,7 +449,8 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         if (dialog != null)
             dialog.dismiss();
         if (list != null)
-            showContentDownloadDialog(list);
+            if (list.size() > 0)
+                showContentDownloadDialog(list);
     }
 
     @Override
@@ -309,7 +462,6 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
     class DownloadContentAsync extends AsyncTask<Void, Integer, Void> {
         ArrayList<String[]> urlString;
         boolean flag = false;
-        TextView status;
         int pos = 0;
         int downloadedSize = 0;
 
@@ -322,13 +474,15 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
             try {
                 for (int i = 0; i < urlString.size(); i++) {
                     if (isCancelled()) break;
-                    pos = i;
+
                     String[] urls = urlString.get(i);
-                    runOnUiThread(new Runnable() {
+                    pos = Integer.parseInt(urls[3]);
+                    IRCSFResponsePOJO pojo = list.get(pos);
+                    pojo.setSTATUS("In Progress");
+                    LandingPage.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            status = (TextView) ((LinearLayout) listView.getChildAt(pos)).getChildAt(5);
-                            status.setText("In Progress");
+                            ((ContentAdapter) listView.getAdapter()).notifyDataSetChanged();
                         }
                     });
                     String msg = Utility.downloadZipFile(urls[1]);
@@ -349,15 +503,18 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                             e.printStackTrace();
                         }
                     }
-                    runOnUiThread(new Runnable() {
+
+                    if (!flag)
+                        pojo.setSTATUS("Failed");
+                    else
+                        pojo.setSTATUS("Completed");
+                    LandingPage.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (!flag)
-                                status.setText("Failed");
-                            else
-                                status.setText("Completed");
+                            ((ContentAdapter) listView.getAdapter()).notifyDataSetChanged();
                         }
                     });
+
                     publishProgress(i + 1);
                 }
             } catch (Exception e) {

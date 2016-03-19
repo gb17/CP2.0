@@ -25,9 +25,9 @@
                 android:layout_width="58dp"
                 android:layout_height="58dp"
                 android:layout_gravity="center_horizontal"
-                android:src="@drawable/hugh"
-                app:civ_border_color="#FF000000"
-                app:civ_border_width="2dp" />
+                android:src="@drawable/profile_img"
+                app:civ_border_color="#6c6c6c"
+                app:civ_border_width="1dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -82,7 +82,7 @@
         <TextView
             android:id="@+id/threedot_menu"
             android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignRight="@+id/drnametextview"
             android:layout_marginRight="5dp"
@@ -130,7 +130,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/detail_area"
-        android:background="#d9d7d4">
+        android:background="@color/thumbnail_producname_backgrounf">
 
         <TextView
             android:id="@+id/headingTV"
@@ -142,3 +142,4 @@
             android:textSize="24sp" />
     </LinearLayout>
 </RelativeLayout>
+

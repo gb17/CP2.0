@@ -84,7 +84,8 @@ public class RestClient {
         @POST("/CirriusConfigAPI/CONTENTACK")
         Call<String> contentAcknowledge(@Body CNTACKPOJO req);
 
-
+        @POST("/CirriusSecurityAPI/FORGOTPWD")
+        Call<ChangePassword> CallForgotPassword(@Body ChangePassword changePassword);
     }
 
 

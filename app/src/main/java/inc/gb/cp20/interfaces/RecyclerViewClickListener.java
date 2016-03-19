@@ -1,8 +1,8 @@
 package inc.gb.cp20.interfaces;
 
-import android.view.View;
+import inc.gb.cp20.Models.TBBRAND;
 
 public interface RecyclerViewClickListener {
 
-    void recyclerViewListClicked(View v, int position);
+    void onItemClick(TBBRAND item);
 }

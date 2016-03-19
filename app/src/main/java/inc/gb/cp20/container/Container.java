@@ -156,13 +156,13 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             db.execSQL(query);
         }
 
-        userCopyVector = UserService.getUserList(this, "TBPARTY");
+        userCopyVector = UserService.getUserList(this, "TBPARTY", "");
 
         Date date = new Date();
         currentDate = new SimpleDateFormat("dd-MM-yyyy").format(date);
 
         fillPlaystData();
-        String brandQuery = "SELECT COL0, COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8 FROM TBBRAND";
+        String brandQuery = "SELECT COL0, COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8 FROM TBBRAND where COL0 = '" + thumbnail_category + "'";
 //        if (customer_id.equals(""))
 //            brandQuery = "SELECT * FROM TBBRND where col_4 <> '" + category_code + "'";
 
@@ -186,7 +186,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             @Override
             public void onClick(View view) {
                 String content_id = view.getTag().toString();
-                refData = handler.genericSelect("Select COL1, COL2, COL15 from TBDRG where COL0 = '" + content_id + "'", 3);
+                refData = handler.genericSelect("Select COL1, COL15, COL3 from TBDRG where COL0 = '" + content_id + "'", 3);
                 if (refData != null) {
                     refDialog = new Dialog(Container.this);
                     refDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -445,6 +445,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     }
 
     private void fillPlayList(int index) {
+        Bitmap bitmap = null;
         content2.removeAllViews();
         if (playstData != null)
             for (int i = 0; i < playstData.length; i++) {
@@ -452,10 +453,16 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 View view = inflater.inflate(R.layout.playlist_groups, null);
                 //view.setId(Integer.parseInt(playstData[i][0]));
                 view.setId(i);
-                String filePath = new File(getFilesDir() + "/done/", FilenameUtils.removeExtension(playstData[i][2]) + ".png").getAbsolutePath();
-                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                String filePath = new File(getFilesDir() + "/" + FilenameUtils.removeExtension(playstData[i][2]) + "/", FilenameUtils.removeExtension(playstData[i][2]) + ".png").getAbsolutePath();
                 ImageView img = (ImageView) view.findViewById(R.id.img);
-                img.setImageBitmap(bitmap);
+                try {
+                    bitmap = BitmapFactory.decodeFile(filePath);
+                    img.setImageBitmap(bitmap);
+                    bitmap = null;
+                } catch (Exception e) {
+                    img.setImageResource(R.drawable.dempi);
+                }
+
                 TextView name = (TextView) view.findViewById(R.id.name);
                 name.setText(playstData[i][3]);
                 view.setOnClickListener(pagesListener);
@@ -475,7 +482,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         for (int i = 0; i < brandData.length; i++) {
             LayoutInflater inflater = (LayoutInflater) Container.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View childView = inflater.inflate(R.layout.subgroups, null);
-            String filePath = new File(getFilesDir() + "/done/", brandData[i][4] + ".png").getAbsolutePath();
+            String filePath = new File(getFilesDir() + "/", brandData[i][4] + ".png").getAbsolutePath();
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);
             ImageView sub_img = (ImageView) childView.findViewById(R.id.sub_img);
             sub_img.setImageBitmap(bitmap);
@@ -508,7 +515,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             playIndex = 0;
             playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16 from TBDPS a , TBDPG b\n" +
                     "        where a.col5 = b.col0\n" +
-                    "        and a.COL3 = '" + brandcode + "' and a.COL9 = '" + thumbnail_category + "' order by  CAST (a.col2 AS INTEGER) ASC ", 7);
+                    "        and a.COL3 = '" + brandcode + "' and a.COL9 = '" + thumbnail_category + "' and a.COL10 = 'IPL' order by  CAST (a.col2 AS INTEGER) ASC ", 7);
             fillPlayList(0);
             hideDrawer();
         }
@@ -628,7 +635,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAllowFileAccess(true);
         webView.setWebViewClient(new WebViewClient());
-        final String url = "file://" + getFilesDir().getAbsolutePath() + "/" + FilenameUtils.removeExtension(playstData[playIndex][2]).toUpperCase() + "/" + playstData[playIndex][2];
+        final String url = "file://" + getFilesDir().getAbsolutePath() + "/" + FilenameUtils.removeExtension(playstData[playIndex][2]) + "/" + playstData[playIndex][2];
 
         if (playstData[playIndex][5].equals("1"))//Emailable
             iconsBar.getChildAt(2).setVisibility(View.VISIBLE);
@@ -873,13 +880,13 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         if (customer_id.equals(""))
             playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16 from TBDPS a , TBDPG b\n" +
                     "        where a.col5 = b.col0\n" +
-                    "        and a.COL3 = '" + category_code + "' and a.COL9 = '" + category_name + "' order by  CAST (a.col2 AS INTEGER) ASC ", 7);
+                    "        and a.COL3 = '" + category_code + "' and a.COL9 = '" + category_name + "' and a.COL10 = 'IPL' order by  CAST (a.col2 AS INTEGER) ASC ", 7);
         else {
             String[][] countData = handler.genericSelect("Select count(1) from TBDPS2 where col10 = '" + customer_id + "'", 1);
             if (countData[0][0].equals("0")) {
                 //select and insert
                 SQLiteDatabase db = handler.getWritableDatabase();
-                db.execSQL(" insert into TBDPS2 select A.COL0, A.COL1, A.COL2, A.COL3, A.COL4, A.COL5, A.COL6, A.COL7, A.COL8, A.COL9, '" + customer_id + "' from TBDPS A WHERE COL3 = '" + category_code + "' and COL9 = '" + category_name + "'");
+                db.execSQL(" insert into TBDPS2 select A.COL0, A.COL1, A.COL2, A.COL3, A.COL4, A.COL5, A.COL6, A.COL7, A.COL8, A.COL9, '" + customer_id + "', '0' from TBDPS A WHERE COL3 = '" + category_code + "' and COL9 = '" + category_name + "'");
             }
             //initialize playlist
             playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16 from TBDPS2 a , TBDPG b\n" +
@@ -1214,6 +1221,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             super.onBackPressed();
         } else if (playstData != null) {
             showAlertForDetailing();
+        } else {
+            super.onBackPressed();
         }
 //        Intent returnIntent = new Intent();
 //        returnIntent.putExtra("result", "1");

@@ -94,7 +94,7 @@ public class UserListAdapter extends BaseAdapter {
 
                 @Override
                 public void onClick(View v) {
-                    ((AlphaListActivity) context).onItemListMenuClick(items.get(position));
+                    ((AlphaListActivity) context).onItemListMenuClick(items.get(position),v);
 
 
                 }
@@ -189,4 +189,7 @@ public class UserListAdapter extends BaseAdapter {
 
     }
 
+
+
 }
+

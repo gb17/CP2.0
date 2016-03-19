@@ -10,7 +10,7 @@ import inc.gb.cp20.DB.DBHandler;
 
 public class UserService {
 
-    public static Vector<DrList_POJO> getUserList(Context ctx, String TabelName) {
+    public static Vector<DrList_POJO> getUserList(Context ctx, String TabelName, String Where) {
         Vector<DrList_POJO> drListPOJOList = new Vector<DrList_POJO>();
 
         DrList_POJO drListPOJO;
@@ -20,13 +20,20 @@ public class UserService {
 
         // Get all sampleData from db
         try {
-            Cursor cursor = dbHandler.getAllData(TabelName, null, null, null);
+            Cursor cursor = null;
+            if (Where.equals("")) {
+                cursor = dbHandler.getAllData(TabelName, null, null, null);
+            } else {
+                cursor = dbHandler.getCusrsor("SELECT *  FROM TBPARTY WHERE COL1 like  '%" + Where + "%'");
+            }
+
             cursor.moveToFirst();
 
             if (cursor.getCount() != 0) {
                 drListPOJOList = new Vector<DrList_POJO>();
                 do {
                     drListPOJO = new DrList_POJO();
+                    drListPOJO.setCOL0(cursor.getString(cursor.getColumnIndex("COL0")));
                     drListPOJO.setCOL1(cursor.getString(cursor.getColumnIndex("COL1")));
                     drListPOJO.setCOL2(cursor.getString(cursor.getColumnIndex("COL2")));
                     drListPOJO.setCOL3(cursor.getString(cursor.getColumnIndex("COL3")));
@@ -42,6 +49,7 @@ public class UserService {
                     drListPOJO.setCOL13(cursor.getString(cursor.getColumnIndex("COL13")));
                     drListPOJO.setCOL14(cursor.getString(cursor.getColumnIndex("COL14")));
                     drListPOJO.setCOL15(cursor.getString(cursor.getColumnIndex("COL15")));
+                    drListPOJO.setCOL16(cursor.getString(cursor.getColumnIndex("COL16")));
                     drListPOJOList.add(drListPOJO);
                 } while (cursor.moveToNext());
             }

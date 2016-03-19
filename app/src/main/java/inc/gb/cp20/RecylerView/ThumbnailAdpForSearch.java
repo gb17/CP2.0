@@ -17,15 +17,17 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import inc.gb.cp20.Models.TBBRAND;
+import inc.gb.cp20.Models.TBDPG;
 import inc.gb.cp20.R;
 import inc.gb.cp20.interfaces.RecyclerViewClickListener;
 
-public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyViewHolder> {
+/**
+ * Created by GB on 3/18/16.
+ */
+public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForSearch.MyViewHolder> {
 
     private static RecyclerViewClickListener itemListener;
-
-    public List<TBBRAND> brandList;
+    public List<TBDPG> brandList;
     static Typeface font;
     static Context mContext;
     FragmentManager fragmentManager;
@@ -34,7 +36,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
             R.drawable.dempi, R.drawable.newace, R.drawable.newcfix1, R.drawable.newcfix3, R.drawable.newjade
             , R.drawable.newmezzo, R.drawable.newstillsep, R.drawable.solsuna, R.drawable.stelpep, R.drawable.zepine, R.drawable.stelpep, R.drawable.zepine};
 
-    public ThumbnailAdapter(List<TBBRAND> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener) {
+    public ThumbnailAdpForSearch(List<TBDPG> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener) {
         this.brandList = brandList;
         this.mContext = mContext;
         this.fragmentManager = fragmentManager;
@@ -50,7 +52,6 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
         RelativeLayout layout, pageCountLayout, refCountLayout;
         ScrollView childScrollView;
 
-
         public MyViewHolder(View view) {
             super(view);
             title = (TextView) view.findViewById(R.id.title);
@@ -65,7 +66,9 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
             newTag = (TextView) view.findViewById(R.id.newtag);
 
             pageCountLayout = (RelativeLayout) view.findViewById(R.id.pagelayout);
+            pageCountLayout.setVisibility(View.GONE);
             refCountLayout = (RelativeLayout) view.findViewById(R.id.reflayout);
+            refCountLayout.setVisibility(View.GONE);
 
 
             refFloatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -124,15 +127,6 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
 
         }
 
-        public void bind(final TBBRAND brandList, final RecyclerViewClickListener listener) {
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onItemClick(brandList);
-                }
-            });
-        }
-
 
     }
 
@@ -147,15 +141,13 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        TBBRAND tbbrand = brandList.get(position);
-        holder.title.setText(tbbrand.getCOL2());
+        TBDPG tbdpg = brandList.get(position);
+        holder.title.setText(tbdpg.getCOL2());
         if (position >= Imagearr.length - 1)
             holder.imageView.setImageResource(R.drawable.dempi);
         else {
             holder.imageView.setImageResource(Imagearr[position]);
         }
-
-        holder.bind(brandList.get(position), itemListener);
     }
 
     @Override
@@ -165,3 +157,4 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
 
 
 }
+

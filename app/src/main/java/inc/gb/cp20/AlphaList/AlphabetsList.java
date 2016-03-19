@@ -82,7 +82,7 @@ public class AlphabetsList {
 
     }
 
-    public View getAlphabestListView(String TabelName, boolean play_icon, boolean tick_icon, boolean header) {
+    public View getAlphabestListView(final String TabelName, boolean play_icon, boolean tick_icon, boolean header) {
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mainView = inflater.inflate(R.layout.mainindextable, null);
@@ -174,7 +174,15 @@ public class AlphabetsList {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                userListAdapter.getFilter().filter(s.toString());
+
+                userVector = UserService.getUserList(mContext, TabelName, s.toString());
+
+                Vector<DrList_POJO> subsidiesList = getIndexedBooks(userVector);
+                totalListSize = subsidiesList.size();
+
+                userListAdapter = new UserListAdapter(subsidiesList, mContext, true, false, false);
+                booksLV.setAdapter(userListAdapter);
+                userListAdapter.notifyDataSetChanged();
 
 
             }
@@ -481,7 +489,7 @@ public class AlphabetsList {
 
     public void setAdapter(int index, ListView booksLV, String tableName, boolean play_icon, boolean tick_icon, boolean header) {
         if (index == 0)
-            userVector = UserService.getUserList(mContext, tableName);
+            userVector = UserService.getUserList(mContext, tableName, "");
 
         Vector<DrList_POJO> subsidiesList = getIndexedBooks(userVector);
         totalListSize = subsidiesList.size();

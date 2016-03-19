@@ -18,5 +18,7 @@
     <string name="icon_cross">&#xf057;</string>
     <string name="search">&#xf002;</string>
     <string name="close">&#xf00d;</string>
+    <string name="icon_power">&#xf011;</string>
+    <string name="icon_download">&#xf019;</string>
 
 </resources>

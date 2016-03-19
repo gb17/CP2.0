@@ -45,14 +45,32 @@ private String KEY_COL;
 @Expose
 private String OPRTN;
 
-/**
-*
-* @return
-* The COL0
-*/
-public String getCOL0() {
-return COL0;
-}
+    public TBBRAND() {
+
+    }
+
+    public TBBRAND(String COL0, String COL1, String COL2, String COL3, String COL4, String COL5, String COL6, String COL7, String COL8, String COL9, String COL10, String KEY_COL, String OPRTN) {
+        this.COL0 = COL0;
+        this.COL1 = COL1;
+        this.COL2 = COL2;
+        this.COL3 = COL3;
+        this.COL4 = COL4;
+        this.COL5 = COL5;
+        this.COL6 = COL6;
+        this.COL7 = COL7;
+        this.COL8 = COL8;
+        this.COL9 = COL9;
+        this.COL10 = COL10;
+        this.KEY_COL = KEY_COL;
+        this.OPRTN = OPRTN;
+    }
+
+    /**
+     * @return The COL0
+     */
+    public String getCOL0() {
+        return COL0;
+    }
 
 /**
 *

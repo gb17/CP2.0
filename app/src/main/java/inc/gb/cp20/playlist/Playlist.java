@@ -72,10 +72,10 @@ public class Playlist extends Activity {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setTag("1");
 
-
         String[][] countData = handler.genericSelect("Select count(1) from TBDPS2 where col10 = '" + customer_id + "'", 1);
         if (countData[0][0].equals("0")) {
             //select and insert
+            db = handler.getWritableDatabase();
             db.execSQL(" insert into TBDPS2 select A.COL0, A.COL1, A.COL2, A.COL3, A.COL4, A.COL5, A.COL6, A.COL7, A.COL8, A.COL9, '" + customer_id + "', '0' from TBDPS A WHERE COL3 = '" + category_code + "' and COL9 = '" + category_name + "'");
         }
         //initialize playlist

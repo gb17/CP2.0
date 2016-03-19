@@ -31,6 +31,30 @@ public class ChangePassword {
     @Expose
     private String OUT;
 
+    public String getMSG() {
+        return MSG;
+    }
+
+    public void setMSG(String MSG) {
+        this.MSG = MSG;
+    }
+
+    @SerializedName("MSG")
+    @Expose
+    private String MSG;
+
+    public String getCVR() {
+        return CVR;
+    }
+
+    public void setCVR(String CVR) {
+        this.CVR = CVR;
+    }
+
+    @SerializedName("CVR")
+    @Expose
+    private String CVR;
+
     public String getMOBILENO() {
         return MOBILENO;
     }

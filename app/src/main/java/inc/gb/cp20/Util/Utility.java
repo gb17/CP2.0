@@ -225,8 +225,16 @@ public class Utility {
     }
 
     public static void showSweetAlert(Context context, String message, int ALERT_TYPE) {
-        new SweetAlertDialog(context, ALERT_TYPE)
-                .setTitleText(message)
+
+        final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, ALERT_TYPE);
+        sweetAlertDialog.setTitleText(message)
+                .setConfirmText("Ok")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sweetAlertDialog.dismiss();
+                    }
+                })
                 .show();
     }
 
@@ -760,8 +768,8 @@ public class Utility {
         SimpleDateFormat simp = new SimpleDateFormat("dd/MM/yyyy");
         // Date Sysdate = new Date();
         String Currentdate = serverdate;
-		/*
-		 * Currentdate = Currentdate.substring(0, 10); Currentdate =
+        /*
+         * Currentdate = Currentdate.substring(0, 10); Currentdate =
 		 * Currentdate.replace('-', '/'); Currentdate =
 		 * Utility.dateconverter(Currentdate, "dd/MM/yyyy", "MM/dd/yyyy");
 		 */

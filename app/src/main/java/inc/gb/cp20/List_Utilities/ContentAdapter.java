@@ -65,7 +65,6 @@ public class ContentAdapter extends BaseAdapter {
             holder.date = (TextView) convertView.findViewById(R.id.effect_date);
             holder.status = (TextView) convertView.findViewById(R.id.status);
 
-
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -105,10 +104,12 @@ public class ContentAdapter extends BaseAdapter {
             holder.type.setText(context.getResources().getString(R.string.pdf_icon));
         else if (pojo.getCNT_TYPE().equalsIgnoreCase("mp4"))
             holder.type.setText(context.getResources().getString(R.string.play_icon));
+        else
+            holder.type.setText(context.getResources().getString(R.string.html_icon));
         holder.date.setText(pojo.getEFFECT_DATE());
         holder.size.setText(pojo.getFILE_SIZE());
         holder.type.setTypeface(font);
-
+        holder.status.setText(pojo.getSTATUS());
         return convertView;
     }
 

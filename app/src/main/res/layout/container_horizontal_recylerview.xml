@@ -7,13 +7,6 @@
     android:paddingTop="@dimen/activity_vertical_margin">
 
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_for_search"
-        android:layout_width="match_parent"
-        android:layout_height="175dp"
-        android:layout_marginTop="5dp"
-        android:scrollbars="horizontal"
-        android:visibility="gone" />
 
     <TextView
         android:id="@+id/header"
@@ -59,7 +52,7 @@
             android:layout_height="130dp"
             android:layout_below="@+id/closepage"
             android:scrollbars="horizontal"
-            android:visibility="gone" />
+            />
     </RelativeLayout>
 
     <RelativeLayout
@@ -92,3 +85,4 @@
 
 
 </RelativeLayout>
+

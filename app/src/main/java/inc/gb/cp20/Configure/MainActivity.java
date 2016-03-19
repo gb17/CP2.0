@@ -13,8 +13,8 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import org.apache.commons.io.FileUtils;
 
@@ -49,6 +49,7 @@ import inc.gb.cp20.R;
 import inc.gb.cp20.Util.CmsInter;
 import inc.gb.cp20.Util.RestClient;
 import inc.gb.cp20.Util.Utility;
+import inc.gb.cp20.changepwd.ChangePasswordAcitvity;
 import inc.gb.cp20.interfaces.DownloadInterface;
 import retrofit.Call;
 import retrofit.Callback;
@@ -78,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
     public boolean CONFIG_FLAG = false;
     SweetAlertDialog configAlertDialog = null;
+    Button forgotpwd;
+    Button loginButton;
 
 
     @Override
@@ -88,42 +91,54 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
         UsereditText = (EditText) findViewById(R.id.userid);
         PasswordeditText = (EditText) findViewById(R.id.password);
+        loginButton = (Button) findViewById(R.id.loginclick);
+        forgotpwd = (Button) findViewById(R.id.forgotpwd);
 
         CONFIG_FLAG = checkConfigOrNot();
         if (!CONFIG_FLAG) {
+            loginButton.setText("CONFIGURE");
+            forgotpwd.setVisibility(View.GONE);
             dbHandler = DBHandler.getInstance(this);
             dbHandler.createTables();
         } else if (CONFIG_FLAG) {
             UsereditText.setText(UsernameString);
             UsereditText.setEnabled(false);
+            loginButton.setText("LOGIN");
+            forgotpwd.setVisibility(View.VISIBLE);
         }
-//
-
-        ImageView loginImageView = (ImageView) findViewById(R.id.loginclick);
 
 
-        loginImageView.setOnClickListener(new View.OnClickListener() {
+        forgotpwd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                backupDatabase();
-                backupDatabase();
+                CallForgotPassword();
+            }
+        });
 
-//                Intent LandingIntent = new Intent(MainActivity.this, LandingPage.class);
-//                LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivity(LandingIntent);
 
-                //  backupDatabase();
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 if (UsereditText.getText().toString().equalsIgnoreCase("")
                         || PasswordeditText.getText().toString().equals("")) {
-                    Utility.showTempAlert(MainActivity.this, "Username/Password is Mandatory");
+                    Utility.showSweetAlert(MainActivity.this, "Username/Password is Mandatory", CmsInter.ERROR_TYPE);
 
                 } else {
                     if (!CONFIG_FLAG) {
                         getprogressDialog("Configuring..");
                         callUpw(UsereditText.getText().toString(), PasswordeditText.getText().toString());
                     } else if (CONFIG_FLAG) {
-                        getprogressDialog("Please Wait..");
-                        CallCVR(CONFIG_FLAG);
+                        if (PasswordString.equals(PasswordeditText.getText().toString())) {
+                            backupDatabase();
+                            Intent LandingIntent = new Intent(MainActivity.this, LandingPage.class);
+                            LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            LandingIntent.putExtra("CALLSYNC", "1");
+                            startActivity(LandingIntent);
+                            //  getprogressDialog("Please Wait..");
+                            //   CallCVR(CONFIG_FLAG);
+                        } else {
+                            Utility.showSweetAlert(MainActivity.this, "Invalid Password ", CmsInter.ERROR_TYPE);
+                        }
                     }
 
                 }
@@ -141,14 +156,54 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
         dialog.show();
     }
 
+    private boolean checkConfigOrNot() {
+        boolean mission;
+        dbHandler = DBHandler.getInstance(MainActivity.this);
+        try {
+            String data[][] = dbHandler.genericSelect("*", DBHandler.TBUPW,
+                    "", "", "", 6);
+            if (data != null) {
+
+
+                //data[0][2];
+                String datavalues[] = data[0][3].split("\\^");
+                instaneceId = datavalues[4];
+                Repcode = datavalues[3];
+                RoleCode = datavalues[5].substring(0, 1);
+                Version = data[0][1];
+                ClientID = data[0][4];
+                mission = true;
+            } else {
+
+                mission = false;
+            }
+
+            String dataCVR[][] = dbHandler.genericSelect("*", DBHandler.TBCVR,
+                    "", "", "", 4);
+            if (dataCVR != null) {
+
+                String dataCVRSplitCol2[] = dataCVR[0][2].split("\\^");
+                UsernameString = dataCVRSplitCol2[25];
+                PasswordString = dataCVRSplitCol2[3];
+                mission = true;
+            } else {
+
+                mission = false;
+            }
+
+        } catch (Exception e) {
+            mission = false;
+        }
+        return mission;
+
+    }
 
     public void callUpw(String UserName, String Password) {
-
         dialog.show();
         UPW upw1 = new UPW();
-        upw1.setCLIENTID("CTD");
+        upw1.setCLIENTID(getResources().getString(R.string.clientid));
         upw1.setVALUE("");
-        upw1.setVERSION("4.0");
+        upw1.setVERSION(getResources().getString(R.string.version));
         upw1.setCONTROLNO("6");
         upw1.setOLDPWD(Password);
         upw1.setUSERNAME(UserName);
@@ -244,8 +299,11 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                                 alertbox.setMessage(datavalues[1]).setPositiveButton("OK",
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
+                                                Intent ChangePwdIntent = new Intent(MainActivity.this, ChangePasswordAcitvity.class);
+                                                ChangePwdIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                startActivity(ChangePwdIntent);
                                                 dialog.dismiss();
-                                                ChangePassword("aaaa");
+
                                             }
                                         });
                                 alertbox.create();
@@ -257,12 +315,33 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                                         backupDatabase();
                                         Intent LandingIntent = new Intent(MainActivity.this, LandingPage.class);
                                         LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        LandingIntent.putExtra("CALLSYNC", "1");
                                         startActivity(LandingIntent);
                                     } else {
-                                        Utility.showSweetAlert(MainActivity.this, word.getMSG(), CmsInter.ERROR_TYPE);
+                                        if (word.getMSG().contains("Invalid Instance")) {
+
+                                            final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(MainActivity.this, CmsInter.ERROR_TYPE);
+                                            sweetAlertDialog.setTitleText(word.getMSG())
+                                                    .setConfirmText("Ok")
+                                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                        @Override
+                                                        public void onClick(SweetAlertDialog sDialog) {
+                                                            dbHandler.deletealltable();
+                                                            Intent LandingIntent = new Intent(MainActivity.this, MainActivity.class);
+                                                            LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                            startActivity(LandingIntent);
+                                                        }
+                                                    })
+                                                    .show();
+                                        } else {
+                                            Utility.showSweetAlert(MainActivity.this, word.getMSG(), CmsInter.ERROR_TYPE);
+                                        }
+
                                     }
                                     dialog.dismiss();
-                                } else callfileDownload();
+
+
+                                } else callFileDownload();
                             }
                         }
 
@@ -285,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
     }
 
-    public void callfileDownload() {
+    public void callFileDownload() {
 
         final String[][] CVRdata = dbHandler.genericSelect("SELECT * FROM TBCVR", 4);
         if (CVRdata != null) {
@@ -293,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
             if (cvrsplit[26].equals("J")) {
                 RestClient.GitApiInterface service = RestClient.getClient();
                 TAG tag = new TAG();
-                tag.setClientid(ClientID);
+                tag.setClientid(getResources().getString(R.string.clientid));
                 String url = CVRdata[0][3];//"https://pocworkerrole.blob.core.windows.net/ctdscript/CTDH0001201603111918.cpz";
                 tag.setUrl(url);//  CVRdata[0][3] https://pocworkerrole.blob.core.windows.net/ctdscript/CTDH0001201603111918.cpz
                 tag.setRepcode(Repcode);
@@ -310,8 +389,6 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                                 ChkAck();
                             }
                         }).start();
-
-
                     }
 
                     @Override
@@ -463,34 +540,54 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                         });
                 configAlertDialog.show();
                 dialog.dismiss();
+                new TBImgClass().execute();
             }
 
             @Override
             public void onFailure(Throwable t) {
-                Utility.showSweetAlert(MainActivity.this, t.toString(), CmsInter.ERROR_TYPE);
+                Utility.showSweetAlert(MainActivity.this, t.toString()+"ACKtagd", CmsInter.ERROR_TYPE);
                 dialog.dismiss();
             }
         });
 
     }
 
-
-    public void ChangePassword(String newpassword) {
+    public void CallForgotPassword() {
+        getprogressDialog("Requesting...");
         ChangePassword changePassword = new ChangePassword();
-        changePassword.setCLIENTID("CTD");
-        changePassword.setREPCODE("H0001");
+        changePassword.setCLIENTID(getResources().getString(R.string.clientid));
+        changePassword.setREPCODE(Repcode);
         changePassword.setBU("2");
-        changePassword.setNPWD(newpassword);
-        changePassword.setOPWD("cipla");
+        changePassword.setNPWD("");
+        changePassword.setOPWD("");
 
         RestClient.GitApiInterface service = RestClient.getClient();
 
-        Call<ChangePassword> changePasswordCall = service.CallChangePassword(changePassword);
-        changePasswordCall.enqueue(new Callback<ChangePassword>() {
+        Call<ChangePassword> forgotpassowrd = service.CallForgotPassword(changePassword);
+        forgotpassowrd.enqueue(new Callback<ChangePassword>() {
             @Override
             public void onResponse(Response<ChangePassword> response, Retrofit retrofit) {
-                ChangePassword chg = response.body();
-                Utility.showTempAlert(MainActivity.this, chg.getOUT());
+                if (response != null) {
+                    final ChangePassword chg = response.body();
+                    if (chg.getOUT().equals("1")) {
+                        final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(MainActivity.this, CmsInter.SUCCESS_TYPE);
+                        sweetAlertDialog.setTitleText(chg.getMSG())
+                                .setConfirmText("Ok")
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sDialog) {
+                                        Intent loginIntent = new Intent(MainActivity.this, MainActivity.class);
+                                        loginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(loginIntent);
+                                    }
+                                })
+                                .show();
+                    } else {
+                        Utility.showSweetAlert(MainActivity.this, chg.getMSG(), CmsInter.ERROR_TYPE);
+                    }
+                } else {
+                    Utility.showSweetAlert(MainActivity.this, "Network Error", CmsInter.ERROR_TYPE);
+                }
             }
 
             @Override
@@ -502,38 +599,8 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
     }
 
 
-    private boolean checkConfigOrNot() {
-        boolean mission = false;
-        dbHandler = DBHandler.getInstance(MainActivity.this);
-        try {
-            String data[][] = dbHandler.genericSelect("*", DBHandler.TBUPW,
-                    "", "", "", 6);
-            if (data != null) {
-
-                UsernameString = data[0][0];
-                PasswordString = data[0][2];
-                String datavalues[] = data[0][3].split("\\^");
-                instaneceId = datavalues[4];
-                Repcode = datavalues[3];
-                RoleCode = datavalues[5].substring(0, 1);
-                Version = data[0][1];
-                ClientID = data[0][4];
-                mission = true;
-            } else {
-
-                mission = false;
-            }
-
-        } catch (Exception e) {
-            mission = false;
-        }
-        return mission;
-
-    }
-
-
     public final boolean backupDatabase() {
-        File from = MainActivity.this.getDatabasePath("DBCG");
+        File from = MainActivity.this.getDatabasePath("CWEPV8");
         File to = this.getBackupDatabaseFile();
         try {
             FileUtils.copyFile(from, to);
@@ -551,7 +618,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        return new File(dir, "THE" + "_" + "DBCG");
+        return new File(dir, "THE" + "_" + "CWEPV8");
     }
 
 
@@ -621,6 +688,28 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
             super.onPostExecute(bool);
             onTaskCompleted(bool);
             Log.d("Mai yaha hu", " onPostExecute");
+        }
+    }
+
+    class TBImgClass extends AsyncTask<Void, Integer, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String[][] tbImg = dbHandler.genericSelect("Select COL1 from TBIMG", 1);
+            if (tbImg != null) {
+                String url = tbImg[0][0];
+                String msg = Utility.downloadZipFile(url);
+                if (!msg.startsWith("fail")) {
+                    try {
+                        File zipfile = new File(msg);
+                        String directory = MainActivity.this.getFilesDir().getAbsolutePath()
+                                + "/";
+                        String str = Utility.unZipFile(zipfile, directory);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return null;
         }
     }
 

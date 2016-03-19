@@ -34,18 +34,15 @@ public class Sync {
 
     public Sync(Context context) {
         this.context = context;
-
         dbHandler = DBHandler.getInstance(context);
         final String[][] psdf = dbHandler.genericSelect("SELECT * FROM TBUPW", 6);
         if (psdf != null) {
             upwData = psdf[0][3].split("\\^");
         }
-
     }
 
     public void prepareRequest(final int index) {
         List<ContainerPOJO> containerLs = new ArrayList<>();
-
         if (index == 1) {
             String[][] containerData = dbHandler.genericSelect("select a.*, '' pcode from TXN102 a where col11 = 0 \n" +
                     "and not exists \n" +

@@ -7,8 +7,7 @@
     android:background="#f8f7f5"
     android:paddingTop="2dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".Configure.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:context=".Configure.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,4 +43,37 @@
         </ScrollView>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/compl"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/dr_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="-30dp"
+            android:background="#BF000000"
+            android:rotation="90"
+            android:text="BRand" />
+
+        <LinearLayout
+            android:id="@+id/drawer"
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/dr_btn"
+            android:background="#BF000000"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingTop="20dp"
+            android:visibility="gone">
+
+        </LinearLayout>
+    </LinearLayout>
+
 </RelativeLayout>

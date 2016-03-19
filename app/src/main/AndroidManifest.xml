@@ -44,6 +44,11 @@
         <activity android:name=".container.Container" />
         <activity android:name=".container.VideoPlay" />
         <activity android:name=".playlist.Playlist" />
+        <activity
+            android:name=".changepwd.ChangePasswordAcitvity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
     </application>
 
 </manifest>
