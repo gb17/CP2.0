@@ -85,6 +85,19 @@ public class TBPARTY {
     @SerializedName("COL16")
     @Expose
     private String COL16;
+
+    public String getCOL17() {
+        return COL17;
+    }
+
+    public void setCOL17(String COL17) {
+        this.COL17 = COL17;
+    }
+
+    @SerializedName("COL17")
+    @Expose
+    private String COL17;
+
     @SerializedName("KEY_COL")
     @Expose
     private String KEY_COL;

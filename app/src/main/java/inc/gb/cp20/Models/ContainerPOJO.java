@@ -26,9 +26,15 @@ public class ContainerPOJO {
     private String OUT;
     private String MESSAGE;
     private String TXNID;
+    private String PLAYLISTID;
+    private String BATCHCODE;
+    private String PARAM1;
+    private String PARAM2;
+    private String PARAM3;
+    private String PARAM4;
 
 
-    public ContainerPOJO(String CLIENTID, String REPCODE, String BU, String GEOCODE, String PATCHCODE, String TXNDATE, String CODE, String NAME, String BRNDCODE, String CNTNT_ID, String DURATION, String STARTTIME, String EMAIL_FLAG, String LONGITUDE, String LATITUDE, String LIKE_FLAG, String SOURCE, String REFPAGEID, String PCODE, String OUT, String MESSAGE, String TXNID) {
+    public ContainerPOJO(String CLIENTID, String REPCODE, String BU, String GEOCODE, String PATCHCODE, String TXNDATE, String CODE, String NAME, String BRNDCODE, String CNTNT_ID, String DURATION, String STARTTIME, String EMAIL_FLAG, String LONGITUDE, String LATITUDE, String LIKE_FLAG, String SOURCE, String REFPAGEID, String PCODE, String OUT, String MESSAGE, String TXNID, String PLAYLISTID, String BATCHCODE, String PARAM1, String PARAM2, String PARAM3, String PARAM4) {
         this.CLIENTID = CLIENTID;
         this.REPCODE = REPCODE;
         this.BU = BU;
@@ -51,8 +57,61 @@ public class ContainerPOJO {
         this.OUT = OUT;
         this.MESSAGE = MESSAGE;
         this.TXNID = TXNID;
+        this.PLAYLISTID = PLAYLISTID;
+        this.BATCHCODE = BATCHCODE;
+        this.PARAM1 = PARAM1;
+        this.PARAM2 = PARAM2;
+        this.PARAM3 = PARAM3;
+        this.PARAM4 = PARAM4;
     }
 
+    public String getBATCHCODE() {
+        return BATCHCODE;
+    }
+
+    public void setBATCHCODE(String BATCHCODE) {
+        this.BATCHCODE = BATCHCODE;
+    }
+
+    public String getPARAM1() {
+        return PARAM1;
+    }
+
+    public void setPARAM1(String PARAM1) {
+        this.PARAM1 = PARAM1;
+    }
+
+    public String getPARAM2() {
+        return PARAM2;
+    }
+
+    public void setPARAM2(String PARAM2) {
+        this.PARAM2 = PARAM2;
+    }
+
+    public String getPARAM3() {
+        return PARAM3;
+    }
+
+    public void setPARAM3(String PARAM3) {
+        this.PARAM3 = PARAM3;
+    }
+
+    public String getPARAM4() {
+        return PARAM4;
+    }
+
+    public void setPARAM4(String PARAM4) {
+        this.PARAM4 = PARAM4;
+    }
+
+    public String getPLAYLISTID() {
+        return PLAYLISTID;
+    }
+
+    public void setPLAYLISTID(String PLAYLISTID) {
+        this.PLAYLISTID = PLAYLISTID;
+    }
 
     public String getCLIENTID() {
         return CLIENTID;

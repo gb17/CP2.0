@@ -13,8 +13,8 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.apache.commons.io.FileUtils;
 
@@ -79,28 +79,40 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
     public boolean CONFIG_FLAG = false;
     SweetAlertDialog configAlertDialog = null;
-    Button forgotpwd;
-    Button loginButton;
+    TextView forgotpwd;
+    TextView loginButton;
+    TextView displaytext;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-
+//        dbHandler = DBHandler.getInstance(MainActivity.this);
+//        SQLiteDatabase db = dbHandler.getWritableDatabase();
+//        db.delete("TXN102", null, null);
+//        db.delete("TBPHTAG", null, null);
+//        db.delete("TBNAME", null, null);
+//        Sync sync = new Sync(this);
+//        sync.prepareRequest(1);
 
         UsereditText = (EditText) findViewById(R.id.userid);
         PasswordeditText = (EditText) findViewById(R.id.password);
-        loginButton = (Button) findViewById(R.id.loginclick);
-        forgotpwd = (Button) findViewById(R.id.forgotpwd);
+        loginButton = (TextView) findViewById(R.id.loginclick);
+        forgotpwd = (TextView) findViewById(R.id.forgotpwd);
+        displaytext = (TextView) findViewById(R.id.display_text);
+
+        //To login Please enter your password
 
         CONFIG_FLAG = checkConfigOrNot();
         if (!CONFIG_FLAG) {
+            displaytext.setText("Please enter the username and password given to\nyou to configure the system");
             loginButton.setText("CONFIGURE");
             forgotpwd.setVisibility(View.GONE);
             dbHandler = DBHandler.getInstance(this);
             dbHandler.createTables();
         } else if (CONFIG_FLAG) {
+            displaytext.setText("To login Please enter your password");
             UsereditText.setText(UsernameString);
             UsereditText.setEnabled(false);
             loginButton.setText("LOGIN");
@@ -119,14 +131,20 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //new TBImgClass().execute();
                 if (UsereditText.getText().toString().equalsIgnoreCase("")
                         || PasswordeditText.getText().toString().equals("")) {
                     Utility.showSweetAlert(MainActivity.this, "Username/Password is Mandatory", CmsInter.ERROR_TYPE);
 
                 } else {
                     if (!CONFIG_FLAG) {
-                        getprogressDialog("Configuring..");
-                        callUpw(UsereditText.getText().toString(), PasswordeditText.getText().toString());
+                        Intent LandingIntent = new Intent(MainActivity.this, ConfigureActivity.class);
+                        LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        LandingIntent.putExtra("USERNAME", UsereditText.getText().toString());
+                        LandingIntent.putExtra("PASSWORD", PasswordeditText.getText().toString());
+                        startActivity(LandingIntent);
+//                        getprogressDialog("Configuring..");
+//                        callUpw(UsereditText.getText().toString(), PasswordeditText.getText().toString());
                     } else if (CONFIG_FLAG) {
                         if (PasswordString.equals(PasswordeditText.getText().toString())) {
                             backupDatabase();
@@ -545,7 +563,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
             @Override
             public void onFailure(Throwable t) {
-                Utility.showSweetAlert(MainActivity.this, t.toString()+"ACKtagd", CmsInter.ERROR_TYPE);
+                Utility.showSweetAlert(MainActivity.this, t.toString() + "ACKtagd", CmsInter.ERROR_TYPE);
                 dialog.dismiss();
             }
         });
@@ -696,16 +714,18 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
         protected Void doInBackground(Void... voids) {
             String[][] tbImg = dbHandler.genericSelect("Select COL1 from TBIMG", 1);
             if (tbImg != null) {
-                String url = tbImg[0][0];
-                String msg = Utility.downloadZipFile(url);
-                if (!msg.startsWith("fail")) {
-                    try {
-                        File zipfile = new File(msg);
-                        String directory = MainActivity.this.getFilesDir().getAbsolutePath()
-                                + "/";
-                        String str = Utility.unZipFile(zipfile, directory);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                for (int i = 0; i < tbImg.length; i++) {
+                    String url = tbImg[i][0];
+                    String msg = Utility.downloadZipFile(url);
+                    if (!msg.startsWith("fail")) {
+                        try {
+                            File zipfile = new File(msg);
+                            String directory = MainActivity.this.getFilesDir().getAbsolutePath()
+                                    + "/";
+                            String str = Utility.unZipFile(zipfile, directory);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }

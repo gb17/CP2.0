@@ -82,7 +82,7 @@ public class AlphabetsList {
 
     }
 
-    public View getAlphabestListView(final String TabelName, boolean play_icon, boolean tick_icon, boolean header) {
+    public View getAlphabestListView(final String TabelName, boolean play_icon, boolean tick_icon, final boolean header) {
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mainView = inflater.inflate(R.layout.mainindextable, null);
@@ -99,13 +99,14 @@ public class AlphabetsList {
         sideIndexHeight = sideIndex.getHeight();
         mGestureDetector = new GestureDetector(mContext,
                 new ListIndexGestureListener());
-        getDisplayListOnChange(mainView);
+        if (userVector.size() > 0)
+            getDisplayListOnChange(mainView);
 
         booksLV.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 boolean enable = false;
-                if (booksLV != null && booksLV.getChildCount() > 0) {
+                if (booksLV != null && booksLV.getChildCount() > 0 && header) {
                     // check if the first item of the list is visible
                     boolean firstItemVisible = booksLV.getFirstVisiblePosition() == 0;
                     // check if the top of the first item is visible

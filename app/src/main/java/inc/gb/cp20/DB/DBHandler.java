@@ -184,11 +184,12 @@ public class DBHandler extends SQLiteOpenHelper {
             db.execSQL("CREATE TABLE " + TBUPW
                     + "( USERNAME TEXT,VERSION TEXT,OLDPWD TEXT,VAL TEXT,CLIENTID TEXT,CONTROLNO TEXT)");
             cupboard().withDatabase(db).createTables();
-            db.execSQL("CREATE TABLE IF NOT EXISTS TBNAME (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text, COL12 text, COL13 text, COL14 text, COL15 text, COL16 text, COL17 text, COL18 text, COL19 text)");
+            db.execSQL("CREATE TABLE IF NOT EXISTS TBNAME (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text, COL12 text, COL13 text, COL14 text, COL15 text, COL16 text)");
             db.execSQL("CREATE TABLE IF NOT EXISTS TBPHTAG (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text)");
-            db.execSQL("CREATE TABLE IF NOT EXISTS TXN102 (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text, COL12 text, COL13 text, COL14 text, COL15 text, COL16 text, COL17 text, COL18 text, COL19 text, COL20 text)");
-            db.execSQL("CREATE TABLE IF NOT EXISTS TBDPS2 (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text)");
+            db.execSQL("CREATE TABLE IF NOT EXISTS TXN102 (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text, COL12 text, COL13 text, COL14 text, COL15 text, COL16 text, COL17 text, COL18 text, COL19 text, COL20 text, COL21 text)");
+            db.execSQL("CREATE TABLE IF NOT EXISTS TBDPS2 (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text, COL12 text)");
             db.execSQL("CREATE TABLE IF NOT EXISTS TBDPS3 (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text, COL12 text, COL13 text, COL14 text, COL15 text)");
+            db.execSQL("CREATE TABLE IF NOT EXISTS TBBNO ( COL0 TEXT,COL1 TEXT)");
         } catch (Exception exp) {
             System.out.println("Error in table creation " + exp);
             exp.printStackTrace();
@@ -197,6 +198,21 @@ public class DBHandler extends SQLiteOpenHelper {
             close();
         }
     }
+
+    public void ExecuteQuery(String Query) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            db.execSQL(Query);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+
+
+    }
+
 
     // create all required tables
     public boolean executscript() {
@@ -353,8 +369,8 @@ public class DBHandler extends SQLiteOpenHelper {
 
         return strReturn;
     }
-	
-	public void deletealltable() {
+
+    public void deletealltable() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cur = null;
         try {
@@ -382,75 +398,6 @@ public class DBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public String insertDATA(String tablename, String data[]) {
-
-        String strReturn = "success";
-        SQLiteDatabase db = this.getWritableDatabase();
-        try {
-            ContentValues cv = new ContentValues();
-
-            for (int i = 0; i < data.length; i++) {
-
-                cv.put("COL" + i, data[i]);
-            }
-
-            long rowId = db.insert(tablename, null, cv);
-            if (rowId == -1) {
-                strReturn = "error";
-            }
-
-        } catch (Exception exp) {
-            strReturn = "error";
-            exp.printStackTrace();
-        } finally {
-
-            // db.close();
-            close();
-        }
-        return strReturn;
-
-    }
-
-    public String UpdateSystable(HashMap<String, String> hasmap,
-                                 String lastsyncDate, String LASTLOGIN, String PWDCHNGdate,
-                                 String CPFFLAG, String pwdchnageFirsttime) {
-
-        String strReturn = "success";
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        //	db.execSQL("DELETE FROM  " + CmsInter.TBSYS000);
-
-        try {
-            ContentValues cv = new ContentValues();
-            cv.put("COL0", hasmap.get("ClientID"));
-            cv.put("COL1", hasmap.get("Username"));
-            cv.put("COL2", hasmap.get("Password"));
-            cv.put("COL3", hasmap.get("INSTANCEID"));
-            cv.put("COL4", lastsyncDate);
-            cv.put("COL5", LASTLOGIN);
-            // COL6 is auto increment
-            cv.put("COL7", hasmap.get("LastPasswordChangeDate"));
-            cv.put("COL8", CPFFLAG);
-            cv.put("COL9", "");
-            cv.put("COL10", pwdchnageFirsttime);
-            cv.put("COL11", "");
-            cv.put("COL12", "");
-            // 	long rowId = db.insert(CmsInter.TBSYS000, null, cv);
-//			if (rowId == -1) {
-//				strReturn = "error";
-//			}
-
-        } catch (Exception exp) {
-            strReturn = "error";
-            exp.printStackTrace();
-        } finally {
-
-            // db.close();
-            close();
-        }
-        return strReturn;
-
-    }
 
     public String[][] genericSelect(String select, String tableName,
                                     String where, String groupBy, String having, int noCols) {
@@ -522,7 +469,7 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cur = null;
         try {
-            cur = db.rawQuery("SELECT * FROM " + tag + " order by COL1", null);
+            cur = db.rawQuery("SELECT COL0, COL1 FROM " + tag + " order by COL1", null);
             int noOfRows = cur.getCount();
             int noOfColoums = cur.getColumnCount();
             int k = 0;

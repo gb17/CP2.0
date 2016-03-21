@@ -19,6 +19,7 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -68,7 +69,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     private LinearLayout iconsBar;
     HorizontalScrollView myscroll1, myscroll2;
     Button open = null;
-    ImageView annot2, prevBrand, nextBrand, reference, close;
+    ImageView annot1, annot2, prevBrand, nextBrand, reference, close, backtoplaylist;
     LinearLayout mylinear, content2, content3;
     GestureOverlayView gesturesView, gesturesView2;
     SeekBar seek;
@@ -88,8 +89,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     String brandcode = "";
     private long startTimeForReference = 0;
     private String startTimeStringForRef = "";
-
-    String[][] iconsData = {{"101", "Back to playlist", "icon1.png", "1"}, {"102", "email", "icon6.png", "2"}, {"103", "Annotation", "icon7.png", "3"}, {"104", "Like", "icon8.png", "3"}, {"105", "Dislike", "icon9.png", "3"}, {"106", "Search", "icon10.png", "4"}, {"107", "Close", "icon11.png", "4"}};
+    //, {"103", "Annotation", "icon7.png", "3"}
+    String[][] iconsData = {{"101", "Back to playlist", "icon1.png", "1"}, {"102", "email", "icon6.png", "2"}, {"104", "Like", "icon8.png", "3"}, {"105", "Dislike", "icon9.png", "3"}, {"106", "Search", "icon10.png", "4"}, {"107", "Close", "icon11.png", "4"}};
     int groupId = 0;
     private Typeface font;
     int playIndex = 0;
@@ -112,6 +113,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     private String category_code = "";
     private String category_name = "";
     private String thumbnail_category = "";
+    private String page_number = "";
 
     private ListView leftList, rightList;
     AlphabetsList list, list2;
@@ -139,6 +141,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         category_name = extras.getString("category_name");
         thumbnail_category = extras.getString("thumbnail_category");
         index = extras.getString("index");
+        page_number = extras.getString("page_number");
+
 
         if (customer_id == null)
             customer_id = "";
@@ -146,13 +150,15 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             customer_name = "";
         if (index == null)
             index = "0";
+        if (page_number != null)
+            playIndex = Integer.parseInt(page_number);
 
         handler = DBHandler.getInstance(this);
         SQLiteDatabase db = handler.getWritableDatabase();
         db.delete("TBNAME", null, null);
 
         if (!customer_id.equals("")) {
-            String query = "insert into TBNAME SELECT * FROM TBPARTY where COL0 = '" + customer_id + "'";
+            String query = "insert into TBNAME SELECT COL0,COL1,COL2,COL3,COL4,COL5,COL6,COL7,COL8,COL9,COL10,COL11,COL12,COL13,COL14,COL15,COL16 FROM TBPARTY where COL0 = '" + customer_id + "'";
             db.execSQL(query);
         }
 
@@ -169,6 +175,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         brandData = handler.genericSelect(brandQuery, 9);
         setContentView(R.layout.container);
 
+        backtoplaylist = (ImageView) findViewById(R.id.backtoplaylist);
+        backtoplaylist.setId(101);
         prevBrand = (ImageView) findViewById(R.id.previousbrand);
         nextBrand = (ImageView) findViewById(R.id.nextbrand);
         prevBrand.setOnClickListener(prevNextLsitener);
@@ -181,6 +189,11 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         close = (ImageView) findViewById(R.id.close);
         close.setOnClickListener(this);
         close.setId(107);
+
+        annot1 = (ImageView) findViewById(R.id.annot1);
+        annot1.setOnClickListener(this);
+        annot1.setId(103);
+
         reference = (ImageView) findViewById(R.id.refrence);
         reference.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -338,7 +351,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
         iconsBar = (LinearLayout) findViewById(R.id.icons_bar);
 
-        for (int i = 0; i < iconsData.length - 1; i++) {
+        for (int i = 1; i < iconsData.length - 1; i++) {
             ImageView icons = new ImageView(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(20, 20, 20, 20);
@@ -435,7 +448,10 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 }
             }
         });
-        fillPlayList(0);
+        if (playIndex != 0)
+            fillPlayList(1);
+        else
+            fillPlayList(0);
         fillBrandList();
     }
 
@@ -513,10 +529,13 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             }
             view.setBackgroundColor(Color.parseColor("#67E0ED"));
             playIndex = 0;
-            playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16 from TBDPS a , TBDPG b\n" +
+            playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11 from TBDPS a , TBDPG b\n" +
                     "        where a.col5 = b.col0\n" +
-                    "        and a.COL3 = '" + brandcode + "' and a.COL9 = '" + thumbnail_category + "' and a.COL10 = 'IPL' order by  CAST (a.col2 AS INTEGER) ASC ", 7);
+                    "        and a.COL3 = '" + brandcode + "' and a.COL9 = '" + thumbnail_category + "' and a.COL10 = 'IPL' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
             fillPlayList(0);
+            if (!customer_id.equals("") || category_name.equalsIgnoreCase("S")) {
+                backtoplaylist.setVisibility(View.VISIBLE);
+            }
             hideDrawer();
         }
     };
@@ -599,7 +618,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         if (savingCount == 0) {
             startTime = System.currentTimeMillis();
             Date date = new Date();
-            DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
+            DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
             startTimeString = formatter.format(date);
             savingCount = 1;
         } else {
@@ -620,13 +639,13 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
             filePath = new File(getFilesDir(), "icon8.png").getAbsolutePath();
             bitmap = BitmapFactory.decodeFile(filePath);
-            iconsBar.getChildAt(5).setTag("1");
-            ((ImageView) iconsBar.getChildAt(5)).setImageBitmap(bitmap);
+            iconsBar.getChildAt(2).setTag("1");
+            ((ImageView) iconsBar.getChildAt(2)).setImageBitmap(bitmap);
 
             filePath = new File(getFilesDir(), "icon9.png").getAbsolutePath();
             bitmap = BitmapFactory.decodeFile(filePath);
-            iconsBar.getChildAt(6).setTag("1");
-            ((ImageView) iconsBar.getChildAt(6)).setImageBitmap(bitmap);
+            iconsBar.getChildAt(3).setTag("1");
+            ((ImageView) iconsBar.getChildAt(3)).setImageBitmap(bitmap);
 
             bitmap = null;
         }
@@ -682,6 +701,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     int x = rlView.getRight();
                     int y = rlView.getTop();
                     myscroll1.scrollTo(x, y);
+                    backtoplaylist.setVisibility(View.GONE);
                     break;
                 case 102: //Email
                     if (imgView.getTag().equals("1")) {
@@ -733,10 +753,10 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                         view.setTag("2");
 
                         imgName2 = "icon9.png";
-                        iconsBar.getChildAt(6).setTag("1");
+                        iconsBar.getChildAt(3).setTag("1");
                         filePath2 = new File(getFilesDir(), imgName2).getAbsolutePath();
                         bitmap = BitmapFactory.decodeFile(filePath2);
-                        ((ImageView) iconsBar.getChildAt(6)).setImageBitmap(bitmap);
+                        ((ImageView) iconsBar.getChildAt(3)).setImageBitmap(bitmap);
 
                     } else if (imgView.getTag().equals("2")) {
                         imgName = "icon8.png";
@@ -753,10 +773,10 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                         view.setTag("2");
 
                         imgName2 = "icon8.png";
-                        iconsBar.getChildAt(5).setTag("1");
+                        iconsBar.getChildAt(2).setTag("1");
                         filePath2 = new File(getFilesDir(), imgName2).getAbsolutePath();
                         bitmap = BitmapFactory.decodeFile(filePath2);
-                        ((ImageView) iconsBar.getChildAt(5)).setImageBitmap(bitmap);
+                        ((ImageView) iconsBar.getChildAt(2)).setImageBitmap(bitmap);
                     } else if (imgView.getTag().equals("2")) {
                         imgName = "icon9.png";
                         view.setTag("1");
@@ -817,6 +837,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             cv.put("COL13", objDrListPOJO.getCOL13());
             cv.put("COL14", objDrListPOJO.getCOL14());
             cv.put("COL15", objDrListPOJO.getCOL15());
+            cv.put("COL16", objDrListPOJO.getCOL16());
             db.insert("TBNAME", null, cv);
             list.userVector.remove(objDrListPOJO);
         } else if (listView == rightList) {
@@ -846,7 +867,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     int position = newCount - count;
 
                     list.userVector.add(position, objDrListPOJO);
-
+                    db = handler.getWritableDatabase();
                     db.delete("TBNAME", whereClause, whereArgs);
                 }
             }
@@ -878,20 +899,20 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
     public void fillPlaystData() {
         if (customer_id.equals(""))
-            playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16 from TBDPS a , TBDPG b\n" +
+            playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11 from TBDPS a , TBDPG b\n" +
                     "        where a.col5 = b.col0\n" +
-                    "        and a.COL3 = '" + category_code + "' and a.COL9 = '" + category_name + "' and a.COL10 = 'IPL' order by  CAST (a.col2 AS INTEGER) ASC ", 7);
+                    "        and a.COL3 = '" + category_code + "' and a.COL9 = '" + category_name + "' and a.COL10 = 'IPL' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
         else {
             String[][] countData = handler.genericSelect("Select count(1) from TBDPS2 where col10 = '" + customer_id + "'", 1);
             if (countData[0][0].equals("0")) {
                 //select and insert
                 SQLiteDatabase db = handler.getWritableDatabase();
-                db.execSQL(" insert into TBDPS2 select A.COL0, A.COL1, A.COL2, A.COL3, A.COL4, A.COL5, A.COL6, A.COL7, A.COL8, A.COL9, '" + customer_id + "', '0' from TBDPS A WHERE COL3 = '" + category_code + "' and COL9 = '" + category_name + "'");
+                db.execSQL(" insert into TBDPS2 select A.COL0, A.COL1, A.COL2, A.COL3, A.COL4, A.COL5, A.COL6, A.COL7, A.COL8, A.COL9, '" + customer_id + "', '0', A.COL11 from TBDPS A WHERE COL3 = '" + category_code + "' and COL9 = '" + category_name + "'");
             }
             //initialize playlist
-            playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16 from TBDPS2 a , TBDPG b\n" +
+            playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL12 from TBDPS2 a , TBDPG b\n" +
                     "        where a.col5 = b.col0\n" +
-                    "        and a.COL3 = '" + category_code + "' and a.COL9 = '" + category_name + "' order by  CAST (a.col2 AS INTEGER) ASC ", 7);
+                    "        and a.COL3 = '" + category_code + "' and a.COL9 = '" + category_name + "' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
 
         }
     }
@@ -944,20 +965,18 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         if (!customer_id.equals("")) {
+                            String sts[][] = handler.genericSelect("SELECT COL0, COL1, COL2, COL5, COL3 FROM TBNAME WHERE COL0 = '" + customer_id + "'", 5);
                             SQLiteDatabase db = handler.getWritableDatabase();
-                            try {
-                                db.execSQL("CREATE TABLE IF NOT EXISTS TBPHTAG (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text)");
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                            if (sts != null) {
+                                ContentValues cv = new ContentValues();
+                                cv.put("COL0", randomNumber); // A unique code from UPW
+                                cv.put("COL1", sts[0][0]); // pcode
+                                cv.put("COL2", sts[0][1]); //name
+                                cv.put("COL3", sts[0][2]); //patchcode
+                                cv.put("COL4", sts[0][3]); //speccode
+                                cv.put("COL5", sts[0][4]); //classcode
+                                db.insert("TBPHTAG", null, cv);
                             }
-                            ContentValues cv = new ContentValues();
-                            cv.put("COL0", randomNumber); // A unique code from UPW
-                            cv.put("COL1", customer_id);
-                            cv.put("COL2", customer_name);
-                            cv.put("COL3", "");
-                            cv.put("COL4", "");
-                            cv.put("COL5", "");
-                            db.insert("TBPHTAG", null, cv);
                         }
                         sDialog.cancel();
                     }
@@ -973,7 +992,6 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
     private void showAddDocScreen() {
         final SQLiteDatabase db = handler.getWritableDatabase();
-
 
         dialog = new Dialog(Container.this);
         dialog.getWindow();
@@ -1000,6 +1018,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 .findViewById(R.id.second);
         list2 = new AlphabetsList(Container.this);
         View view2 = list2.getAlphabestListView("TBNAME", false, false, false);
+        view2.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
         second.addView(view2);
         list2.setSidepannel(View.GONE);
         list2.SerachViewVis(View.GONE);
@@ -1055,16 +1074,17 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String sts[][] = handler.genericSelect("SELECT COL0, COL1 FROM TBNAME", 13);
+                String sts[][] = handler.genericSelect("SELECT COL0, COL1, COL2, COL5, COL3 FROM TBNAME", 5);
+                SQLiteDatabase db = handler.getWritableDatabase();
                 if (sts != null) {
                     for (int i = 0; i < sts.length; i++) {
                         ContentValues cv = new ContentValues();
                         cv.put("COL0", randomNumber); // A unique code from UPW
-                        cv.put("COL1", sts[i][0]);
-                        cv.put("COL2", sts[i][1]);
-                        cv.put("COL3", "");
-                        cv.put("COL4", "");
-                        cv.put("COL5", "");
+                        cv.put("COL1", sts[i][0]); // pcode
+                        cv.put("COL2", sts[i][1]); //name
+                        cv.put("COL3", sts[i][2]); //patchcode
+                        cv.put("COL4", sts[i][3]); //speccode
+                        cv.put("COL5", sts[i][4]); //classcode
                         db.insert("TBPHTAG", null, cv);
                     }
                 }
@@ -1090,18 +1110,20 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
                                             ContentValues cv = new ContentValues();
 
-                                            String data[][] = handler.genericSelect("Select COL2 FROM TBCVR", 1);
-                                            String[] cvrData = data[0][0].split("\\^");
-                                            String rnumber = cvrData[4];
+                                            String data[][] = handler.genericSelect("Select VAL FROM TBUPW", 1);
+                                            String[] upwData = data[0][0].split("\\^");
+                                            String rnumber = upwData[8];
 
-                                            String data2[][] = handler.genericSelect("Select COL2 FROM TBUPW", 1);
-                                            String[] upwData = data2[0][0].split("\\^");
-                                            String territory_code = upwData[6];
+                                            String data2[][] = handler.genericSelect("Select COL2 FROM TBCVR", 1);
+                                            String[] cvrData = data2[0][0].split("\\^");
+                                            String territory_code = cvrData[11];
+
+                                            SQLiteDatabase db = handler.getWritableDatabase();
 
                                             cv.put("COL0", rnumber); // A unique code from UPW
                                             cv.put("COL1", str);
                                             cv.put("COL2", patCodeStr);
-                                            cv.put("COL3", "");
+                                            cv.put("COL3", clasCodeStr);
                                             cv.put("COL4", "");
                                             cv.put("COL5", specCodeStr);
                                             cv.put("COL6", "");
@@ -1182,17 +1204,17 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         sDialog.cancel();
+                        String sts[][] = handler.genericSelect("SELECT COL0, COL1, COL2, COL5, COL3 FROM TBNAME", 5);
                         SQLiteDatabase db = handler.getWritableDatabase();
-                        String sts[][] = handler.genericSelect("SELECT COL0, COL1 FROM TBNAME", 13);
                         if (sts != null) {
                             for (int i = 0; i < sts.length; i++) {
                                 ContentValues cv = new ContentValues();
                                 cv.put("COL0", randomNumber); // A unique code from UPW
-                                cv.put("COL1", sts[i][0]);
-                                cv.put("COL2", sts[i][1]);
-                                cv.put("COL3", "");
-                                cv.put("COL4", "");
-                                cv.put("COL5", "");
+                                cv.put("COL1", sts[i][0]); // pcode
+                                cv.put("COL2", sts[i][1]); //name
+                                cv.put("COL3", sts[i][2]); //patchcode
+                                cv.put("COL4", sts[i][3]); //speccode
+                                cv.put("COL5", sts[i][4]); //classcode
                                 db.insert("TBPHTAG", null, cv);
                             }
                         }
@@ -1292,6 +1314,12 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         values.put("COL18", randomNumber); //randrom number
         values.put("COL19", Utility.getUniqueNo());
         values.put("COL20", "0");
+
+        if (dataIndex == PLAYLISTINDEX) {
+            values.put("COL21", playstData[playIndex][7]); //playlistid
+        } else if (dataIndex == REFERENCEINDEX) {
+            values.put("COL21", ""); //playlistid
+        }
 
         db.insert("TXN102", null, values);
         db.close();

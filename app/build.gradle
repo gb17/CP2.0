@@ -33,5 +33,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'com.github.fengdai:alertdialogpro-theme-material:0.2.6'
+    compile 'com.daimajia.numberprogressbar:library:1.2@aar'
+
     compile project(':library')
 }

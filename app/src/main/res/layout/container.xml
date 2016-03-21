@@ -70,8 +70,8 @@
             android:id="@+id/mainid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <LinearLayout
                 android:id="@+id/icons_bar"
@@ -109,8 +109,8 @@
             android:layout_marginBottom="-7dp"
             android:background="#BF000000"
             android:paddingLeft="10dp"
-            android:visibility="gone"
-            android:paddingRight="10dp">
+            android:paddingRight="10dp"
+            android:visibility="gone">
 
             <LinearLayout
                 android:id="@+id/content3"
@@ -168,6 +168,16 @@
         android:src="@drawable/closeblk" />
 
     <ImageView
+        android:id="@+id/annot1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="21dp"
+        android:layout_toLeftOf="@id/close"
+        android:src="@drawable/anotatnblk"/>
+
+    <ImageView
         android:id="@+id/refrence"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -177,6 +187,7 @@
         android:layout_toLeftOf="@id/close"
         android:src="@drawable/attach"
         android:visibility="gone" />
+
 
     <TextView
         android:id="@+id/preview"
@@ -189,7 +200,17 @@
         android:background="#212121"
         android:text="YOU ARE IN PREVIEW MODE"
         android:textColor="#FFFFFF"
-        android:visibility="gone"
-        android:textSize="32sp" />
+        android:textSize="32sp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/backtoplaylist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="30dp"
+        android:src="@drawable/backblk"
+        android:visibility="gone" />
 
 </RelativeLayout>

@@ -46,6 +46,7 @@ import inc.gb.cp20.interfaces.DownloadInterface;
 import inc.gb.cp20.interfaces.RecyclerViewClickListener;
 import inc.gb.cp20.playlist.Playlist;
 import inc.gb.cp20.sync.Sync;
+import inc.gb.cp20.sync.TagDownloading;
 
 
 public class LandingPage extends AlphaListActivity implements RecyclerViewClickListener, DownloadInterface {
@@ -114,14 +115,16 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         RHS_Deatailing = (LinearLayout) view.findViewById(R.id.rhsdetaling);
         LinearLayout lhsLinearLayout = (LinearLayout) view.findViewById(R.id.lhs);
 
-        AlphabetsList alphabetsList = new AlphabetsList(this);
-        lhsLinearLayout.addView(alphabetsList.getAlphabestListView("TBPARTY", false, false, true));
-        alphabetsList.setSidepannel(View.VISIBLE);
-        alphabetsList.SerachViewVis(View.VISIBLE);
-        defaultLayout();
+        try {
+            AlphabetsList alphabetsList = new AlphabetsList(this);
+            lhsLinearLayout.addView(alphabetsList.getAlphabestListView("TBPARTY", false, false, true));
+            alphabetsList.setSidepannel(View.VISIBLE);
+            alphabetsList.SerachViewVis(View.VISIBLE);
+            defaultLayout();
+            //   CallDownloadIRCSF();
 
-        if (CALLSYNC.equals("1")) {
-            //   CallDownloadContainer();
+           // Updategbdb();
+        } catch (Exception e) {
 
         }
 
@@ -139,15 +142,6 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         dialog.show();
     }
 
-    public void changePassowrd_dialog(View v) {
-
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.change_password);
-        dialog.setTitle("Change Password");
-        dialog.show();
-
-
-    }
 
     public void GetDrawer() {
         drawerLinearLayout.removeAllViews();
@@ -213,18 +207,22 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
 
             {
                 case 142://Change Password
+                    drawerLinearLayout.setVisibility(View.GONE);
                     Intent ChangePwdIntent = new Intent(LandingPage.this, ChangePasswordAcitvity.class);
                     startActivity(ChangePwdIntent);
                     break;
                 case 4://Synchronize
-
+                    drawerLinearLayout.setVisibility(View.GONE);
+                    new TagDownloading(LandingPage.this);
                     break;
                 case 197://LogOut
+                    drawerLinearLayout.setVisibility(View.GONE);
                     finish();
 
                     break;
                 case 198://Download Container
-                    CallDownloadContainer();
+                    drawerLinearLayout.setVisibility(View.GONE);
+                    CallDownloadIRCSF();
                     break;
             }
         }
@@ -394,7 +392,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         Bundle bundle = new Bundle();
         bundle.putString("customer_id", objDrListPOJO.getCOL0());
         bundle.putString("customer_name", objDrListPOJO.getCOL1());
-        bundle.putString("category_code", objDrListPOJO.getCOL5());
+        bundle.putString("category_code", objDrListPOJO.getCOL17());
         bundle.putString("category_name", objDrListPOJO.getCOL16());
         bundle.putString("thumbnail_category", "B");
         bundle.putString("index", "1");
@@ -433,8 +431,8 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
 
 
     @Override
-    public void onItemClick(TBBRAND item) {
-        Intent intent = new Intent(LandingPage.this, Playlist.class);
+    public void onItemClick(TBBRAND item, View view, int position) {
+        Intent intent = new Intent(LandingPage.this, LightContainer.class);
         Bundle bundle = new Bundle();
         bundle.putString("category_code", item.getCOL3());
         bundle.putString("category_name", item.getCOL0());
@@ -545,5 +543,31 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                 content_dialog.dismiss();
         }
     }
+
+    public void CallDownloadIRCSF() {
+        String dataCVR[][] = dbHandler.genericSelect("*", DBHandler.TBCVR,
+                "", "", "", 4);
+        if (dataCVR != null) {
+            String dataCVRSplitCol2[] = dataCVR[0][2].split("\\^");
+            if (!dataCVRSplitCol2[27].equals("0"))
+                CallDownloadContainer();
+
+        }
+    }
+
+
+    void Updategbdb() {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String Query = "update TBBRAND set col5 = ( select count(distinct b.col0) from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  TBBRAND.col3 and a.COL9 =  TBBRAND.col0 and a.COL10 = 'IPL'  and b.COL7 ='0' and b.col8 = 'P'), col9 = ( select count (distinct b.col3) from TBDPS a , TBDRG b where a.col5 = b.col0 and a.col3 =  TBBRAND.col3 and a.COL9 = TBBRAND.col0 and a.COL10 = 'IPL'), col10  = ( select  count(distinct b.col0) from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  TBBRAND. col3 and a.COL9 = TBBRAND.col0 and a.COL10 = 'IPL'  and b.COL7 ='0' and  b.col7 = 0 and b.col8 = 'P')";
+                dbHandler.ExecuteQuery(Query);
+            }
+        }).start();
+
+
+    }
+
 
 }

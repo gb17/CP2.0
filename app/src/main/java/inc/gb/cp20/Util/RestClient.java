@@ -17,6 +17,7 @@ import inc.gb.cp20.Models.IRCSFPOJO;
 import inc.gb.cp20.Models.IRCSFResponsePOJO;
 import inc.gb.cp20.Models.OutputPOJO;
 import inc.gb.cp20.Models.ReqCVR;
+import inc.gb.cp20.Models.SyncDetailingAckPOJO;
 import inc.gb.cp20.Models.TAG;
 import inc.gb.cp20.Models.TablesConfig;
 import inc.gb.cp20.Models.UPW;
@@ -76,6 +77,7 @@ public class RestClient {
         @POST("/CirriusConfigAPI/ReadScript")
         Call<TablesConfig> CallTagDownload(@Body TAG tag);
 
+        @POST("/CirriusDetailingAPI/UDDET")
         Call<List<OutputPOJO>> uploadContainerData(@Body List<ContainerPOJO> req);
 
         @POST("/CirriusReqResAPI/IRCSF")
@@ -86,6 +88,11 @@ public class RestClient {
 
         @POST("/CirriusSecurityAPI/FORGOTPWD")
         Call<ChangePassword> CallForgotPassword(@Body ChangePassword changePassword);
+
+        @POST("/CirriusDetailingAPI/SYNCDETAILING")
+        Call<List<SyncDetailingAckPOJO>> CallSyncDetailingAcknowledge(@Body List<SyncDetailingAckPOJO> req);
+
+
     }
 
 
