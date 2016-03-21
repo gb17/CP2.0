@@ -432,8 +432,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
                             }
                         });
                 configAlertDialog.show();
-
-
+                new TBImgClass().execute();
             }
 
             @Override
@@ -510,6 +509,30 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
             numberProgressBar.setProgress(60);
             onTaskCompleted(bool);
             Log.d("Mai yaha hu", " onPostExecute");
+        }
+    }
+
+    class TBImgClass extends AsyncTask<Void, Integer, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String[][] tbImg = dbHandler.genericSelect("Select COL1 from TBIMG", 1);
+            if (tbImg != null) {
+                for (int i = 0; i < tbImg.length; i++) {
+                    String url = tbImg[i][0];
+                    String msg = Utility.downloadZipFile(url);
+                    if (!msg.startsWith("fail")) {
+                        try {
+                            File zipfile = new File(msg);
+                            String directory = ConfigureActivity.this.getFilesDir().getAbsolutePath()
+                                    + "/";
+                            String str = Utility.unZipFile(zipfile, directory);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            return null;
         }
     }
 }

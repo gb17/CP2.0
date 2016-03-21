@@ -558,7 +558,6 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                         });
                 configAlertDialog.show();
                 dialog.dismiss();
-                new TBImgClass().execute();
             }
 
             @Override
@@ -706,30 +705,6 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
             super.onPostExecute(bool);
             onTaskCompleted(bool);
             Log.d("Mai yaha hu", " onPostExecute");
-        }
-    }
-
-    class TBImgClass extends AsyncTask<Void, Integer, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            String[][] tbImg = dbHandler.genericSelect("Select COL1 from TBIMG", 1);
-            if (tbImg != null) {
-                for (int i = 0; i < tbImg.length; i++) {
-                    String url = tbImg[i][0];
-                    String msg = Utility.downloadZipFile(url);
-                    if (!msg.startsWith("fail")) {
-                        try {
-                            File zipfile = new File(msg);
-                            String directory = MainActivity.this.getFilesDir().getAbsolutePath()
-                                    + "/";
-                            String str = Utility.unZipFile(zipfile, directory);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-            return null;
         }
     }
 

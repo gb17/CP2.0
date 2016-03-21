@@ -44,6 +44,7 @@
         <activity android:name=".container.Container" />
         <activity android:name=".container.VideoPlay" />
         <activity android:name=".playlist.Playlist" />
+        <activity android:name=".Configure.ConfigureActivity" />
         <activity
             android:name=".changepwd.ChangePasswordAcitvity"
             android:windowSoftInputMode="stateHidden">
