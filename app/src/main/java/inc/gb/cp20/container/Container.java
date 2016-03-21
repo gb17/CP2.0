@@ -90,7 +90,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     private long startTimeForReference = 0;
     private String startTimeStringForRef = "";
     //, {"103", "Annotation", "icon7.png", "3"}
-    String[][] iconsData = {{"101", "Back to playlist", "icon1.png", "1"}, {"102", "email", "icon6.png", "2"}, {"104", "Like", "icon8.png", "3"}, {"105", "Dislike", "icon9.png", "3"}, {"106", "Search", "icon10.png", "4"}, {"107", "Close", "icon11.png", "4"}};
+    String[][] iconsData = {{"101", "Back to playlist", "icon1.png", "1"}, {"102", "email", "icon6.png", "2"}, {"103", "Annotation", "icon7.png", "3"}, {"104", "Like", "icon8.png", "3"}, {"105", "Dislike", "icon9.png", "3"}, {"106", "Search", "icon10.png", "4"}, {"107", "Close", "icon11.png", "4"}};
     int groupId = 0;
     private Typeface font;
     int playIndex = 0;
@@ -176,7 +176,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         setContentView(R.layout.container);
 
         backtoplaylist = (ImageView) findViewById(R.id.backtoplaylist);
-        backtoplaylist.setId(101);
+        backtoplaylist.setOnClickListener(this);
         prevBrand = (ImageView) findViewById(R.id.previousbrand);
         nextBrand = (ImageView) findViewById(R.id.nextbrand);
         prevBrand.setOnClickListener(prevNextLsitener);
@@ -188,11 +188,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
         close = (ImageView) findViewById(R.id.close);
         close.setOnClickListener(this);
-        close.setId(107);
 
         annot1 = (ImageView) findViewById(R.id.annot1);
         annot1.setOnClickListener(this);
-        annot1.setId(103);
 
         reference = (ImageView) findViewById(R.id.refrence);
         reference.setOnClickListener(new View.OnClickListener() {
@@ -352,28 +350,30 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         iconsBar = (LinearLayout) findViewById(R.id.icons_bar);
 
         for (int i = 1; i < iconsData.length - 1; i++) {
-            ImageView icons = new ImageView(this);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(20, 20, 20, 20);
-            icons.setLayoutParams(params);
-            icons.setId(Integer.parseInt(iconsData[i][0]));
-            String filePath = new File(getFilesDir(), iconsData[i][2]).getAbsolutePath();
-            //String filePath = getFilesDir() + "/" + iconsData[i][2];
-            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-            icons.setTag("1");
-            icons.setImageBitmap(bitmap);
-            icons.setOnClickListener(this);
-            iconsBar.addView(icons);
-            groupId = Integer.parseInt(iconsData[i][3]);
-            if (i < iconsData.length - 1)
-                if (groupId != Integer.parseInt(iconsData[i + 1][3])) {
-                    View view = new View(this);
-                    LinearLayout.LayoutParams viewparam = new LinearLayout.LayoutParams(1, LinearLayout.LayoutParams.MATCH_PARENT);
-                    viewparam.setMargins(0, 20, 0, 20);
-                    view.setLayoutParams(viewparam);
-                    view.setBackgroundColor(Color.WHITE);
-                    iconsBar.addView(view);
-                }
+            if (i != 2) {
+                ImageView icons = new ImageView(this);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.setMargins(20, 20, 20, 20);
+                icons.setLayoutParams(params);
+                icons.setId(Integer.parseInt(iconsData[i][0]));
+                String filePath = new File(getFilesDir(), iconsData[i][2]).getAbsolutePath();
+                //String filePath = getFilesDir() + "/" + iconsData[i][2];
+                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                icons.setTag("1");
+                icons.setImageBitmap(bitmap);
+                icons.setOnClickListener(this);
+                iconsBar.addView(icons);
+                groupId = Integer.parseInt(iconsData[i][3]);
+                if (i < iconsData.length - 1)
+                    if (groupId != Integer.parseInt(iconsData[i + 1][3])) {
+                        View view = new View(this);
+                        LinearLayout.LayoutParams viewparam = new LinearLayout.LayoutParams(1, LinearLayout.LayoutParams.MATCH_PARENT);
+                        viewparam.setMargins(0, 20, 0, 20);
+                        view.setLayoutParams(viewparam);
+                        view.setBackgroundColor(Color.WHITE);
+                        iconsBar.addView(view);
+                    }
+            }
         }
 
         open = (Button) findViewById(R.id.handle);
@@ -634,8 +634,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             Bitmap bitmap = null;
             filePath = new File(getFilesDir(), "icon6.png").getAbsolutePath();
             bitmap = BitmapFactory.decodeFile(filePath);
-            iconsBar.getChildAt(2).setTag("1");
-            ((ImageView) iconsBar.getChildAt(2)).setImageBitmap(bitmap);
+            iconsBar.getChildAt(0).setTag("1");
+            ((ImageView) iconsBar.getChildAt(0)).setImageBitmap(bitmap);
 
             filePath = new File(getFilesDir(), "icon8.png").getAbsolutePath();
             bitmap = BitmapFactory.decodeFile(filePath);
@@ -656,10 +656,13 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         webView.setWebViewClient(new WebViewClient());
         final String url = "file://" + getFilesDir().getAbsolutePath() + "/" + FilenameUtils.removeExtension(playstData[playIndex][2]) + "/" + playstData[playIndex][2];
 
-        if (playstData[playIndex][5].equals("1"))//Emailable
-            iconsBar.getChildAt(2).setVisibility(View.VISIBLE);
-        else
-            iconsBar.getChildAt(2).setVisibility(View.GONE);
+        if (playstData[playIndex][5].equals("1")) {//Emailable
+            iconsBar.getChildAt(0).setVisibility(View.VISIBLE);
+            iconsBar.getChildAt(1).setVisibility(View.VISIBLE);
+        } else {
+            iconsBar.getChildAt(0).setVisibility(View.GONE);
+            iconsBar.getChildAt(1).setVisibility(View.GONE);
+        }
 
         if (playstData[playIndex][6].equals("1")) {//Reference
             reference.setVisibility(View.VISIBLE);
@@ -689,7 +692,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             String filePath2 = "";
 
             switch (id) {
-                case 101: // Back to Playlist
+                case R.id.backtoplaylist: // Back to Playlist
                     playIndex = actualPlayIndex;
                     count = 0;
                     for (int i = 0; i < content3.getChildCount(); i++) {
@@ -717,7 +720,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     bitmap = BitmapFactory.decodeFile(filePath);
                     imgView.setImageBitmap(bitmap);
                     break;
-                case 103: //annotation
+                case R.id.annot1: //annotation
                     if (imgView.getTag().equals("2")) {
                         imgName = "icon7.png";
                         filePath = new File(getFilesDir(), imgName).getAbsolutePath();
@@ -790,7 +793,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 //                    Intent intent1 = new Intent(this, ContentLIb.class);
 //                    startActivity(intent1);
                     break;
-                case 107: //close
+                case R.id.close: //close
                     if (!index.equals("3")) {
                         showAlertForDetailing();
                     }

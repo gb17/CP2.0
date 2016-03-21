@@ -120,10 +120,11 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
             lhsLinearLayout.addView(alphabetsList.getAlphabestListView("TBPARTY", false, false, true));
             alphabetsList.setSidepannel(View.VISIBLE);
             alphabetsList.SerachViewVis(View.VISIBLE);
+            Updategbdb();
             defaultLayout();
             //   CallDownloadIRCSF();
 
-           // Updategbdb();
+
         } catch (Exception e) {
 
         }

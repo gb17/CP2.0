@@ -184,7 +184,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="20dp"
         android:layout_marginTop="21dp"
-        android:layout_toLeftOf="@id/close"
+        android:layout_toLeftOf="@id/annot1"
         android:src="@drawable/attach"
         android:visibility="gone" />
 
