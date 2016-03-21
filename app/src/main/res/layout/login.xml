@@ -16,8 +16,10 @@
         android:paddingTop="20dp">
 
         <TextView
+            android:id="@+id/display_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="10dp"
             android:text="To login Please enter your password"
             android:textColor="@color/rhs_header"
             android:textSize="18sp" />
@@ -55,25 +57,26 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right">
 
-            <Button
+            <TextView
                 android:id="@+id/forgotpwd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:layout_margin="4dp"
                 android:background="@android:color/transparent"
                 android:padding="10dp"
-                android:text="Forgot Password"
-                android:textColor="@color/rhs_header" />
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:text="forgot Password"
+                android:textColor="#00FFFF" />
 
-            <Button
+            <TextView
                 android:id="@+id/loginclick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_gravity="right"
-                android:layout_margin="4dp"
                 android:background="@android:color/transparent"
+                android:gravity="right|center_vertical"
                 android:padding="10dp"
                 android:text="Login"
                 android:textColor="@color/page_count" />

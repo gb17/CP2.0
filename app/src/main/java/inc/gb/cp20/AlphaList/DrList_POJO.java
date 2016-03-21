@@ -20,6 +20,17 @@ public class DrList_POJO implements Comparable<DrList_POJO> {
     private String COL13;//TERR Code
     private String COL14;// without Intial
     private String COL15;// flag
+    private String COL16;// Cat TYpe
+
+    public String getCOL17() {
+        return COL17;
+    }
+
+    public void setCOL17(String COL17) {
+        this.COL17 = COL17;
+    }
+
+    private String COL17;// Cat TYpe
 
     public String getCOL16() {
         return COL16;
@@ -29,7 +40,7 @@ public class DrList_POJO implements Comparable<DrList_POJO> {
         this.COL16 = COL16;
     }
 
-    private String COL16;// Cat TYpe
+
 
     public String getCOL14() {
         return COL14;

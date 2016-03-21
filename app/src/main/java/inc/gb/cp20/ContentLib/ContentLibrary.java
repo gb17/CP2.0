@@ -304,7 +304,8 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
     private void prepareSerachData(String TableName, String whereQuery, ThumbnailAdpForSearch mAdapter, List<TBDPG> thumbnailPOJOList) {
 
         String Query = "";
-        Query = "SELECT * FROM " + TableName + " where COL4 like '%" + whereQuery + "%'";
+
+        Query = " Select  a.*,b.COL2 from TBDPS a, TBDPG b where a.col5 = b.col0 and a.COL10 = 'IPL'  and b.COL7 ='0' and b.COL4 like '%" + whereQuery + "%'";
 
         TBDPG tbdpg;
         Cursor cursor = dbHandler.getCusrsor(Query);
@@ -331,31 +332,31 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
 
         mAdapter.notifyDataSetChanged();
     }
-//
-//    @Override
-//    public void recyclerViewListClicked(View v, int position) {
-//
-//        RecyclerView recyclerView = (RecyclerView) v.getParent();
-//        RelativeLayout relativeLayout = (RelativeLayout) recyclerView.getParent();
-//
-//
-//
-//
-//
-//        RelativeLayout RelativeLayoutsd_Page = (RelativeLayout) relativeLayout.getChildAt(2);
-//        RelativeLayout RelativeLayout_Ref = (RelativeLayout) relativeLayout.getChildAt(3);
-//        RecyclerView recyclerViewPage = (RecyclerView) RelativeLayoutsd_Page.getChildAt(1);
-//        recyclerViewPage.setVisibility(View.VISIBLE);
-//        getsubPagelist(recyclerViewPage, RelativeLayout_Ref);
-//
-//
-//        RecyclerView recyclerView_Ref = (RecyclerView) RelativeLayout_Ref.getChildAt(1);
-//        recyclerView_Ref.setVisibility(View.VISIBLE);
-//        getrefList(recyclerView_Ref);
-//    }
+
 
     @Override
-    public void onItemClick(TBBRAND item) {
+    public void onItemClick(TBBRAND item, View v, int position) {
+
+        try {
+            RelativeLayout mainRelativeLayout = (RelativeLayout) v.getParent();
+
+            RecyclerView recyclerView = (RecyclerView) mainRelativeLayout.getParent();
+            RelativeLayout relativeLayout = (RelativeLayout) recyclerView.getParent();
+
+
+            RelativeLayout RelativeLayoutsd_Page = (RelativeLayout) relativeLayout.getChildAt(2);
+            RelativeLayout RelativeLayout_Ref = (RelativeLayout) relativeLayout.getChildAt(3);
+            RecyclerView recyclerViewPage = (RecyclerView) RelativeLayoutsd_Page.getChildAt(1);
+            recyclerViewPage.setVisibility(View.VISIBLE);
+            getsubPagelist(recyclerViewPage, RelativeLayout_Ref);
+
+
+            RecyclerView recyclerView_Ref = (RecyclerView) RelativeLayout_Ref.getChildAt(1);
+            recyclerView_Ref.setVisibility(View.VISIBLE);
+            getrefList(recyclerView_Ref);
+        } catch (Exception e) {
+
+        }
 
     }
 }

@@ -50,6 +50,7 @@ public class UserService {
                     drListPOJO.setCOL14(cursor.getString(cursor.getColumnIndex("COL14")));
                     drListPOJO.setCOL15(cursor.getString(cursor.getColumnIndex("COL15")));
                     drListPOJO.setCOL16(cursor.getString(cursor.getColumnIndex("COL16")));
+                    drListPOJO.setCOL17(cursor.getString(cursor.getColumnIndex("COL17")));
                     drListPOJOList.add(drListPOJO);
                 } while (cursor.moveToNext());
             }

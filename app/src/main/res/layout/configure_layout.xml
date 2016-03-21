@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/config">
+
+    <View
+        android:id="@+id/tpview"
+        android:layout_width="2dp"
+        android:layout_height="3sp"
+        android:layout_centerInParent="true" />
+
+    <com.daimajia.numberprogressbar.NumberProgressBar
+        android:id="@+id/progress_config"
+        android:layout_width="400dp"
+        android:layout_height="20dp"
+        android:layout_below="@+id/tpview"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="50dp"
+        android:foregroundGravity="center_vertical"
+        app:progress="0"
+        app:progress_reached_bar_height="10dp"
+        app:progress_text_size="10sp"
+        app:progress_unreached_bar_height="10dp" />
+
+</RelativeLayout>

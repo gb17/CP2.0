@@ -3,7 +3,6 @@ package inc.gb.cp20.RecylerView;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -47,8 +46,8 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, fb, pageCount, refCount, newTag;
-        FloatingActionButton refFloatingActionButton, pageFloatingActionButton;
-        ImageView imageView;
+
+        ImageView imageView, pageFloatingActionButton, refFloatingActionButton;
         RelativeLayout layout, pageCountLayout, refCountLayout;
         ScrollView childScrollView;
 
@@ -56,13 +55,20 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
             super(view);
             title = (TextView) view.findViewById(R.id.title);
             imageView = (ImageView) view.findViewById(R.id.bandimage);
-            refFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.ref);
+
             layout = (RelativeLayout) view.findViewById(R.id.layoutsc);
             fb = (TextView) view.findViewById(R.id.close);
             childScrollView = (ScrollView) view.findViewById(R.id.childScroll);
-            pageFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.page);
+
+            pageFloatingActionButton = (ImageView) view.findViewById(R.id.page);
+            pageFloatingActionButton.setVisibility(View.GONE);
+            refFloatingActionButton = (ImageView) view.findViewById(R.id.ref);
+            refFloatingActionButton.setVisibility(View.GONE);
             pageCount = (TextView) view.findViewById(R.id.pagecount);
+            pageCount.setVisibility(View.GONE);
             refCount = (TextView) view.findViewById(R.id.refcount);
+            refCount.setVisibility(View.GONE);
+
             newTag = (TextView) view.findViewById(R.id.newtag);
 
             pageCountLayout = (RelativeLayout) view.findViewById(R.id.pagelayout);
@@ -71,12 +77,12 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
             refCountLayout.setVisibility(View.GONE);
 
 
-            refFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            });
+//            refFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//
+//                }
+//            });
 
             fb.setTypeface(font);
             fb.setOnClickListener(new View.OnClickListener() {

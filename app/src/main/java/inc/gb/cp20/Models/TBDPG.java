@@ -8,64 +8,83 @@ public class TBDPG {
 
     @SerializedName("COL0")
     @Expose
-    private String COL0;
+    private String COL0;// content_id
     @SerializedName("COL1")
     @Expose
-    private String COL1;
+    private String COL1;//  CONTENT_NAME
     @SerializedName("COL2")
     @Expose
-    private String COL2;
+    private String COL2;//   FILE_NAME
     @SerializedName("COL3")
     @Expose
-    private String COL3;
+    private String COL3;// file_type
     @SerializedName("COL4")
     @Expose
-    private String COL4;
+    private String COL4;// SEARCH_TAGS
     @SerializedName("COL5")
     @Expose
-    private String COL5;
+    private String COL5;//  MAIL_FLG
     @SerializedName("COL6")
     @Expose
-    private String COL6;
+    private String COL6;//  CONTENT_ID
     @SerializedName("COL7")
     @Expose
-    private String COL7;
+    private String COL7;//  0
     @SerializedName("COL8")
     @Expose
-    private String COL8;
+    private String COL8;// 'Page or REF'
     @SerializedName("COL9")
     @Expose
-    private String COL9;
+    private String COL9;// CONTENT_SEQ
     @SerializedName("COL10")
     @Expose
-    private String COL10;
+    private String COL10;//category
     @SerializedName("COL11")
     @Expose
-    private String COL11;
+    private String COL11;//  blank
     @SerializedName("COL12")
     @Expose
-    private String COL12;
+    private String COL12;//  blank
     @SerializedName("COL13")
     @Expose
-    private String COL13;
+    private String COL13;//  blank
     @SerializedName("COL14")
     @Expose
-    private String COL14;
+    private String COL14;//  MAIL_ZIP
     @SerializedName("COL15")
     @Expose
-    private String COL15;
+    private String COL15;// SUB_CAT_CODE
     @SerializedName("COL16")
     @Expose
-    private String COL16;
+    private String COL16;// ref_content count
     @SerializedName("COL17")
     @Expose
-    private String COL17;
+    private String COL17;// optrn (N/D/U)
+
     @SerializedName("KEY_COL")
     @Expose
     private String KEY_COL;
     @SerializedName("OPRTN")
     @Expose
-    private String OPRTN;
+    private String OPRTN;//  optrn (N/D/U)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * 
