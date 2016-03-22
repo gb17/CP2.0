@@ -787,6 +787,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 case 106: //library
                     if (actualPlayIndex == 0)
                         actualPlayIndex = playIndex;
+                    hideDrawer();
                     Intent intent1 = new Intent(this, ContentLibrary.class);
                     startActivityForResult(intent1, 1212);
                     break;

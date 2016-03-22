@@ -87,14 +87,6 @@ public class Sync {
                                       List<OutputPOJO> strData = response.body();
                                       for (OutputPOJO pojo : strData) {
                                           if (pojo.getOUT().equals("1")) {
-//                            ContentValues cv = new ContentValues();
-//                            if (index == 1) {
-//                                cv.put("COL11", "1");
-//                                db.update("TXN102", cv, "COL19 = '" + pojo.getTXNID() + "'", null);
-//                            } else if (index == 2) {
-//                                cv.put("COL12", "1");
-//                                db.update("TBDPS3", cv, "COL14 = '" + pojo.getTXNID() + "'", null);
-//                            }
                                               if (index == 1) {
                                                   String whereClause = "COL19=?";
                                                   String[] whereArgs = new String[]{pojo.getTXNID()};

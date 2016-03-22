@@ -213,6 +213,9 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                 case 4://Synchronize
                     drawerLinearLayout.setVisibility(View.GONE);
                     new TagDownloading(LandingPage.this);
+                    Sync sync = new Sync(LandingPage.this);
+                    sync.prepareRequest(1);
+                    sync.prepareRequest(0);
                     break;
                 case 197://LogOut
                     drawerLinearLayout.setVisibility(View.GONE);
