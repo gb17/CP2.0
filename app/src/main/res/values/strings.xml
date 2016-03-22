@@ -20,5 +20,6 @@
     <string name="close">&#xf00d;</string>
     <string name="icon_power">&#xf011;</string>
     <string name="icon_download">&#xf019;</string>
+    <string name="icon_page">&#xf016;</string>
 
 </resources>

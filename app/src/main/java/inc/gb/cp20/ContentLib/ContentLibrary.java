@@ -21,11 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import inc.gb.cp20.DB.DBHandler;
+import inc.gb.cp20.Models.ContentPage;
+import inc.gb.cp20.Models.RefrenceContent;
 import inc.gb.cp20.Models.TBBRAND;
 import inc.gb.cp20.Models.TBDPG;
 import inc.gb.cp20.R;
 import inc.gb.cp20.RecylerView.DividerItemDecoration;
 import inc.gb.cp20.RecylerView.ThumbnailAdapter;
+import inc.gb.cp20.RecylerView.ThumbnailAdapterForPages;
+import inc.gb.cp20.RecylerView.ThumbnailAdapterForRefrence;
 import inc.gb.cp20.RecylerView.ThumbnailAdpForSearch;
 import inc.gb.cp20.interfaces.RecyclerViewClickListener;
 
@@ -128,20 +132,23 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         return libView;
     }
 
-    public void getsubPagelist(RecyclerView recyclerView, final RelativeLayout Ref_RelativeLayout) {
+    public void getsubPagelist(RecyclerView recyclerView, final RelativeLayout Ref_RelativeLayout, TBBRAND item) {
 
         final RelativeLayout gbRelativeLayout = (RelativeLayout) recyclerView.getParent();
-        final TextView pagecount = (TextView) gbRelativeLayout.getChildAt(0);
+        final TextView pagecount = (TextView) gbRelativeLayout.getChildAt(1);
+        final TextView page = (TextView) gbRelativeLayout.getChildAt(0);
+        page.setText(ContentLibrary.this.getResources().getString(R.string.icon_page) + " Pages");
+        page.setTypeface(font);
         pagecount.setTypeface(font);
         gbRelativeLayout.setVisibility(View.VISIBLE);
-        List<TBBRAND> thumbnailPOJOList_sub = new ArrayList<>();
-        ThumbnailAdapter mAdapter_sub = new ThumbnailAdapter(thumbnailPOJOList_sub, ContentLibrary.this, getSupportFragmentManager(), this);
+        List<ContentPage> thumbnailPOJOList_sub = new ArrayList<>();
+        ThumbnailAdapterForPages mAdapter_sub = new ThumbnailAdapterForPages(thumbnailPOJOList_sub, ContentLibrary.this, getSupportFragmentManager(), this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter_sub);
         final LinearLayoutManager layoutManagerpages = new LinearLayoutManager(ContentLibrary.this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManagerpages);
-        prepareData(DBHandler.TBBRAND, "B", WhereQuery, mAdapter_sub, thumbnailPOJOList_sub);
+        preparePageData(DBHandler.TBBRAND, item, WhereQuery, mAdapter_sub, thumbnailPOJOList_sub);
 
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -174,24 +181,28 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
 
     }
 
-    public void getrefList(RecyclerView recyclerView) {
+    public void getrefList(RecyclerView recyclerView, TBBRAND item) {
 
         RelativeLayout gbRelativeLayout = (RelativeLayout) recyclerView.getParent();
         gbRelativeLayout.setVisibility(View.VISIBLE);
-        final TextView refcount = (TextView) gbRelativeLayout.getChildAt(0);
+
+        final TextView refHeader = (TextView) gbRelativeLayout.getChildAt(0);
+        refHeader.setText(ContentLibrary.this.getResources().getString(R.string.icon_page) + " References");
+        refHeader.setTypeface(font);
+        final TextView refcount = (TextView) gbRelativeLayout.getChildAt(1);
         refcount.setTypeface(font);
         recyclerView.setVisibility(View.VISIBLE);
         // ref_sublistRelativeLayout.setVisibility(View.VISIBLE);
-        List<TBBRAND> thumbnailPOJOList_sub = new ArrayList<>();
+        List<RefrenceContent> thumbnailPOJOList_sub = new ArrayList<>();
 
 
-        ThumbnailAdapter mAdapter_ref = new ThumbnailAdapter(thumbnailPOJOList_sub, ContentLibrary.this, getSupportFragmentManager(), this);
+        ThumbnailAdapterForRefrence mAdapter_ref = new ThumbnailAdapterForRefrence(thumbnailPOJOList_sub, ContentLibrary.this, getSupportFragmentManager(), this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter_ref);
         final LinearLayoutManager layoutManagerRef = new LinearLayoutManager(ContentLibrary.this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManagerRef);
-        prepareData(DBHandler.TBBRAND, "T", WhereQuery, mAdapter_ref, thumbnailPOJOList_sub);
+        prepareRefrneceData(DBHandler.TBBRAND, item, WhereQuery, mAdapter_ref, thumbnailPOJOList_sub);
 
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -265,6 +276,70 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         return true;
 
 
+    }
+
+    private void prepareRefrneceData(String TableName, TBBRAND itme, String whereQuery, ThumbnailAdapterForRefrence mAdapter, List<RefrenceContent> thumbnailPOJOList) {
+
+        String Query = " select l.COL1,l.COL2,l.COL15  from TBDRG l\n" +
+                "        where exists(\n" +
+                "        select 1\n" +
+                "        from TBDPS a\n" +
+                "        where a.col9='" + itme.getCOL0() + "'\n" +
+                "        and a.col3='" + itme.getCOL3() + "'" +
+                "        and a.col10='IPL'\n" +
+                "        and a.col5=l.col0)";
+
+        RefrenceContent tbbrand;
+        Cursor cursor = dbHandler.getCusrsor(Query);
+        cursor.moveToFirst();
+
+        if (cursor.getCount() != 0) {
+            do {
+                tbbrand = new RefrenceContent();
+
+                tbbrand.setRefrenceName(cursor.getString(cursor.getColumnIndex("COL1")));
+                tbbrand.setRefrenceCode(cursor.getString(cursor.getColumnIndex("COL2")));
+                tbbrand.setCategory_code(cursor.getString(cursor.getColumnIndex("COL15")));
+                thumbnailPOJOList.add(tbbrand);
+            } while (cursor.moveToNext());
+        }
+
+
+        mAdapter.notifyDataSetChanged();
+    }
+
+
+    private void preparePageData(String TableName, TBBRAND itme, String whereQuery, ThumbnailAdapterForPages mAdapter, List<ContentPage> thumbnailPOJOList) {
+
+        String Query = "";
+
+        Query = "select a.COL2, b.COL2 ,b.COl0,a.COL9 , a.COL1\n" +
+                "        from  TBDPS a, TBDPG b\n" +
+                "        where a.col5 = b.col0\n" +
+                "        and a.col9 = '" + itme.getCOL0() + "'\n" +
+                "        and a.col3 = '" + itme.getCOL3() + "'\n" +
+                "        and a.col10 = 'IPL'\n" +
+                "        and b.col8 = 'P'\n" +
+                "         order by  CAST (a.col2 AS INTEGER) ASC \n";
+        ContentPage contentPage;
+        Cursor cursor = dbHandler.getCusrsor(Query);
+        cursor.moveToFirst();
+
+        if (cursor.getCount() != 0) {
+            do {
+                contentPage = new ContentPage();
+                contentPage.setPageCode(cursor.getString(cursor.getColumnIndex("COL0")));
+                contentPage.setPageName(cursor.getString(cursor.getColumnIndex("COL2")));
+                contentPage.setCategory_code(cursor.getString(cursor.getColumnIndex("COL1")));
+                contentPage.setCategory_name(cursor.getString(cursor.getColumnIndex("COL9")));
+
+
+                thumbnailPOJOList.add(contentPage);
+            } while (cursor.moveToNext());
+        }
+
+
+        mAdapter.notifyDataSetChanged();
     }
 
     private void prepareData(String TableName, String Code, String whereQuery, ThumbnailAdapter mAdapter, List<TBBRAND> thumbnailPOJOList) {
@@ -345,18 +420,50 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
 
 
             RelativeLayout RelativeLayoutsd_Page = (RelativeLayout) relativeLayout.getChildAt(2);
+            RelativeLayoutsd_Page.setVisibility(View.VISIBLE);
             RelativeLayout RelativeLayout_Ref = (RelativeLayout) relativeLayout.getChildAt(3);
-            RecyclerView recyclerViewPage = (RecyclerView) RelativeLayoutsd_Page.getChildAt(1);
+
+            RecyclerView recyclerViewPage = (RecyclerView) RelativeLayoutsd_Page.getChildAt(2);
             recyclerViewPage.setVisibility(View.VISIBLE);
-            getsubPagelist(recyclerViewPage, RelativeLayout_Ref);
+
+            getsubPagelist(recyclerViewPage, RelativeLayout_Ref, item);
 
 
-            RecyclerView recyclerView_Ref = (RecyclerView) RelativeLayout_Ref.getChildAt(1);
+            RecyclerView recyclerView_Ref = (RecyclerView) RelativeLayout_Ref.getChildAt(2);
             recyclerView_Ref.setVisibility(View.VISIBLE);
-            getrefList(recyclerView_Ref);
+            getrefList(recyclerView_Ref, item);
         } catch (Exception e) {
 
         }
 
     }
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED);
+        finish();
+    }
+
 }
+
+
+//    select  a.*, b.*
+//        from  TBDPS a, TBDPG b
+//        where a.col5 = b.col0
+//        and a.col9 = 'B'
+//        and a.col3 = 111
+//        and a.col10 = 'IPL'
+//        and b.col8 = 'P';
+
+
+//    select h.*
+//        from TBDPG h,TBDRG l
+//        where h.col0=l.col2
+//        and exists(
+//        select 1
+//        from TBDPS a
+//        where a.col9='B'
+//        and a.col3=111
+//        and a.col10='IPL'
+//        and a.col5=l.col0
+//        )

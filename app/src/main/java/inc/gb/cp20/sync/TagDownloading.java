@@ -217,8 +217,8 @@ public class TagDownloading implements DownloadInterface {
                 RestClient.GitApiInterface service = RestClient.getClient();
                 TAG tag = new TAG();
                 tag.setClientid(mContext.getResources().getString(R.string.clientid));
-                String url = CVRdata[0][3];//"https://pocworkerrole.blob.core.windows.net/ctdscript/CTDH0001201603111918.cpz";
-                tag.setUrl(url);//  CVRdata[0][3] https://pocworkerrole.blob.core.windows.net/ctdscript/CTDH0001201603111918.cpz
+                String url = CVRdata[0][3];
+                tag.setUrl(url);
                 tag.setRepcode(Repcode);
 
                 final Call<TablesConfig> TagReq = service.CallTagDownload(tag);

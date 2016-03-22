@@ -109,8 +109,10 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
                 @Override
                 public void onClick(View view) {
                     childScrollView.setVisibility(View.VISIBLE);
+
                     fb.setVisibility(View.VISIBLE);
 
+                    layout.removeAllViews();
 
                     String[][] pagename = dbHandler.genericSelect("select b.COL2 from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  '" + brandList.getCOL3() + "' and a.COL9 = '" + brandList.getCOL0() + "'   and a.COL10 = 'IPL'  and b.COL7= '0'", 1);
                     int prevTextViewId = 0;
@@ -140,10 +142,19 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
                 @Override
                 public void onClick(View view) {
                     childScrollView.setVisibility(View.VISIBLE);
+                    layout.removeAllViews();
                     fb.setVisibility(View.VISIBLE);
+                    String Query = " select l.COL1,l.COL2,l.COL15  from TBDRG l\n" +
+                            "        where exists(\n" +
+                            "        select 1\n" +
+                            "        from TBDPS a\n" +
+                            "        where a.col9='" + brandList.getCOL0() + "'\n" +
+                            "        and a.col3='" + brandList.getCOL3() + "'" +
+                            "        and a.col10='IPL'\n" +
+                            "        and a.col5=l.col0)";
 
+                    String[][] pagename = dbHandler.genericSelect(Query, 3);
 
-                    String[][] pagename = dbHandler.genericSelect("select b.COL2 from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  '" + brandList.getCOL3() + "' and a.COL9 = '" + brandList.getCOL0() + "'   and a.COL10 = 'IPL'  and b.COL7= '0'", 2);
                     int prevTextViewId = 0;
                     for (int i = 0; i < pagename.length; i++) {
                         final TextView textView = new TextView(mContext);

@@ -94,6 +94,15 @@ public class RestClient {
 
 
     }
-
+//    http://cirriusapi.cirrius.in/Config/UPW
+//    http://cirriusapi.cirrius.in/ReqRes/CVR
+//    http://cirriusapi.cirrius.in/Security/CHANGEPWD
+//    http://cirriusapi.cirrius.in/Security/FORGOTPWD
+//    http://cirriusapi.cirrius.in/Config/CONTENTACK
+//    http://cirriusapi.cirrius.in/Config/AckTags
+//    http://cirriusapi.cirrius.in/Config/ReadScript
+//    http://cirriusapi.cirrius.in/Detailing/UDDET
+//    http://cirriusapi.cirrius.in/Detailing/SYNCDETAILING
+//    http://cirriusapi.cirrius.in/ReqRes/IRCSF
 
 }

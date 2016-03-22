@@ -24,7 +24,18 @@ public class UserService {
             if (Where.equals("")) {
                 cursor = dbHandler.getAllData(TabelName, null, null, null);
             } else {
-                cursor = dbHandler.getCusrsor("SELECT *  FROM TBPARTY WHERE COL1 like  '%" + Where + "%'");
+
+
+                String[] go = Where.split(" ");
+                String temp = "COL14 like ";
+                for (int i = 0; i < go.length; i++) {
+                    if (i == go.length - 1) temp = temp + "'%" + go[i] + "%'";
+                    else temp = temp + "'%" + go[i] + "%'  and COL14 like ";
+                }
+                   System.out.println(temp);
+
+
+                cursor = dbHandler.getCusrsor("SELECT *  FROM TBPARTY WHERE " + temp);
             }
 
             cursor.moveToFirst();
