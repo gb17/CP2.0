@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
         setContentView(R.layout.login);
 //        dbHandler = DBHandler.getInstance(MainActivity.this);
 //        SQLiteDatabase db = dbHandler.getWritableDatabase();
-//        db.delete("TXN102", null, null);
+//        db.delete("TBDPS2", null, null);
 //        db.delete("TBPHTAG", null, null);
 //        db.delete("TBNAME", null, null);
 //        Sync sync = new Sync(this);

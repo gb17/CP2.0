@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,10 +30,11 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.MyView
     ArrayList<String[]> recyclerData;
     Context mContext;
     //Playlist.MyOnLongClickListener listener;
+    int visBit = 0;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView PageName, pageCount, threedotMenu;
-        ImageView PageIcon;
+        ImageView PageIcon, pagesCountIcon, custom;
 
         public MyViewHolder(View view) {
             super(view);
@@ -40,14 +42,17 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.MyView
             PageIcon = (ImageView) view.findViewById(R.id.bandimage);
             pageCount = (TextView) view.findViewById(R.id.pagecount);
             threedotMenu = (TextView) view.findViewById(R.id.threedot);
+            pagesCountIcon = (ImageView) itemView.findViewById(R.id.page);
+            custom = (ImageView) itemView.findViewById(R.id.custom);
         }
     }
 
 
-    public PlaylistAdapter(Context mContext, ArrayList<String[]> griddata, ArrayList<String[]> recyclerData) {
+    public PlaylistAdapter(Context mContext, ArrayList<String[]> griddata, ArrayList<String[]> recyclerData, int visBit) {
         this.recyclerData = recyclerData;
         this.griddata = griddata;
         this.mContext = mContext;
+        this.visBit = visBit;
         // listener = new Playlist().new MyOnLongClickListener();
     }
 
@@ -55,7 +60,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.MyView
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.tumbnail_item, parent, false);
+                .inflate(R.layout.tumbnail_item_playlist, parent, false);
         itemView.setOnLongClickListener(new MyOnLongClickListener());
         itemView.setOnDragListener(
                 new MyDragListener(mContext, griddata, recyclerData));
@@ -66,10 +71,34 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.MyView
     public void onBindViewHolder(MyViewHolder holder, int position) {
         String[] str = recyclerData.get(position);
         holder.PageName.setText(str[3]);
-        String filePath = new File(mContext.getFilesDir() + "/done/", FilenameUtils.removeExtension(str[2]) + ".png").getAbsolutePath();
+        String filePath = new File(mContext.getFilesDir() + "/" + FilenameUtils.removeExtension(str[2]) + "/", FilenameUtils.removeExtension(str[2]) + ".png").getAbsolutePath();
         Bitmap bitmap = BitmapFactory.decodeFile(filePath);
         holder.PageIcon.setImageBitmap(bitmap);
         holder.pageCount.setVisibility(View.GONE);
+        holder.pagesCountIcon.setImageResource(R.drawable.delete);
+        if (str[7].equals("1"))
+            holder.custom.setVisibility(View.VISIBLE);
+        else
+            holder.custom.setVisibility(View.GONE);
+
+        if (visBit == 1) {
+            holder.pagesCountIcon.setVisibility(View.VISIBLE);
+            holder.custom.setVisibility(View.GONE);
+        } else
+            holder.pagesCountIcon.setVisibility(View.GONE);
+
+        holder.pagesCountIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RelativeLayout parentView = (RelativeLayout) v.getParent();
+                RecyclerView recycler = (RecyclerView) (parentView.getParent());
+                LinearLayoutManager layoutManager2 = ((LinearLayoutManager) recycler.getLayoutManager());
+                int firstVisiblePosition2 = layoutManager2.findFirstVisibleItemPosition();
+                int index = firstVisiblePosition2 + recycler.indexOfChild(parentView);
+                recyclerData.remove(index);
+                notifyItemRemoved(index);
+            }
+        });
     }
 
     @Override

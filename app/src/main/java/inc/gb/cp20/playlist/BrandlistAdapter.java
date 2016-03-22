@@ -30,7 +30,7 @@ public class BrandlistAdapter extends RecyclerView.Adapter<BrandlistAdapter.NewV
 
     public class NewViewHolder extends RecyclerView.ViewHolder {
         public TextView PageName, pageCount, threedotMenu;
-        ImageView PageIcon;
+        ImageView PageIcon, pagesCountIcon;
 
         public NewViewHolder(View view) {
             super(view);
@@ -38,6 +38,7 @@ public class BrandlistAdapter extends RecyclerView.Adapter<BrandlistAdapter.NewV
             PageIcon = (ImageView) view.findViewById(R.id.bandimage);
             pageCount = (TextView) view.findViewById(R.id.pagecount);
             threedotMenu = (TextView) view.findViewById(R.id.threedot);
+            pagesCountIcon = (ImageView) itemView.findViewById(R.id.page);
         }
     }
 
@@ -61,10 +62,11 @@ public class BrandlistAdapter extends RecyclerView.Adapter<BrandlistAdapter.NewV
     public void onBindViewHolder(NewViewHolder holder, int position) {
         String[] str = gridData.get(position);
         holder.PageName.setText(str[3]);
-        String filePath = new File(mContext.getFilesDir() + "/done/", FilenameUtils.removeExtension(str[2]) + ".png").getAbsolutePath();
+        String filePath = new File(mContext.getFilesDir() + "/" + FilenameUtils.removeExtension(str[2]) + "/", FilenameUtils.removeExtension(str[2]) + ".png").getAbsolutePath();
         Bitmap bitmap = BitmapFactory.decodeFile(filePath);
         holder.PageIcon.setImageBitmap(bitmap);
         holder.pageCount.setVisibility(View.GONE);
+        holder.pagesCountIcon.setVisibility(View.INVISIBLE);
     }
 
     @Override

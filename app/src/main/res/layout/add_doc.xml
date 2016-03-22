@@ -41,13 +41,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/view"
-        android:background="#FFFFFF"
-        android:orientation="horizontal">
+        android:background="#ece9e9"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp">
 
         <LinearLayout
             android:id="@+id/first"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:background="#484848"
             android:orientation="vertical">
@@ -66,32 +68,56 @@
                 android:background="#616161" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/second"
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:background="#E0E0E0"
+            android:background="#ffffff"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="15dp"
-                android:text="TAG Physicians"
-                android:textColor="#616161"
-                android:textSize="20sp" />
-
-            <View
+            <LinearLayout
+                android:id="@+id/second"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="#000000" />
-        </LinearLayout>
+                android:layout_height="match_parent"
+                android:layout_above="@+id/done"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
+                    android:text="TAG Physicians"
+                    android:textColor="#616161"
+                    android:textSize="20sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#000000" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/done"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="#b1aeae"
+                android:gravity="center"
+                android:padding="6dp"
+                android:text="DONE"
+                android:textColor="@color/page_count"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/third"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
             android:layout_weight="1"
             android:background="#dcd8d8"
             android:orientation="vertical">
@@ -192,13 +218,6 @@
                 android:paddingRight="60dp"
                 android:src="@drawable/ic_chevron_left_white_24dp" />
 
-            <ImageView
-                android:id="@+id/done"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|bottom"
-                android:src="@drawable/done"
-                android:visibility="invisible" />
         </LinearLayout>
     </LinearLayout>
 

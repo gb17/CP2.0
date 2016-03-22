@@ -517,6 +517,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
         protected Void doInBackground(Void... voids) {
             String[][] tbImg = dbHandler.genericSelect("Select COL1 from TBIMG", 1);
             if (tbImg != null) {
+                SQLiteDatabase db = dbHandler.getWritableDatabase();
                 for (int i = 0; i < tbImg.length; i++) {
                     String url = tbImg[i][0];
                     String msg = Utility.downloadZipFile(url);
@@ -529,6 +530,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        db.execSQL("DELETE FROM TBIMG where COL1 = '" + url + "'");
                     }
                 }
             }

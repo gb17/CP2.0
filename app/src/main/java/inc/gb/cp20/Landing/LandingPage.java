@@ -2,6 +2,7 @@ package inc.gb.cp20.Landing;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -78,8 +79,8 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_landing_screen);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
         try {
             Bundle bundle = getIntent().getExtras();
@@ -91,14 +92,12 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
             CALLSYNC = "";
         }
 
-
         font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         dbHandler = DBHandler.getInstance(this);
         drawerLinearLayout = (LinearLayout) findViewById(R.id.drawer);
         drawerButton = (Button) findViewById(R.id.dr_btn);
 
         complLinearLayout = (LinearLayout) findViewById(R.id.compl);
-
 
         drawerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,11 +115,12 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         LinearLayout lhsLinearLayout = (LinearLayout) view.findViewById(R.id.lhs);
 
         try {
+            Updategbdb();
             AlphabetsList alphabetsList = new AlphabetsList(this);
             lhsLinearLayout.addView(alphabetsList.getAlphabestListView("TBPARTY", false, false, true));
             alphabetsList.setSidepannel(View.VISIBLE);
             alphabetsList.SerachViewVis(View.VISIBLE);
-            Updategbdb();
+
             defaultLayout();
             //   CallDownloadIRCSF();
 
@@ -300,7 +300,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         content_dialog.setCancelable(false);
         int width = display.getWidth();
         int height = display.getHeight();
-        content_dialog.getWindow().setLayout((10 * width) / 12, (4 * height) / 6);
+        content_dialog.getWindow().setLayout((10 * width) / 12, (5 * height) / 8);
         content_dialog.setContentView(R.layout.list);
         TextView header = (TextView) content_dialog.findViewById(R.id.header);
         header.setText(getResources().getString(R.string.refresh) + " Content update available (" + list.size() + " update)");
@@ -417,9 +417,9 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                 Bundle bundle = new Bundle();
                 bundle.putString("customer_id", objDrListPOJO.getCOL0());
                 bundle.putString("customer_name", objDrListPOJO.getCOL1());
-                bundle.putString("category_code", objDrListPOJO.getCOL5());
-                bundle.putString("category_name", objDrListPOJO.getCOL10());
-                bundle.putString("thumbnail_category", objDrListPOJO.getCOL16());
+                bundle.putString("category_code", objDrListPOJO.getCOL17());
+                bundle.putString("category_name", objDrListPOJO.getCOL16());
+                bundle.putString("thumbnail_category", "B");
                 bundle.putString("index", "3");
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -470,6 +470,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
 
         @Override
         protected Void doInBackground(Void... voids) {
+            SQLiteDatabase db = dbHandler.getWritableDatabase();
             try {
                 for (int i = 0; i < urlString.size(); i++) {
                     if (isCancelled()) break;
@@ -495,6 +496,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                             if (isCancelled()) break;
                             if (str.equalsIgnoreCase("success")) {
                                 sync.contentAcknowledge(urls[0]);
+                                db.execSQL("UPDATE TBDPG SET COL7 = '1' where COL0 = '" + urls[0] + "'");
                                 flag = true;
                                 downloadedSize = downloadedSize + Integer.parseInt(urls[2]);
                             }

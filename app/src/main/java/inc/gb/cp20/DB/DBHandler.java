@@ -12,7 +12,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
 
 import inc.gb.cp20.Models.TBBRAND;
 import inc.gb.cp20.Models.TBDBL;
@@ -184,7 +183,7 @@ public class DBHandler extends SQLiteOpenHelper {
             db.execSQL("CREATE TABLE " + TBUPW
                     + "( USERNAME TEXT,VERSION TEXT,OLDPWD TEXT,VAL TEXT,CLIENTID TEXT,CONTROLNO TEXT)");
             cupboard().withDatabase(db).createTables();
-            db.execSQL("CREATE TABLE IF NOT EXISTS TBNAME (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text, COL12 text, COL13 text, COL14 text, COL15 text, COL16 text)");
+            db.execSQL("CREATE TABLE IF NOT EXISTS TBNAME (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text, COL12 text, COL13 text, COL14 text, COL15 text, COL16 text, COL17 text)");
             db.execSQL("CREATE TABLE IF NOT EXISTS TBPHTAG (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text)");
             db.execSQL("CREATE TABLE IF NOT EXISTS TXN102 (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text, COL12 text, COL13 text, COL14 text, COL15 text, COL16 text, COL17 text, COL18 text, COL19 text, COL20 text, COL21 text)");
             db.execSQL("CREATE TABLE IF NOT EXISTS TBDPS2 (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text, COL12 text)");

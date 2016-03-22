@@ -54,6 +54,7 @@ import inc.gb.cp20.AlphaList.AlphaListActivity;
 import inc.gb.cp20.AlphaList.AlphabetsList;
 import inc.gb.cp20.AlphaList.DrList_POJO;
 import inc.gb.cp20.AlphaList.UserService;
+import inc.gb.cp20.ContentLib.ContentLibrary;
 import inc.gb.cp20.DB.DBHandler;
 import inc.gb.cp20.Landing.LandingPage;
 import inc.gb.cp20.R;
@@ -113,14 +114,13 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     private String category_code = "";
     private String category_name = "";
     private String thumbnail_category = "";
-    private String page_number = "";
 
     private ListView leftList, rightList;
     AlphabetsList list, list2;
 
     Vector<DrList_POJO> userCopyVector;
 
-    ImageView done;
+    TextView done;
     String index = "0";
 
     int PLAYLISTINDEX = 101;
@@ -141,7 +141,6 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         category_name = extras.getString("category_name");
         thumbnail_category = extras.getString("thumbnail_category");
         index = extras.getString("index");
-        page_number = extras.getString("page_number");
 
 
         if (customer_id == null)
@@ -150,15 +149,13 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             customer_name = "";
         if (index == null)
             index = "0";
-        if (page_number != null)
-            playIndex = Integer.parseInt(page_number);
 
         handler = DBHandler.getInstance(this);
         SQLiteDatabase db = handler.getWritableDatabase();
         db.delete("TBNAME", null, null);
 
         if (!customer_id.equals("")) {
-            String query = "insert into TBNAME SELECT COL0,COL1,COL2,COL3,COL4,COL5,COL6,COL7,COL8,COL9,COL10,COL11,COL12,COL13,COL14,COL15,COL16 FROM TBPARTY where COL0 = '" + customer_id + "'";
+            String query = "insert into TBNAME SELECT COL0,COL1,COL2,COL3,COL4,COL5,COL6,COL7,COL8,COL9,COL10,COL11,COL12,COL13,COL14,COL15,COL16,COL17 FROM TBPARTY where COL0 = '" + customer_id + "'";
             db.execSQL(query);
         }
 
@@ -177,6 +174,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
         backtoplaylist = (ImageView) findViewById(R.id.backtoplaylist);
         backtoplaylist.setOnClickListener(this);
+        backtoplaylist.setTag("1");
         prevBrand = (ImageView) findViewById(R.id.previousbrand);
         nextBrand = (ImageView) findViewById(R.id.nextbrand);
         prevBrand.setOnClickListener(prevNextLsitener);
@@ -191,6 +189,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
         annot1 = (ImageView) findViewById(R.id.annot1);
         annot1.setOnClickListener(this);
+        annot1.setTag("1");
 
         reference = (ImageView) findViewById(R.id.refrence);
         reference.setOnClickListener(new View.OnClickListener() {
@@ -350,30 +349,28 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         iconsBar = (LinearLayout) findViewById(R.id.icons_bar);
 
         for (int i = 1; i < iconsData.length - 1; i++) {
-            if (i != 2) {
-                ImageView icons = new ImageView(this);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                params.setMargins(20, 20, 20, 20);
-                icons.setLayoutParams(params);
-                icons.setId(Integer.parseInt(iconsData[i][0]));
-                String filePath = new File(getFilesDir(), iconsData[i][2]).getAbsolutePath();
-                //String filePath = getFilesDir() + "/" + iconsData[i][2];
-                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-                icons.setTag("1");
-                icons.setImageBitmap(bitmap);
-                icons.setOnClickListener(this);
-                iconsBar.addView(icons);
-                groupId = Integer.parseInt(iconsData[i][3]);
-                if (i < iconsData.length - 1)
-                    if (groupId != Integer.parseInt(iconsData[i + 1][3])) {
-                        View view = new View(this);
-                        LinearLayout.LayoutParams viewparam = new LinearLayout.LayoutParams(1, LinearLayout.LayoutParams.MATCH_PARENT);
-                        viewparam.setMargins(0, 20, 0, 20);
-                        view.setLayoutParams(viewparam);
-                        view.setBackgroundColor(Color.WHITE);
-                        iconsBar.addView(view);
-                    }
-            }
+            ImageView icons = new ImageView(this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(20, 20, 20, 20);
+            icons.setLayoutParams(params);
+            icons.setId(Integer.parseInt(iconsData[i][0]));
+            String filePath = new File(getFilesDir(), iconsData[i][2]).getAbsolutePath();
+            //String filePath = getFilesDir() + "/" + iconsData[i][2];
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+            icons.setTag("1");
+            icons.setImageBitmap(bitmap);
+            icons.setOnClickListener(this);
+            iconsBar.addView(icons);
+            groupId = Integer.parseInt(iconsData[i][3]);
+            if (i < iconsData.length - 1)
+                if (groupId != Integer.parseInt(iconsData[i + 1][3])) {
+                    View view = new View(this);
+                    LinearLayout.LayoutParams viewparam = new LinearLayout.LayoutParams(1, LinearLayout.LayoutParams.MATCH_PARENT);
+                    viewparam.setMargins(0, 20, 0, 20);
+                    view.setLayoutParams(viewparam);
+                    view.setBackgroundColor(Color.WHITE);
+                    iconsBar.addView(view);
+                }
         }
 
         open = (Button) findViewById(R.id.handle);
@@ -511,9 +508,6 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             childView.setId(Integer.parseInt(brandData[i][3]));
             childView.setOnClickListener(brandListener);
             content3.addView(childView);
-//            myscroll2.setVisibility(View.VISIBLE);
-//            myscroll2.startAnimation(AnimationUtils.loadAnimation(
-//                    Container.this, R.anim.bottom_to_top));
         }
     }
 
@@ -639,13 +633,13 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
             filePath = new File(getFilesDir(), "icon8.png").getAbsolutePath();
             bitmap = BitmapFactory.decodeFile(filePath);
-            iconsBar.getChildAt(2).setTag("1");
-            ((ImageView) iconsBar.getChildAt(2)).setImageBitmap(bitmap);
+            iconsBar.getChildAt(3).setTag("1");
+            ((ImageView) iconsBar.getChildAt(3)).setImageBitmap(bitmap);
 
             filePath = new File(getFilesDir(), "icon9.png").getAbsolutePath();
             bitmap = BitmapFactory.decodeFile(filePath);
-            iconsBar.getChildAt(3).setTag("1");
-            ((ImageView) iconsBar.getChildAt(3)).setImageBitmap(bitmap);
+            iconsBar.getChildAt(4).setTag("1");
+            ((ImageView) iconsBar.getChildAt(4)).setImageBitmap(bitmap);
 
             bitmap = null;
         }
@@ -721,6 +715,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     imgView.setImageBitmap(bitmap);
                     break;
                 case R.id.annot1: //annotation
+                case 103: //annotation
                     if (imgView.getTag().equals("2")) {
                         imgName = "icon7.png";
                         filePath = new File(getFilesDir(), imgName).getAbsolutePath();
@@ -756,10 +751,10 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                         view.setTag("2");
 
                         imgName2 = "icon9.png";
-                        iconsBar.getChildAt(3).setTag("1");
+                        iconsBar.getChildAt(4).setTag("1");
                         filePath2 = new File(getFilesDir(), imgName2).getAbsolutePath();
                         bitmap = BitmapFactory.decodeFile(filePath2);
-                        ((ImageView) iconsBar.getChildAt(3)).setImageBitmap(bitmap);
+                        ((ImageView) iconsBar.getChildAt(4)).setImageBitmap(bitmap);
 
                     } else if (imgView.getTag().equals("2")) {
                         imgName = "icon8.png";
@@ -776,10 +771,10 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                         view.setTag("2");
 
                         imgName2 = "icon8.png";
-                        iconsBar.getChildAt(2).setTag("1");
+                        iconsBar.getChildAt(3).setTag("1");
                         filePath2 = new File(getFilesDir(), imgName2).getAbsolutePath();
                         bitmap = BitmapFactory.decodeFile(filePath2);
-                        ((ImageView) iconsBar.getChildAt(2)).setImageBitmap(bitmap);
+                        ((ImageView) iconsBar.getChildAt(3)).setImageBitmap(bitmap);
                     } else if (imgView.getTag().equals("2")) {
                         imgName = "icon9.png";
                         view.setTag("1");
@@ -790,8 +785,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     likedislikeFlag = "2";
                     break;
                 case 106: //library
-//                    Intent intent1 = new Intent(this, ContentLIb.class);
-//                    startActivity(intent1);
+                    Intent intent1 = new Intent(this, ContentLibrary.class);
+                    startActivityForResult(intent1, 1212);
                     break;
                 case R.id.close: //close
                     if (!index.equals("3")) {
@@ -814,7 +809,21 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        saveData(REFERENCEINDEX);
+        if (requestCode == 1001 && resultCode == RESULT_OK)
+            saveData(REFERENCEINDEX);
+        else if (requestCode == 1212 && resultCode == RESULT_OK) {
+            String category_code = data.getStringExtra("category_code");
+            String category_name = data.getStringExtra("category_name");
+            String page_number = data.getStringExtra("page_number");
+            playIndex = Integer.parseInt(page_number);
+            playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11 from TBDPS a , TBDPG b\n" +
+                    "        where a.col5 = b.col0\n" +
+                    "        and a.COL3 = '" + category_code + "' and a.COL9 = '" + category_name + "' and a.COL10 = 'IPL' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
+            fillPlayList(1);
+            if (!customer_id.equals("") || category_name.equalsIgnoreCase("S")) {
+                backtoplaylist.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
@@ -915,7 +924,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             //initialize playlist
             playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL12 from TBDPS2 a , TBDPG b\n" +
                     "        where a.col5 = b.col0\n" +
-                    "        and a.COL3 = '" + category_code + "' and a.COL9 = '" + category_name + "' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
+                    "        and a.COL10 = '" + customer_id + "' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
 
         }
     }
@@ -1070,7 +1079,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             clas.setAdapter(spinnerArrayAdapter);
         }
-        done = (ImageView) dialog.findViewById(R.id.done);
+        done = (TextView) dialog.findViewById(R.id.done);
         if (!customer_id.equals(""))
             done.setVisibility(View.VISIBLE);
 

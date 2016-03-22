@@ -60,7 +60,7 @@ class MyDragListener implements OnDragListener {
                             griddata.remove(chance2);
                             recyclerdata.add(chance, str);
                             PlaylistAdapter adapter = new PlaylistAdapter(context, griddata,
-                                    recyclerdata);
+                                    recyclerdata, 1);
                             recycle.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
                             BrandlistAdapter adapter2 = new BrandlistAdapter(context, griddata,
@@ -73,7 +73,7 @@ class MyDragListener implements OnDragListener {
                             recyclerdata.remove(chance2);
                             recyclerdata.add(chance, str);
                             PlaylistAdapter adapter = new PlaylistAdapter(context, griddata,
-                                    recyclerdata);
+                                    recyclerdata, 1);
                             recycle.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
                         }
@@ -93,7 +93,7 @@ class MyDragListener implements OnDragListener {
                             recyclerdata.remove(chance2);
                             griddata.add(chance, str);
                             PlaylistAdapter adapter = new PlaylistAdapter(context, griddata,
-                                    recyclerdata);
+                                    recyclerdata, 1);
                             grid.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
                             BrandlistAdapter adapter2 = new BrandlistAdapter(context, griddata,
