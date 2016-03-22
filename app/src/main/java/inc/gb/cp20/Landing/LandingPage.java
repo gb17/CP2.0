@@ -9,7 +9,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
@@ -120,13 +119,12 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
             lhsLinearLayout.addView(alphabetsList.getAlphabestListView("TBPARTY", false, false, true));
             alphabetsList.setSidepannel(View.VISIBLE);
             alphabetsList.SerachViewVis(View.VISIBLE);
-
             defaultLayout();
-            //   CallDownloadIRCSF();
+            CallDownloadIRCSF();
 
 
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
 

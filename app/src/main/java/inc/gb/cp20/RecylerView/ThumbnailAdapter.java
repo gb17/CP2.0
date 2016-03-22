@@ -1,6 +1,8 @@
 package inc.gb.cp20.RecylerView;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.List;
 
 import inc.gb.cp20.DB.DBHandler;
@@ -64,10 +67,11 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
             fb = (TextView) view.findViewById(R.id.close);
             childScrollView = (ScrollView) view.findViewById(R.id.childScroll);
 
-            pageFloatingActionButton = (ImageView) view.findViewById(R.id.page);
-            refFloatingActionButton = (ImageView) view.findViewById(R.id.ref);
-            pageCount = (TextView) view.findViewById(R.id.pagecount);
-            refCount = (TextView) view.findViewById(R.id.refcount);
+            pageFloatingActionButton = (ImageView) view.findViewById(R.id.ref);
+            refFloatingActionButton = (ImageView) view.findViewById(R.id.page);
+            //Chnages made to swtich page to refrence
+            pageCount = (TextView) view.findViewById(R.id.refcount);
+            refCount = (TextView) view.findViewById(R.id.pagecount);
 
             newTag = (TextView) view.findViewById(R.id.newtag);
 
@@ -118,7 +122,10 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
                     int prevTextViewId = 0;
                     for (int i = 0; i < pagename.length; i++) {
                         final TextView textView = new TextView(mContext);
-                        textView.setText((i + 1) + pagename[i][0]);
+                        String temp = "" + i + 1;
+                        if (temp.length() == 1)
+                            temp = "0" + i;
+                        textView.setText(temp + " " + pagename[i][0]);
                         textView.setTextColor(Color.parseColor("#FFFFFF"));
 
                         int curTextViewId = prevTextViewId + 1;
@@ -158,7 +165,10 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
                     int prevTextViewId = 0;
                     for (int i = 0; i < pagename.length; i++) {
                         final TextView textView = new TextView(mContext);
-                        textView.setText((i + 1) + pagename[i][0]);
+                        String temp = "" + i + 1;
+                        if (temp.length() == 1)
+                            temp = "0" + i;
+                        textView.setText(temp + " " + pagename[i][0]);
                         textView.setTextColor(Color.parseColor("#FFFFFF"));
 
                         int curTextViewId = prevTextViewId + 1;
@@ -210,12 +220,15 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
             holder.refCount.setText(tbbrand.getCOL9());
             holder.refFloatingActionButton.setVisibility(View.VISIBLE);
         }
+        try {
+            String filePath = new File(mContext.getFilesDir() + "/", tbbrand.getCOL4() + ".png").getAbsolutePath();
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+            holder.imageView.setImageBitmap(bitmap);
 
-        if (position >= Imagearr.length - 1)
-            holder.imageView.setImageResource(R.drawable.dempi);
-        else {
-            holder.imageView.setImageResource(Imagearr[position]);
+        } catch (Exception e) {
+            //holder.imageView.setI
         }
+
 
         holder.bind(brandList.get(position), itemListener);
 

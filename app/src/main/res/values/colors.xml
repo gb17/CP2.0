@@ -8,4 +8,5 @@
     <color name="thumbnail_producname_backgrounf">#e7e6e5</color>
     <color name="page_count">#0a937f</color>
     <color name="rhs_header">#010103</color>
+    <color name="search_bg">#273238</color>
 </resources>
