@@ -547,7 +547,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        db.execSQL("DELETE FROM TBIMG where COL1 = '" + url + "'");
+                        //db.execSQL("DELETE FROM TBIMG where COL1 = '" + url + "'");
                     }
                 }
             }

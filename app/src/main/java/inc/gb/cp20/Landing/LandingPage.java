@@ -115,7 +115,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         LinearLayout lhsLinearLayout = (LinearLayout) view.findViewById(R.id.lhs);
 
         try {
-            //  Updategbdb();
+            Updategbdb();
             AlphabetsList alphabetsList = new AlphabetsList(this);
             lhsLinearLayout.addView(alphabetsList.getAlphabestListView("TBPARTY", false, false, true));
             alphabetsList.setSidepannel(View.VISIBLE);
@@ -560,16 +560,8 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
 
 
     void Updategbdb() {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String Query = "update TBBRAND set col5 = ( select count(distinct b.col0) from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  TBBRAND.col3 and a.COL9 =  TBBRAND.col0 and a.COL10 = 'IPL'  and b.COL7 ='0' and b.col8 = 'P'), col9 = ( select count (distinct b.col3) from TBDPS a , TBDRG b where a.col5 = b.col0 and a.col3 =  TBBRAND.col3 and a.COL9 = TBBRAND.col0 and a.COL10 = 'IPL'), col10  = ( select  count(distinct b.col0) from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  TBBRAND. col3 and a.COL9 = TBBRAND.col0 and a.COL10 = 'IPL'  and b.COL7 ='0' and  b.col7 = 0 and b.col8 = 'P')";
-                dbHandler.ExecuteQuery(Query);
-            }
-        }).start();
-
-
+        String Query = "update TBBRAND set col5 = ( select count(distinct b.col0) from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  TBBRAND.col3 and a.COL9 =  TBBRAND.col0 and a.COL10 = 'IPL'  and b.COL7 ='0' and b.col8 = 'P'), col9 = ( select count (distinct b.col3) from TBDPS a , TBDRG b where a.col5 = b.col0 and a.col3 =  TBBRAND.col3 and a.COL9 = TBBRAND.col0 and a.COL10 = 'IPL'), col10  = ( select  count(distinct b.col0) from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  TBBRAND. col3 and a.COL9 = TBBRAND.col0 and a.COL10 = 'IPL'  and b.COL7 ='0' and  b.col7 = 0 and b.col8 = 'P')";
+        dbHandler.ExecuteQuery(Query);
     }
 
 

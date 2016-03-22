@@ -785,6 +785,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     likedislikeFlag = "2";
                     break;
                 case 106: //library
+                    if (actualPlayIndex == 0)
+                        actualPlayIndex = playIndex;
                     Intent intent1 = new Intent(this, ContentLibrary.class);
                     startActivityForResult(intent1, 1212);
                     break;

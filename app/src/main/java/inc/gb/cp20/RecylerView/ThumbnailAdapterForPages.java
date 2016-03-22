@@ -62,7 +62,7 @@ public class ThumbnailAdapterForPages extends RecyclerView.Adapter<ThumbnailAdap
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent();
-                    intent.putExtra("category_code", brandList.getCategory_name());
+                    intent.putExtra("category_code", brandList.getCategory_code());
                     intent.putExtra("category_name", brandList.getCategory_name());
                     intent.putExtra("page_number", Position_ + "");
                     ((Activity) mContext).setResult(Activity.RESULT_OK, intent);
