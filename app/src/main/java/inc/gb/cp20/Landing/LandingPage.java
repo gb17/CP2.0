@@ -115,7 +115,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         LinearLayout lhsLinearLayout = (LinearLayout) view.findViewById(R.id.lhs);
 
         try {
-            Updategbdb();
+            //  Updategbdb();
             AlphabetsList alphabetsList = new AlphabetsList(this);
             lhsLinearLayout.addView(alphabetsList.getAlphabestListView("TBPARTY", false, false, true));
             alphabetsList.setSidepannel(View.VISIBLE);

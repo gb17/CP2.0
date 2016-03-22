@@ -118,7 +118,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
                     int prevTextViewId = 0;
                     for (int i = 0; i < pagename.length; i++) {
                         final TextView textView = new TextView(mContext);
-                        textView.setText(pagename[i][0]);
+                        textView.setText((i + 1) + pagename[i][0]);
                         textView.setTextColor(Color.parseColor("#FFFFFF"));
 
                         int curTextViewId = prevTextViewId + 1;
@@ -158,7 +158,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
                     int prevTextViewId = 0;
                     for (int i = 0; i < pagename.length; i++) {
                         final TextView textView = new TextView(mContext);
-                        textView.setText(pagename[i][0]);
+                        textView.setText((i + 1) + pagename[i][0]);
                         textView.setTextColor(Color.parseColor("#FFFFFF"));
 
                         int curTextViewId = prevTextViewId + 1;
