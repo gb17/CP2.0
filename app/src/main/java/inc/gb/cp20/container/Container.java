@@ -412,7 +412,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                         }
                     });
                     mylinear.startAnimation(animation);
-                    annot2.setVisibility(View.GONE);
+                    //annot2.setVisibility(View.GONE);
                     backtoplaylist.setVisibility(View.GONE);
                 } else {
                     gesturesView2.setVisibility(View.GONE);
@@ -588,6 +588,16 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
     private void hideDrawer() {
         if (mylinear.getVisibility() == View.VISIBLE) {
+
+            if (gesturesView.getVisibility() == View.VISIBLE) {
+                gesturesView.cancelClearAnimation();
+                gesturesView.clear(true);
+                gesturesView.setVisibility(View.GONE);
+                ImageView image = (ImageView) findViewById(R.id.annot1);
+                image.setTag("1");
+            }
+            seek.setVisibility(View.GONE);
+            colorw.setVisibility(View.GONE);
             gesturesView2.setVisibility(View.GONE);
             open.setVisibility(View.INVISIBLE);
             // webView.setClickable(true);
@@ -731,6 +741,33 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     imgView.setImageBitmap(bitmap);
                     break;
                 case R.id.annot1: //annotation
+                    if (imgView.getTag().equals("2")) {
+                        //imgView.setImageResource(R.drawable.anotatnblk);
+                        //imgView.setImageResource(R.drawable.annoticon); //normal
+                        if (gesturesView.getVisibility() == View.VISIBLE) {
+                            gesturesView.cancelClearAnimation();
+                            gesturesView.clear(true);
+                            gesturesView.setVisibility(View.GONE);
+                        }
+                        //annot2.setVisibility(View.GONE);
+                        seek.setVisibility(View.GONE);
+                        colorw.setVisibility(View.GONE);
+                        view.setTag("1");
+                    } else if (imgView.getTag().equals("1")) {
+//                        imgName = "icon77.png";
+//                        filePath = new File(getFilesDir(), imgName).getAbsolutePath();
+//                        bitmap = BitmapFactory.decodeFile(filePath);
+//                        imgView.setImageBitmap(bitmap);
+//                        imgView.setBackgroundResource(R.drawable.bg_circle);
+                        gesturesView.setGestureColor(Color.parseColor("#00ff09"));
+                        //imgView.setImageResource(R.drawable.annoticon); //glow
+                        //annot2.setVisibility(View.VISIBLE);
+                        gesturesView.setVisibility(View.VISIBLE);
+                        colorw.setVisibility(View.VISIBLE);
+                        seek.setVisibility(View.VISIBLE);
+                        view.setTag("2");
+                    }
+                    break;
                 case 103: //annotation
                     if (imgView.getTag().equals("2")) {
                         imgName = "icon7.png";
@@ -743,7 +780,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                             gesturesView.clear(true);
                             gesturesView.setVisibility(View.GONE);
                         }
-                        annot2.setVisibility(View.GONE);
+                        //annot2.setVisibility(View.GONE);
                         seek.setVisibility(View.GONE);
                         colorw.setVisibility(View.GONE);
                         view.setTag("1");
@@ -754,7 +791,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                         imgView.setImageBitmap(bitmap);
                         gesturesView.setGestureColor(Color.parseColor("#00ff09"));
                         //imgView.setImageResource(R.drawable.annoticon); //glow
-                        annot2.setVisibility(View.VISIBLE);
+                        //annot2.setVisibility(View.VISIBLE);
                         gesturesView.setVisibility(View.VISIBLE);
                         colorw.setVisibility(View.VISIBLE);
                         seek.setVisibility(View.VISIBLE);
@@ -981,6 +1018,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                         SQLiteDatabase db = handler.getWritableDatabase();
                         db.execSQL("update  TXN102  set COL20 = '-1' where COL18 = '" + randomNumber + "'");
                         Intent intent = new Intent(Container.this, LandingPage.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
                 })
@@ -1011,6 +1049,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                             }
                         }
                         sDialog.cancel();
+                        Intent intent = new Intent(Container.this, LandingPage.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
                     }
                 })
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -1122,6 +1163,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 }
                 dialog.dismiss();
                 Intent intent = new Intent(Container.this, LandingPage.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
         });
@@ -1254,6 +1296,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                         }
                         dialog.dismiss();
                         Intent intent = new Intent(Container.this, LandingPage.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
                 })
@@ -1264,6 +1307,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                         SQLiteDatabase db = handler.getWritableDatabase();
                         db.execSQL("update  TXN102  set COL20 = '-1' where COL18 = '" + randomNumber + "'");
                         Intent intent = new Intent(Container.this, LandingPage.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
                 })
