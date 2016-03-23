@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.File;
 
 import inc.gb.cp20.R;
@@ -28,7 +30,7 @@ public class VideoPlay extends Activity {
         mediaController.setAnchorView(vidView);
         vidView.setVisibility(View.VISIBLE);
         String path = VideoPlay.this.getFilesDir().getAbsolutePath();
-        File file = new File(path + "/" + fileName);
+        File file = new File(path + "/" + FilenameUtils.removeExtension(fileName) + "/" + fileName);
         Uri uri = null;
         if (!file.exists()) {
             String uriPath = "android.resource://" + getPackageName() + "/raw/" + fileName;

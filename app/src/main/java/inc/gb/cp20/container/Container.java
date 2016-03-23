@@ -220,7 +220,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                 intent.putExtra("fileName", refData[position][0]);
                                 startActivityForResult(intent, 1001);
                             } else if (refData[position][2].toLowerCase().equals("pdf")) {
-                                String path1 = Container.this.getFilesDir().getAbsolutePath() + "/"
+                                String path1 = Container.this.getFilesDir().getAbsolutePath() + "/" + FilenameUtils.removeExtension(playstData[position][2]) + "/"
                                         + refData[position][0];
                                 File file1 = new File(path1);
                                 if (file1.exists()) {
