@@ -31,7 +31,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -68,11 +67,12 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     //    String play_id = "";
 //    String play_name = "";
     private LinearLayout iconsBar;
-    HorizontalScrollView myscroll1, myscroll2;
     Button open = null;
     ImageView annot1, annot2, prevBrand, nextBrand, reference, close, backtoplaylist;
+    private boolean flagForPlaylist = false;
     LinearLayout mylinear, content2, content3;
     GestureOverlayView gesturesView, gesturesView2;
+    RelativeLayout myscroll2;
     SeekBar seek;
     ImageView colorw;
     WebView webView;
@@ -242,16 +242,14 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                         }
                     });
 
-                    Window window = refDialog.getWindow();
-
                     WindowManager.LayoutParams wmlp = refDialog.getWindow().getAttributes();
 
                     wmlp.gravity = Gravity.TOP | Gravity.RIGHT;
-                    wmlp.x = 60; // x position
+                    wmlp.x = 140;
                     wmlp.y = 20;
-                    window.setBackgroundDrawable(new ColorDrawable(
+                    refDialog.getWindow().setBackgroundDrawable(new ColorDrawable(
                             Color.TRANSPARENT));
-                    refDialog.getWindow().setLayout(210, 450);
+                    refDialog.getWindow().setLayout(240, 300);
                     refDialog.getWindow().clearFlags(
                             WindowManager.LayoutParams.FLAG_DIM_BEHIND);
                     refDialog.show();
@@ -259,8 +257,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             }
         });
 
-        myscroll2 = (HorizontalScrollView) findViewById(R.id.myscroll2);
-        myscroll1 = (HorizontalScrollView) findViewById(R.id.myscroll1);
+        myscroll2 = (RelativeLayout) findViewById(R.id.scroll2);
+
         mylinear = (LinearLayout) findViewById(R.id.mainid);
         webView = (WebView) findViewById(R.id.webView);
         gesturesView = (GestureOverlayView) findViewById(R.id.gestures);
@@ -297,6 +295,10 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                         }
                     });
                     mylinear.startAnimation(animation);
+                    if (!customer_id.equals("") || category_name.equalsIgnoreCase("S")) {
+                        if (flagForPlaylist)
+                            backtoplaylist.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         });
@@ -411,6 +413,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     });
                     mylinear.startAnimation(animation);
                     annot2.setVisibility(View.GONE);
+                    backtoplaylist.setVisibility(View.GONE);
                 } else {
                     gesturesView2.setVisibility(View.GONE);
                     open.setVisibility(View.INVISIBLE);
@@ -441,7 +444,10 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                         }
                     });
                     mylinear.startAnimation(animation);
-
+                    if (!customer_id.equals("") || category_name.equalsIgnoreCase("S")) {
+                        if (flagForPlaylist)
+                            backtoplaylist.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         });
@@ -464,26 +470,22 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             for (int i = 0; i < playstData.length; i++) {
                 LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = inflater.inflate(R.layout.playlist_groups, null);
-                //view.setId(Integer.parseInt(playstData[i][0]));
                 view.setId(i);
                 String filePath = new File(getFilesDir() + "/" + FilenameUtils.removeExtension(playstData[i][2]) + "/", FilenameUtils.removeExtension(playstData[i][2]) + ".png").getAbsolutePath();
+                bitmap = BitmapFactory.decodeFile(filePath);
                 ImageView img = (ImageView) view.findViewById(R.id.img);
-                try {
-                    bitmap = BitmapFactory.decodeFile(filePath);
-                    img.setImageBitmap(bitmap);
-                    bitmap = null;
-                } catch (Exception e) {
-                    img.setImageResource(R.drawable.dempi);
-                }
+                img.setImageBitmap(bitmap);
 
                 TextView name = (TextView) view.findViewById(R.id.name);
                 name.setText(playstData[i][3]);
                 view.setOnClickListener(pagesListener);
                 if (index == 0 && i == 0) {
-                    view.setBackgroundColor(Color.parseColor("#67E0ED"));
+                    img.setScaleX(1.4f);
+                    img.setScaleY(1.4f);
                     displayFocussedBrands(0);
                 } else if (index == 1 && i == playIndex) {
-                    view.setBackgroundColor(Color.parseColor("#67E0ED"));
+                    img.setScaleX(1.4f);
+                    img.setScaleY(1.4f);
                     displayFocussedBrands(playIndex);
                 }
                 content2.addView(view);
@@ -502,9 +504,6 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
             TextView name = (TextView) childView.findViewById(R.id.namesub);
             name.setText(brandData[i][2]);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(160, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(5, 0, 5, 0);
-            childView.setLayoutParams(params);
             childView.setId(Integer.parseInt(brandData[i][3]));
             childView.setOnClickListener(brandListener);
             content3.addView(childView);
@@ -518,10 +517,16 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             if (count == 0)
                 actualPlayIndex = playIndex;
             count++;
+            ImageView imageView = (ImageView) ((RelativeLayout) view).getChildAt(0);
             for (int i = 0; i < content3.getChildCount(); i++) {
-                content3.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+                ImageView child = (ImageView) ((RelativeLayout) content3.getChildAt(i)).getChildAt(0);
+                child.setScaleX(1.0f);
+                child.setScaleY(1.0f);
+//                child.setBackgroundResource(android.R.color.transparent);
             }
-            view.setBackgroundColor(Color.parseColor("#67E0ED"));
+            imageView.setScaleX(1.4f);
+            imageView.setScaleY(1.4f);
+//            imageView.setBackgroundResource(R.drawable.image_bg);
             playIndex = 0;
             playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11 from TBDPS a , TBDPG b\n" +
                     "        where a.col5 = b.col0\n" +
@@ -529,6 +534,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             fillPlayList(0);
             if (!customer_id.equals("") || category_name.equalsIgnoreCase("S")) {
                 backtoplaylist.setVisibility(View.VISIBLE);
+                flagForPlaylist = true;
             }
             hideDrawer();
         }
@@ -537,10 +543,16 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     View.OnClickListener pagesListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            ImageView imageView = (ImageView) ((RelativeLayout) view).getChildAt(0);
             for (int i = 0; i < content2.getChildCount(); i++) {
-                content2.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+                ImageView child = (ImageView) ((RelativeLayout) content2.getChildAt(i)).getChildAt(0);
+                child.setScaleX(1.0f);
+                child.setScaleY(1.0f);
+//                imageView.setBackgroundResource(android.R.color.transparent);
             }
-            view.setBackgroundColor(Color.parseColor("#67E0ED"));
+            imageView.setScaleX(1.4f);
+            imageView.setScaleY(1.4f);
+//            imageView.setBackgroundResource(R.drawable.image_bg);
             playIndex = view.getId();
             displayFocussedBrands(playIndex);
             hideDrawer();
@@ -605,6 +617,10 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 }
             });
             mylinear.startAnimation(animation);
+            if (!customer_id.equals("") || category_name.equalsIgnoreCase("S")) {
+                if (flagForPlaylist)
+                    backtoplaylist.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -657,8 +673,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             iconsBar.getChildAt(0).setVisibility(View.GONE);
             iconsBar.getChildAt(1).setVisibility(View.GONE);
         }
-
-        if (playstData[playIndex][6].equals("1")) {//Reference
+        String refCount[][] = handler.genericSelect("Select count (1) from TBDRG where COL0 = '" + playstData[playIndex][0] + "'", 1);
+        if (Integer.parseInt(refCount[0][0]) > 0) {//Reference
             reference.setVisibility(View.VISIBLE);
             reference.setTag(playstData[playIndex][0]);
         } else
@@ -697,8 +713,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     RelativeLayout rlView = (RelativeLayout) content2.getChildAt(playIndex);
                     int x = rlView.getRight();
                     int y = rlView.getTop();
-                    myscroll1.scrollTo(x, y);
                     backtoplaylist.setVisibility(View.GONE);
+                    flagForPlaylist = false;
                     break;
                 case 102: //Email
                     if (imgView.getTag().equals("1")) {
@@ -825,6 +841,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             fillPlayList(1);
             if (!customer_id.equals("") || category_name.equalsIgnoreCase("S")) {
                 backtoplaylist.setVisibility(View.VISIBLE);
+                flagForPlaylist = true;
             }
         }
     }
@@ -1109,7 +1126,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             }
         });
         final EditText phy_name = (EditText) dialog.findViewById(R.id.phy_name);
-        ImageView move = (ImageView) dialog.findViewById(R.id.move);
+        TextView move = (TextView) dialog.findViewById(R.id.move);
+        move.setText(getResources().getString(R.string.reply) + "  ADD TO LIST");
+        move.setTypeface(font, Typeface.BOLD);
         move.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {

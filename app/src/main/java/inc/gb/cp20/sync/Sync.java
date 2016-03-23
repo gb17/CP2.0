@@ -139,7 +139,6 @@ public class Sync {
                                 db.delete("TBBNO", whereClause, whereArgs);
                             }
                         }
-                        acknowledgeBatchCode();
                     }
                     Log.d("Response", response + "");
                 }

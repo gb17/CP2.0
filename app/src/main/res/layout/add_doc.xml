@@ -26,9 +26,10 @@
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="8dp"
-        android:text="TAG Physicians"
-        android:textColor="#6B6B6B"
-        android:textSize="22sp" />
+        android:text="ADD DOCTOR"
+        android:textColor="#151414"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <View
         android:id="@+id/view"
@@ -51,16 +52,8 @@
             android:layout_height="match_parent"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:background="#484848"
+            android:background="#c9c5c5"
             android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="15dp"
-                android:text="Search Physician to TAG"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -85,12 +78,14 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="15dp"
-                    android:text="TAG Physicians"
-                    android:textColor="#616161"
-                    android:textSize="20sp" />
+                    android:background="#b1aeae"
+                    android:padding="6dp"
+                    android:text="ADDED DOCTORS"
+                    android:textColor="@color/page_count"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
 
                 <View
                     android:layout_width="match_parent"
@@ -119,16 +114,18 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
-            android:background="#dcd8d8"
+            android:background="#f1eded"
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp"
-                android:text="Add Unlisted"
-                android:textColor="#616161"
-                android:textSize="20sp" />
+                android:padding="6dp"
+                android:background="#d2d0d0"
+                android:text="ADD UNLISTED DOCTOR"
+                android:textColor="#151414"
+                android:textSize="19sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
@@ -207,16 +204,16 @@
                 android:layout_marginLeft="20dp"
                 android:background="@drawable/drop_down_bg" />
 
-            <ImageView
+            <TextView
                 android:id="@+id/move"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/bg_roundedgray_edit"
-                android:paddingLeft="60dp"
-                android:paddingRight="60dp"
-                android:src="@drawable/ic_chevron_left_white_24dp" />
+                android:background="@android:color/transparent"
+                android:textColor="@color/page_count"
+                android:gravity="center_horizontal"
+                android:textSize="19sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </LinearLayout>

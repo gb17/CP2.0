@@ -1,12 +1,12 @@
 package inc.gb.cp20.container;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import inc.gb.cp20.R;
@@ -15,12 +15,13 @@ public class Custom_grid extends BaseAdapter {
 
     private Context mcontext;
     String[][] listData;
+    private Typeface font;
 
     public Custom_grid(Context c, String[][] listData) {
         // TODO Auto-generated constructor stub
         mcontext = c;
         this.listData = listData;
-
+        font = Typeface.createFromAsset(mcontext.getAssets(), "fontawesome-webfont.ttf");
     }
 
     @Override
@@ -49,24 +50,26 @@ public class Custom_grid extends BaseAdapter {
             convertView = inflater.inflate(R.layout.customlistnotification, null);
         }
 
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.image_icon);
-        String str = listData[position][2].toLowerCase();
-        if (str.equals("pdf"))
-            imageView.setImageResource(R.drawable.pdf);
-        else if (str.equals("mp4"))
-            imageView.setImageResource(R.drawable.video);
-
         TextView seq = (TextView) convertView.findViewById(R.id.text);
-        seq.setText(listData[position][0]);
+        final TextView icon = (TextView) convertView.findViewById(R.id.email);
 
-        final ImageView icon = (ImageView) convertView.findViewById(R.id.email);
+        String str = listData[position][2].toLowerCase();
 
-        icon.setOnClickListener(new OnClickListener() {
+        if (str.equals("pdf"))
+            seq.setText(mcontext.getResources().getString(R.string.pdf_icon) + "   " + listData[position][0]);
+        else if (str.equals("mp4"))
+            seq.setText(mcontext.getResources().getString(R.string.play_icon) + "   " + listData[position][0]);
+
+        icon.setText(mcontext.getResources().getString(R.string.message));
+        icon.setTypeface(font);
+        seq.setTypeface(font);
+
+        icon.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                icon.setImageResource(R.drawable.emailiconglow);
+                icon.setTextColor(Color.parseColor("#00FFFF"));
                 try {
                     Thread.sleep(400);
                 } catch (InterruptedException e) {
@@ -74,7 +77,6 @@ public class Custom_grid extends BaseAdapter {
                     e.printStackTrace();
                 }
                 Container.disMiss(position);
-
             }
         });
         return convertView;

@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:background="#FF0000" />
+        android:background="#FFFFFF" />
 
     <android.gesture.GestureOverlayView
         android:id="@+id/gestures2"
@@ -79,49 +79,107 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/menubar"
-                android:orientation="horizontal"></LinearLayout>
+                android:orientation="horizontal" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="126dp">
+
+                <RelativeLayout
+                    android:id="@+id/left"
+                    android:layout_width="156dp"
+                    android:layout_height="126dp"
+                    android:background="@color/page_count">
+
+                    <ImageView
+                        android:id="@+id/playlist"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="18dp"
+                        android:src="@drawable/playlist" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/playlist"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="18dp"
+                        android:text="PLAYLIST"
+                        android:textColor="#FFFFFF"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@id/left"
+                    android:background="#BF000000">
+
+                    <LinearLayout
+                        android:id="@+id/content2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#FFFFFF" />
+
+        <RelativeLayout
+            android:id="@+id/scroll2"
+            android:layout_width="match_parent"
+            android:layout_height="126dp"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:id="@+id/leftbottom"
+                android:layout_width="156dp"
+                android:layout_height="126dp"
+                android:background="#06695b">
+
+                <ImageView
+                    android:id="@+id/star"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="33dp"
+                    android:src="@drawable/star" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/star"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="14dp"
+                    android:text="BRAND LIST"
+                    android:textColor="#FFFFFF"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
 
             <HorizontalScrollView
-                android:id="@+id/myscroll1"
                 android:layout_width="match_parent"
-                android:layout_height="195dp"
-                android:background="#BF000000"
-                android:paddingBottom="5dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp">
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/leftbottom"
+                android:background="#BF000000">
 
                 <LinearLayout
-                    android:id="@+id/content2"
+                    android:id="@+id/content3"
                     android:layout_width="match_parent"
-                    android:layout_height="192dp"
-                    android:layout_marginBottom="7dp"
-                    android:layout_marginTop="7dp"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal">
 
                 </LinearLayout>
             </HorizontalScrollView>
-        </LinearLayout>
-
-        <HorizontalScrollView
-            android:id="@+id/myscroll2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="-7dp"
-            android:background="#BF000000"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:visibility="gone">
-
-            <LinearLayout
-                android:id="@+id/content3"
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:layout_marginBottom="7dp"
-                android:layout_marginTop="7dp"
-                android:orientation="horizontal">
-
-            </LinearLayout>
-        </HorizontalScrollView>
+        </RelativeLayout>
     </LinearLayout>
 
     <ImageView
@@ -175,7 +233,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="21dp"
         android:layout_toLeftOf="@id/close"
-        android:src="@drawable/anotatnblk"/>
+        android:src="@drawable/anotatnblk" />
 
     <ImageView
         android:id="@+id/refrence"
@@ -185,7 +243,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="21dp"
         android:layout_toLeftOf="@id/annot1"
-        android:src="@drawable/attach"
+        android:src="@drawable/reference"
         android:visibility="gone" />
 
 
