@@ -23,8 +23,8 @@ import java.util.List;
 import inc.gb.cp20.DB.DBHandler;
 import inc.gb.cp20.Models.ContentPage;
 import inc.gb.cp20.Models.RefrenceContent;
+import inc.gb.cp20.Models.SearchData;
 import inc.gb.cp20.Models.TBBRAND;
-import inc.gb.cp20.Models.TBDPG;
 import inc.gb.cp20.R;
 import inc.gb.cp20.RecylerView.DividerItemDecoration;
 import inc.gb.cp20.RecylerView.ThumbnailAdapter;
@@ -38,9 +38,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
 
 
     private RecyclerView recyclerView, recyclerView_sub, recyclerView_ref, recyclerView_search;
-    private ThumbnailAdapter mAdapter_sub, mAdapter_ref;
 
-    private String Cat_Code;
 
     RelativeLayout sublistRelativeLayout, ref_sublistRelativeLayout;
     String WhereQuery = "";
@@ -118,7 +116,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
                 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        ThumbnailAdapter mAdapter = new ThumbnailAdapter(thumbnailPOJOList, this, getSupportFragmentManager(), this);
+        ThumbnailAdapter mAdapter = new ThumbnailAdapter(thumbnailPOJOList, this, getSupportFragmentManager(), this, 99);
         recyclerView_sub.addItemDecoration(new DividerItemDecoration(ContentLibrary.this, LinearLayoutManager.HORIZONTAL));
 
         recyclerView.setHasFixedSize(true);
@@ -226,7 +224,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
 
 
         recyclerView_search.setVisibility(View.VISIBLE);
-        List<TBDPG> thumbnailPOJOList_sub = new ArrayList<>();
+        List<SearchData> thumbnailPOJOList_sub = new ArrayList<>();
         ThumbnailAdpForSearch mAdapter_search = new ThumbnailAdpForSearch(thumbnailPOJOList_sub, ContentLibrary.this, getSupportFragmentManager(), this);
 
         recyclerView_search.setAdapter(mAdapter_search);
@@ -320,6 +318,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
                 "        and a.col3 = '" + itme.getCOL3() + "'\n" +
                 "        and a.col10 = 'IPL'\n" +
                 "        and b.col8 = 'P'\n" +
+                "        and b.col7 = '1'\n" +
                 "         order by  CAST (a.col2 AS INTEGER) ASC \n";
         ContentPage contentPage;
         Cursor cursor = dbHandler.getCusrsor(Query);
@@ -376,36 +375,40 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         mAdapter.notifyDataSetChanged();
     }
 
-    private void prepareSerachData(String TableName, String whereQuery, ThumbnailAdpForSearch mAdapter, List<TBDPG> thumbnailPOJOList) {
+    private void prepareSerachData(String TableName, String whereQuery, ThumbnailAdpForSearch mAdapter, List<SearchData> thumbnailPOJOList) {
 
         String Query = "";
+//
+//        Query = " Select  a.*,b.COL2 from TBDPS a, TBDPG b where " +
+//                "a.col5 = b.col0  and b.COL7 ='1' " +
+//                "and b.COL4 like '%" + whereQuery + "%'";
 
-        Query = " Select  a.*,b.COL2 from TBDPS a, TBDPG b where a.col5 = b.col0 and a.COL10 = 'IPL'  and b.COL7 ='0' and b.COL4 like '%" + whereQuery + "%'";
+        Query = "select  b.col1 imagepath , b.COL2 ,b.COl0,a.COL9 , a.COL1  from  TBDPS a, TBDPG b\n" +
+                "    where a.col5 = b.col0\n" +
+                "    and a.col10 = 'IPL'\n" +
+                "     and b.col8 = 'P'\n" +
+                "   and b.col7='1'\n" +
+                "                and b.COL4 like '%" + whereQuery + "%'\n" +
+                "                     order by  CAST (a.col2 AS INTEGER) ASC ";
 
-        TBDPG tbdpg;
+        SearchData searchData;
         Cursor cursor = dbHandler.getCusrsor(Query);
         cursor.moveToFirst();
 
         if (cursor.getCount() != 0) {
             do {
-                tbdpg = new TBDPG();
-                tbdpg.setCOL0(cursor.getString(cursor.getColumnIndex("COL0")));
-                tbdpg.setCOL1(cursor.getString(cursor.getColumnIndex("COL1")));
-                tbdpg.setCOL2(cursor.getString(cursor.getColumnIndex("COL2")));
-                tbdpg.setCOL3(cursor.getString(cursor.getColumnIndex("COL3")));
-                tbdpg.setCOL4(cursor.getString(cursor.getColumnIndex("COL4")));
-                tbdpg.setCOL5(cursor.getString(cursor.getColumnIndex("COL5")));
-                tbdpg.setCOL6(cursor.getString(cursor.getColumnIndex("COL6")));
-                tbdpg.setCOL7(cursor.getString(cursor.getColumnIndex("COL7")));
-                tbdpg.setCOL8(cursor.getString(cursor.getColumnIndex("COL8")));
-                tbdpg.setCOL9(cursor.getString(cursor.getColumnIndex("COL9")));
-                tbdpg.setCOL10(cursor.getString(cursor.getColumnIndex("COL10")));
-                thumbnailPOJOList.add(tbdpg);
+                searchData = new SearchData();
+                searchData.setPageCode(cursor.getString(cursor.getColumnIndex("COL0")));
+                searchData.setPageNamee(cursor.getString(cursor.getColumnIndex("COL2")));
+                searchData.setCat_Type(cursor.getString(cursor.getColumnIndex("COL9")));
+                searchData.setBrand_code(cursor.getString(cursor.getColumnIndex("COL1")));
+                searchData.setImagePath(cursor.getString(cursor.getColumnIndex("imagepath")));
+                thumbnailPOJOList.add(searchData);
             } while (cursor.moveToNext());
         }
 
-
-        mAdapter.notifyDataSetChanged();
+        if (cursor.getCount() != 0)
+            mAdapter.notifyDataSetChanged();
     }
 
 

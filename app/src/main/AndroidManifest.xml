@@ -14,13 +14,11 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".Configure.MainActivity"
-            android:windowSoftInputMode="stateHidden"></activity>
-
-        <!--<activity-->
-        <!--android:name=".ConatentLib.ContentLibrary"-->
-        <!--android:windowSoftInputMode="stateHidden">-->
-
-        <!--</activity>-->
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".ContentLib.ContentLibrary"
+            android:windowSoftInputMode="stateHidden" />
 
 
         <activity
@@ -38,7 +36,9 @@
         <activity
             android:name=".Landing.LandingPage"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden">
+
+        </activity>
 
         <activity android:name=".container.LightContainer" />
         <activity android:name=".container.Container" />
@@ -48,6 +48,7 @@
         <activity
             android:name=".changepwd.ChangePasswordAcitvity"
             android:windowSoftInputMode="stateHidden">
+
         </activity>
 
     </application>

@@ -39,11 +39,14 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
             R.drawable.dempi, R.drawable.newace, R.drawable.newcfix1, R.drawable.newcfix3, R.drawable.newjade
             , R.drawable.newmezzo, R.drawable.newstillsep, R.drawable.solsuna, R.drawable.stelpep, R.drawable.zepine, R.drawable.stelpep, R.drawable.zepine};
 
-    public ThumbnailAdapter(List<TBBRAND> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener) {
+    static int index;
+
+    public ThumbnailAdapter(List<TBBRAND> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener, int index) {
         this.brandList = brandList;
         this.mContext = mContext;
         this.fragmentManager = fragmentManager;
         this.itemListener = itemListener;
+        this.index = index;
         font = Typeface.createFromAsset(mContext.getAssets(),
                 "fontawesome-webfont.ttf");
 
@@ -108,84 +111,109 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
                     listener.onItemClick(brandList, v, getLayoutPosition());
                 }
             });
+            if (index == 1) {
+                pageFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        childScrollView.setVisibility(View.VISIBLE);
 
-            pageFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    childScrollView.setVisibility(View.VISIBLE);
+                        fb.setVisibility(View.VISIBLE);
 
-                    fb.setVisibility(View.VISIBLE);
+                        layout.removeAllViews();
 
-                    layout.removeAllViews();
+                        String[][] pagename = dbHandler.genericSelect("select b.COL2 from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  '" + brandList.getCOL3() + "' and a.COL9 = '" + brandList.getCOL0() + "'   and a.COL10 = 'IPL'", 1);
+                        if (pagename != null) {
+                            int prevTextViewId = 0;
+                            for (int i = 0; i < pagename.length; i++) {
+                                final TextView textView = new TextView(mContext);
 
-                    String[][] pagename = dbHandler.genericSelect("select b.COL2 from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  '" + brandList.getCOL3() + "' and a.COL9 = '" + brandList.getCOL0() + "'   and a.COL10 = 'IPL'  and b.COL7= '0'", 1);
-                    int prevTextViewId = 0;
-                    for (int i = 0; i < pagename.length; i++) {
-                        final TextView textView = new TextView(mContext);
-                        String temp = "" + i + 1;
-                        if (temp.length() == 1)
-                            temp = "0" + i;
-                        textView.setText(temp + " " + pagename[i][0]);
-                        textView.setTextColor(Color.parseColor("#FFFFFF"));
+                                String temp = "";
+                                if (i < 10) {
+                                    if (i == 9)
+                                        temp = "0" + (i);
+                                    else
+                                        temp = "0" + (i + 1);
+                                } else {
+                                    temp = "" + (i + 1);
+                                }
 
-                        int curTextViewId = prevTextViewId + 1;
-                        textView.setId(curTextViewId);
-                        final RelativeLayout.LayoutParams params =
-                                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
-                                        RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-                        params.addRule(RelativeLayout.BELOW, prevTextViewId);
-                        params.setMargins(4, 4, 4, 4);
-                        textView.setLayoutParams(params);
+                                textView.setText(temp + " " + pagename[i][0]);
+                                temp = "";
+                                textView.setTextColor(Color.parseColor("#FFFFFF"));
 
-                        prevTextViewId = curTextViewId;
-                        layout.addView(textView, params);
+                                int curTextViewId = prevTextViewId + 1;
+                                textView.setId(curTextViewId);
+                                final RelativeLayout.LayoutParams params =
+                                        new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
+                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                                params.addRule(RelativeLayout.BELOW, prevTextViewId);
+                                params.setMargins(4, 4, 4, 4);
+                                textView.setLayoutParams(params);
+
+                                prevTextViewId = curTextViewId;
+                                layout.addView(textView, params);
+                            }
+                        }
                     }
-                }
-            });
+                });
 
 
-            refFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    childScrollView.setVisibility(View.VISIBLE);
-                    layout.removeAllViews();
-                    fb.setVisibility(View.VISIBLE);
-                    String Query = " select l.COL1,l.COL2,l.COL15  from TBDRG l\n" +
-                            "        where exists(\n" +
-                            "        select 1\n" +
-                            "        from TBDPS a\n" +
-                            "        where a.col9='" + brandList.getCOL0() + "'\n" +
-                            "        and a.col3='" + brandList.getCOL3() + "'" +
-                            "        and a.col10='IPL'\n" +
-                            "        and a.col5=l.col0)";
+                refFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        childScrollView.setVisibility(View.VISIBLE);
+                        layout.removeAllViews();
+                        fb.setVisibility(View.VISIBLE);
+                        String Query = " select l.COL1,l.COL2,l.COL15  from TBDRG l\n" +
+                                "        where exists(\n" +
+                                "        select 1\n" +
+                                "        from TBDPS a\n" +
+                                "        where a.col9='" + brandList.getCOL0() + "'\n" +
+                                "        and a.col3='" + brandList.getCOL3() + "'" +
+                                "        and a.col10='IPL'\n" +
+                                "        and a.col5=l.col0)";
 
-                    String[][] pagename = dbHandler.genericSelect(Query, 3);
+                        String[][] pagename = dbHandler.genericSelect(Query, 3);
+                        if (pagename != null) {
+                            int prevTextViewId = 0;
+                            for (int i = 0; i < pagename.length; i++) {
+                                final TextView textView = new TextView(mContext);
+                                String temp = "";
+                                if (i < 10) {
+                                    if (i == 9)
+                                        temp = "0" + (i);
+                                    else
+                                        temp = "0" + (i + 1);
+                                } else {
+                                    temp = "" + (i + 1);
+                                }
 
-                    int prevTextViewId = 0;
-                    for (int i = 0; i < pagename.length; i++) {
-                        final TextView textView = new TextView(mContext);
-                        String temp = "" + i + 1;
-                        if (temp.length() == 1)
-                            temp = "0" + i;
-                        textView.setText(temp + " " + pagename[i][0]);
-                        textView.setTextColor(Color.parseColor("#FFFFFF"));
 
-                        int curTextViewId = prevTextViewId + 1;
-                        textView.setId(curTextViewId);
-                        final RelativeLayout.LayoutParams params =
-                                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
-                                        RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                textView.setText(temp + " " + pagename[i][0]);
+                                temp = "";
 
-                        params.addRule(RelativeLayout.BELOW, prevTextViewId);
-                        params.setMargins(4, 4, 4, 4);
-                        textView.setLayoutParams(params);
+                                textView.setTextColor(Color.parseColor("#FFFFFF"));
 
-                        prevTextViewId = curTextViewId;
-                        layout.addView(textView, params);
+                                int curTextViewId = prevTextViewId + 1;
+                                textView.setId(curTextViewId);
+                                final RelativeLayout.LayoutParams params =
+                                        new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
+                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                                params.addRule(RelativeLayout.BELOW, prevTextViewId);
+                                params.setMargins(4, 4, 4, 4);
+                                textView.setLayoutParams(params);
+
+                                prevTextViewId = curTextViewId;
+                                layout.addView(textView, params);
+                            }
+                        }
                     }
-                }
-            });
+                });
+
+            }
 
         }
 

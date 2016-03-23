@@ -1,4 +1,4 @@
-<!-- [ Mirror metadata ] generatedAt: 1457950172184 -->
+<!-- [ Mirror metadata ] generatedAt: 1458544951874 -->
 <!-- Generated screen file. Fill the id tags below with content with
 which to populate your previewed layout. For a complete specification
 of sample data, please see http://jimulabs.com/sample-data-specifications/ 
@@ -6,32 +6,6 @@ of sample data, please see http://jimulabs.com/sample-data-specifications/
 Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
 <screen>
     <_content layout="@layout/container_horizontal_recylerview">
-        <recycler_view_for_search layoutManager="linear:vertical">
-        <!-- Examples of valid layoutManager values: "linear", "staggeredGrid:5:horizontal", "staggeredGrid:4" -->
-            <items layout="@android:layout/simple_list_item_1" >
-                <_item>
-                    <text1>Dalmatian</text1>
-                </_item>
-                <_item>
-                    <text1>Great Dane</text1>
-                </_item>
-                <_item>
-                    <text1>Shi Tzu</text1>
-                </_item>
-                <_item>
-                    <text1>Corgi</text1>
-                </_item>
-                <_item>
-                    <text1>Labrador</text1>
-                </_item>
-                <_item>
-                    <text1>Doberman</text1>
-                </_item>
-                <_item>
-                    <text1>Chihuahua</text1>
-                </_item>
-            </items>
-                </recycler_view_for_search>
         <!-- TextView Examples:
         <header text="@string/string_resource" />
         <header text="Text literal" textSize="14sp" /> -->
@@ -40,25 +14,25 @@ Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" ov
         <!-- Examples of valid layoutManager values: "linear", "staggeredGrid:5:horizontal", "staggeredGrid:4" -->
             <items layout="@android:layout/simple_list_item_1" >
                 <_item>
-                    <text1>Dalmatian</text1>
+                    <text1>Vancouver</text1>
                 </_item>
                 <_item>
-                    <text1>Great Dane</text1>
+                    <text1>Cairo</text1>
                 </_item>
                 <_item>
-                    <text1>Shi Tzu</text1>
+                    <text1>New York</text1>
                 </_item>
                 <_item>
-                    <text1>Corgi</text1>
+                    <text1>San Francisco</text1>
                 </_item>
                 <_item>
-                    <text1>Labrador</text1>
+                    <text1>Seattle</text1>
                 </_item>
                 <_item>
-                    <text1>Doberman</text1>
+                    <text1>Hong Kong</text1>
                 </_item>
                 <_item>
-                    <text1>Chihuahua</text1>
+                    <text1>Tokyo</text1>
                 </_item>
             </items>
                 </recycler_view_for_hr>
@@ -94,25 +68,25 @@ Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" ov
         <!-- Examples of valid layoutManager values: "linear", "staggeredGrid:5:horizontal", "staggeredGrid:4" -->
             <items layout="@android:layout/simple_list_item_1" >
                 <_item>
-                    <text1>Vancouver</text1>
+                    <text1>Apple</text1>
                 </_item>
                 <_item>
-                    <text1>Cairo</text1>
+                    <text1>Orange</text1>
                 </_item>
                 <_item>
-                    <text1>New York</text1>
+                    <text1>Pear</text1>
                 </_item>
                 <_item>
-                    <text1>San Francisco</text1>
+                    <text1>Grapefruit</text1>
                 </_item>
                 <_item>
-                    <text1>Seattle</text1>
+                    <text1>Banana</text1>
                 </_item>
                 <_item>
-                    <text1>Hong Kong</text1>
+                    <text1>Lemon</text1>
                 </_item>
                 <_item>
-                    <text1>Tokyo</text1>
+                    <text1>Carrot</text1>
                 </_item>
             </items>
                 </recycler_view_for_hr_sub_ref>

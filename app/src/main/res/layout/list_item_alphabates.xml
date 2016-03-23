@@ -81,8 +81,8 @@
 
         <TextView
             android:id="@+id/threedot_menu"
-            android:layout_width="55dp"
-            android:layout_height="wrap_content"
+            android:layout_width="75dp"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_alignRight="@+id/drnametextview"
             android:layout_marginRight="5dp"
@@ -130,8 +130,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/detail_area"
-        android:visibility="gone"
-        android:background="@color/thumbnail_producname_backgrounf">
+        android:background="@color/thumbnail_producname_backgrounf"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/headingTV"

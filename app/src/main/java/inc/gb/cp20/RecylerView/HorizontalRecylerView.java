@@ -19,6 +19,7 @@ import inc.gb.cp20.R;
 import inc.gb.cp20.interfaces.RecyclerViewClickListener;
 
 /**
+ *
  * Created by GB on 2/23/16.
  */
 public class HorizontalRecylerView {
@@ -65,7 +66,7 @@ public class HorizontalRecylerView {
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new ThumbnailAdapter(thumbnailPOJOList, mContext, manager, recyclerViewClickListener);
+        mAdapter = new ThumbnailAdapter(thumbnailPOJOList, mContext, manager, recyclerViewClickListener, 1);
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new DividerItemDecoration(mContext, LinearLayoutManager.HORIZONTAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());

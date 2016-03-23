@@ -1,12 +1,14 @@
 package inc.gb.cp20.RecylerView;
 
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,9 +16,12 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
 import java.util.List;
 
-import inc.gb.cp20.Models.TBDPG;
+import inc.gb.cp20.Models.SearchData;
 import inc.gb.cp20.R;
 import inc.gb.cp20.interfaces.RecyclerViewClickListener;
 
@@ -26,16 +31,18 @@ import inc.gb.cp20.interfaces.RecyclerViewClickListener;
 public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForSearch.MyViewHolder> {
 
     private static RecyclerViewClickListener itemListener;
-    public List<TBDPG> brandList;
+    public List<SearchData> brandList;
     static Typeface font;
     static Context mContext;
     FragmentManager fragmentManager;
+
+    Bitmap bitmap;
     Integer Imagearr[] = {R.drawable.dempi, R.drawable.newace, R.drawable.newcfix1, R.drawable.newcfix3, R.drawable.newjade
             , R.drawable.newmezzo, R.drawable.newstillsep, R.drawable.solsuna, R.drawable.stelpep, R.drawable.zepine, R.drawable.stelpep, R.drawable.zepine,
             R.drawable.dempi, R.drawable.newace, R.drawable.newcfix1, R.drawable.newcfix3, R.drawable.newjade
             , R.drawable.newmezzo, R.drawable.newstillsep, R.drawable.solsuna, R.drawable.stelpep, R.drawable.zepine, R.drawable.stelpep, R.drawable.zepine};
 
-    public ThumbnailAdpForSearch(List<TBDPG> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener) {
+    public ThumbnailAdpForSearch(List<SearchData> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener) {
         this.brandList = brandList;
         this.mContext = mContext;
         this.fragmentManager = fragmentManager;
@@ -75,61 +82,20 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
             pageCountLayout.setVisibility(View.GONE);
             refCountLayout = (RelativeLayout) view.findViewById(R.id.reflayout);
             refCountLayout.setVisibility(View.GONE);
+        }
 
-
-//            refFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//
-//                }
-//            });
-
-            fb.setTypeface(font);
-            fb.setOnClickListener(new View.OnClickListener() {
+        public void bind(final SearchData brandList, final int Position_) {
+            imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    childScrollView.setVisibility(View.GONE);
-                    fb.setVisibility(View.GONE);
+                    Intent intent = new Intent();
+                    intent.putExtra("category_code", brandList.getBrand_code());
+                    intent.putExtra("category_name", brandList.getCat_Type());
+                    intent.putExtra("page_number", Position_ + "");
+                    ((Activity) mContext).setResult(Activity.RESULT_OK, intent);
+                    ((Activity) mContext).finish();
                 }
             });
-
-            pageFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    childScrollView.setVisibility(View.VISIBLE);
-                    fb.setVisibility(View.VISIBLE);
-
-
-                    int prevTextViewId = 0;
-                    for (int i = 0; i < 15; i++) {
-                        final TextView textView = new TextView(mContext);
-                        textView.setText(i + "  Page Name");
-                        textView.setTextColor(Color.parseColor("#FFFFFF"));
-
-                        int curTextViewId = prevTextViewId + 1;
-                        textView.setId(curTextViewId);
-                        final RelativeLayout.LayoutParams params =
-                                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
-                                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-                        params.addRule(RelativeLayout.BELOW, prevTextViewId);
-                        params.setMargins(4, 4, 4, 4);
-                        textView.setLayoutParams(params);
-
-                        prevTextViewId = curTextViewId;
-                        layout.addView(textView, params);
-                    }
-                }
-            });
-            childScrollView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    // Disallow the touch request for parent scroll on touch of  child view
-                    v.getParent().requestDisallowInterceptTouchEvent(true);
-                    return false;
-                }
-            });
-
 
         }
 
@@ -147,13 +113,13 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        TBDPG tbdpg = brandList.get(position);
-        holder.title.setText(tbdpg.getCOL2());
-        if (position >= Imagearr.length - 1)
-            holder.imageView.setImageResource(R.drawable.dempi);
-        else {
-            holder.imageView.setImageResource(Imagearr[position]);
-        }
+        SearchData tbdpg = brandList.get(position);
+        holder.title.setText(tbdpg.getPageNamee());
+        String filePath = new File(mContext.getFilesDir() + "/" + FilenameUtils.removeExtension(tbdpg.getImagePath()) + "/", FilenameUtils.removeExtension(tbdpg.getImagePath()) + ".png").getAbsolutePath();
+        bitmap = BitmapFactory.decodeFile(filePath);
+        holder.imageView.setImageBitmap(bitmap);
+        holder.bind(brandList.get(position), position);
+
     }
 
     @Override

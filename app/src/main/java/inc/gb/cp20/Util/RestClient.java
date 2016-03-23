@@ -35,7 +35,8 @@ public class RestClient {
 
     private static GitApiInterface gitApiInterface;
 
-    public static String baseUrl = "http://10.0.0.34:83";
+    // public static String baseUrl = "http://10.0.0.34:83";
+    public static String baseUrl = "http://cirriusapi.cirrius.in";
 
     public static GitApiInterface getClient() {
         if (gitApiInterface == null) {
@@ -61,7 +62,7 @@ public class RestClient {
         return gitApiInterface;
     }
 
-    public interface GitApiInterface {
+    public interface GitApiInterface1 {
         @POST("/CirriusConfigAPI/UPW")
         Call<UPW> CallUPW(@Body UPW order);
 
@@ -90,6 +91,40 @@ public class RestClient {
         Call<ChangePassword> CallForgotPassword(@Body ChangePassword changePassword);
 
         @POST("/CirriusDetailingAPI/SYNCDETAILING")
+        Call<List<SyncDetailingAckPOJO>> CallSyncDetailingAcknowledge(@Body List<SyncDetailingAckPOJO> req);
+
+
+    }
+
+    public interface GitApiInterface {
+        @POST("/Config/UPW")
+        Call<UPW> CallUPW(@Body UPW order);
+
+        @POST("/ReqRes/CVR")
+        Call<CVR> CallCVR(@Body ReqCVR reqCVR);
+
+        @POST("/Config/AckTags")
+        Call<ACKTAG> CallACK(@Body ACKTAG acktag);
+
+        @POST("/Security/CHANGEPWD")
+        Call<ChangePassword> CallChangePassword(@Body ChangePassword changePassword);
+
+        @POST("/Config/ReadScript")
+        Call<TablesConfig> CallTagDownload(@Body TAG tag);
+
+        @POST("/Detailing/UDDET")
+        Call<List<OutputPOJO>> uploadContainerData(@Body List<ContainerPOJO> req);
+
+        @POST("/ReqRes/IRCSF")
+        Call<List<IRCSFResponsePOJO>> downloadContentUrl(@Body IRCSFPOJO req);
+
+        @POST("/Config/CONTENTACK")
+        Call<String> contentAcknowledge(@Body CNTACKPOJO req);
+
+        @POST("/Security/FORGOTPWD")
+        Call<ChangePassword> CallForgotPassword(@Body ChangePassword changePassword);
+
+        @POST("/Detailing/SYNCDETAILING")
         Call<List<SyncDetailingAckPOJO>> CallSyncDetailingAcknowledge(@Body List<SyncDetailingAckPOJO> req);
 
 

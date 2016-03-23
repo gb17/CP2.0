@@ -5,6 +5,7 @@
     android:layout_height="190dp"
     android:background="@color/thumbnail_producname_backgrounf">
 
+
     <ImageView
         android:id="@+id/bandimage"
         android:layout_width="216dp"
@@ -154,6 +155,5 @@
 
         </RelativeLayout>
     </ScrollView>
-
 
 </RelativeLayout>

@@ -131,7 +131,8 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //new TBImgClass().execute();
+
+
                 if (UsereditText.getText().toString().equalsIgnoreCase("")
                         || PasswordeditText.getText().toString().equals("")) {
                     Utility.showSweetAlert(MainActivity.this, "Username/Password is Mandatory", CmsInter.ERROR_TYPE);

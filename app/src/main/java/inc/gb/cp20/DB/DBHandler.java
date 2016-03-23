@@ -213,6 +213,8 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
 
+
+
     // create all required tables
     public boolean executscript() {
         long starttime = System.currentTimeMillis();
@@ -245,15 +247,6 @@ public class DBHandler extends SQLiteOpenHelper {
 
     }
 
-    public void tp() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        try {
-            DbUtils.executeSqlScript(context, db, "kb.sql", true, false);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
 
     public String[][] genericSelect(String query, int noCols) {
         String strData[][] = null;

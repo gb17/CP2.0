@@ -13,8 +13,6 @@
         android:layout_toLeftOf="@+id/sideIndex"
         android:layout_weight="1"
         android:background="@color/search_bg"
-        android:hint="Search doctor"
-        android:textColorHint="#8E8E8E"
         android:paddingLeft="5dp"
         android:singleLine="true"
         android:textColor="#FFFFFF" />
