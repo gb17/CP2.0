@@ -243,47 +243,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         }
     }
 
-    //    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//
-//
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//
-//        MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
-//        SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String s) {
-//                databaseAdapter.open();
-//
-//                if (!s.equals("")) {
-//                    String[][] pdatat = databaseAdapter.genericSelect("SELECT * FROM TBBRND where col_3 like '%" + s + "%' group by col_2", 9);
-//                    RHS_Deatailing.removeAllViews();
-//                    if (pdatat != null)
-//                        for (int i = 0; i < pdatat.length; i++) {
-//                            HorizontalRecylerView horizontalRecylerView = new HorizontalRecylerView(LandingPage.this, pdatat[i][1], pdatat[i][0], s);
-//                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 230);
-//                            params.setMargins(0, 0, 0, 10);
-//
-//                            RHS_Deatailing.addView(horizontalRecylerView.getHorizontalRecylerView(getSupportFragmentManager()),
-//                                    new LinearLayout.LayoutParams(params));
-//                        }
-//                } else {
-//                    defaultLayout();
-//                }
-//
-//                return true;
-//            }
-//        });
-//        return true;
-//
-//
-//    }
+
     void showContentDownloadDialog(List<IRCSFResponsePOJO> listP) {
         list = listP;
         content_dialog = new Dialog(LandingPage.this);

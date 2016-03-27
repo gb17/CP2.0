@@ -171,12 +171,12 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
         String url1 = "file://" + getFilesDir().getAbsolutePath() + "/welcome/welcome.htm";
         File welcomeFile = new File(url1);
-        if(!welcomeFile.exists())
+        if (!welcomeFile.exists())
             copyAsset("welcome");
 
         String url2 = "file://" + getFilesDir().getAbsolutePath() + "/thank/thank.htm";
         File thankFile = new File(url2);
-        if(!thankFile.exists())
+        if (!thankFile.exists())
             copyAsset("thank");
     }
 
@@ -343,6 +343,8 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                             } else {
                                 if (configflag) {
                                     TBCVR word = CvrList.get(0);
+                                    String[] cvrvalues = word.getCOL2().split("\\^");
+
                                     if (word.getMSG().contains("Success")) {
                                         backupDatabase();
                                         Intent LandingIntent = new Intent(MainActivity.this, LandingPage.class);
@@ -351,6 +353,21 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                                         startActivity(LandingIntent);
                                     } else {
                                         if (word.getMSG().contains("Invalid Instance")) {
+
+                                            final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(MainActivity.this, CmsInter.ERROR_TYPE);
+                                            sweetAlertDialog.setTitleText(word.getMSG())
+                                                    .setConfirmText("Ok")
+                                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                        @Override
+                                                        public void onClick(SweetAlertDialog sDialog) {
+                                                            dbHandler.deletealltable();
+                                                            Intent LandingIntent = new Intent(MainActivity.this, MainActivity.class);
+                                                            LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                            startActivity(LandingIntent);
+                                                        }
+                                                    })
+                                                    .show();
+                                        } else if (cvrvalues[0].equals(CmsInter.Change_PWD)) {
 
                                             final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(MainActivity.this, CmsInter.ERROR_TYPE);
                                             sweetAlertDialog.setTitleText(word.getMSG())
