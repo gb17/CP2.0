@@ -13,9 +13,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
+        android:gravity="center_vertical"
         android:text="Header"
+        android:textAllCaps="true"
         android:textColor="@color/rhs_header"
-        android:textSize="20sp"
+        android:textSize="22sp"
         android:textStyle="bold" />
 
     <View

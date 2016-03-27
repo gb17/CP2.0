@@ -17,6 +17,16 @@ public class ContentPage {
     String category_code;
     String category_name;
 
+    public String getImagepath() {
+        return imagepath;
+    }
+
+    public void setImagepath(String imagepath) {
+        this.imagepath = imagepath;
+    }
+
+    String imagepath;
+
     public String getCategory_name() {
         return category_name;
     }

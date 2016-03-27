@@ -3,7 +3,6 @@ package inc.gb.cp20.RecylerView;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,7 +24,7 @@ import inc.gb.cp20.Models.TBBRAND;
 import inc.gb.cp20.R;
 import inc.gb.cp20.interfaces.RecyclerViewClickListener;
 
-public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyViewHolder> {
+public class ThumbnailAdapterForContentLibrary extends RecyclerView.Adapter<ThumbnailAdapterForContentLibrary.MyViewHolder> {
 
     private static RecyclerViewClickListener itemListener;
 
@@ -42,7 +41,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
 
     static int index;
 
-    public ThumbnailAdapter(List<TBBRAND> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener, int index) {
+    public ThumbnailAdapterForContentLibrary(List<TBBRAND> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener, int index) {
         this.brandList = brandList;
         this.mContext = mContext;
         this.fragmentManager = fragmentManager;
@@ -119,9 +118,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    //if (masklayRelativeLayout.getVisibility() == View.VISIBLE)
-                        listener.onItemClick(brandList, v, getLayoutPosition());
+                    listener.onItemClick(brandList, v, getLayoutPosition());
                 }
             });
 
@@ -131,109 +128,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
                     listener.onRetryClick(brandList, v, getLayoutPosition());
                 }
             });
-            if (index == 1) {
-                pageFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        childScrollView.setVisibility(View.VISIBLE);
 
-                        fb.setVisibility(View.VISIBLE);
-
-                        layout.removeAllViews();
-
-                        String[][] pagename = dbHandler.genericSelect("select b.COL2 from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  '" + brandList.getCOL3() + "' and a.COL9 = '" + brandList.getCOL0() + "'   and a.COL10 = 'IPL'", 1);
-                        if (pagename != null) {
-                            int prevTextViewId = 0;
-                            for (int i = 0; i < pagename.length; i++) {
-                                final TextView textView = new TextView(mContext);
-
-                                String temp = "";
-                                if (i < 10) {
-                                    if (i == 9)
-                                        temp = "0" + (i);
-                                    else
-                                        temp = "0" + (i + 1);
-                                } else {
-                                    temp = "" + (i + 1);
-                                }
-
-
-                                textView.setText(temp + " " + pagename[i][0]);
-                                temp = "";
-                                textView.setTextColor(Color.parseColor("#FFFFFF"));
-
-                                int curTextViewId = prevTextViewId + 1;
-                                textView.setId(curTextViewId);
-                                final RelativeLayout.LayoutParams params =
-                                        new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
-                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-                                params.addRule(RelativeLayout.BELOW, prevTextViewId);
-                                params.setMargins(4, 4, 4, 4);
-                                textView.setLayoutParams(params);
-
-                                prevTextViewId = curTextViewId;
-                                layout.addView(textView, params);
-                            }
-                        }
-                    }
-                });
-
-
-                refFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        childScrollView.setVisibility(View.VISIBLE);
-                        layout.removeAllViews();
-                        fb.setVisibility(View.VISIBLE);
-                        String Query = " select l.COL1,l.COL2,l.COL15  from TBDRG l\n" +
-                                "        where exists(\n" +
-                                "        select 1\n" +
-                                "        from TBDPS a\n" +
-                                "        where a.col9='" + brandList.getCOL0() + "'\n" +
-                                "        and a.col3='" + brandList.getCOL3() + "'" +
-                                "        and a.col10='IPL'\n" +
-                                "        and a.col5=l.col0)";
-
-                        String[][] pagename = dbHandler.genericSelect(Query, 3);
-                        if (pagename != null) {
-                            int prevTextViewId = 0;
-                            for (int i = 0; i < pagename.length; i++) {
-                                final TextView textView = new TextView(mContext);
-                                String temp = "";
-                                if (i < 10) {
-                                    if (i == 9)
-                                        temp = "0" + (i);
-                                    else
-                                        temp = "0" + (i + 1);
-                                } else {
-                                    temp = "" + (i + 1);
-                                }
-
-
-                                textView.setText(temp + " " + pagename[i][0]);
-                                temp = "";
-
-                                textView.setTextColor(Color.parseColor("#FFFFFF"));
-
-                                int curTextViewId = prevTextViewId + 1;
-                                textView.setId(curTextViewId);
-                                final RelativeLayout.LayoutParams params =
-                                        new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
-                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-                                params.addRule(RelativeLayout.BELOW, prevTextViewId);
-                                params.setMargins(4, 4, 4, 4);
-                                textView.setLayoutParams(params);
-
-                                prevTextViewId = curTextViewId;
-                                layout.addView(textView, params);
-                            }
-                        }
-                    }
-                });
-
-            }
 
         }
 
@@ -245,7 +140,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.tumbnail_item, parent, false);
+                .inflate(R.layout.tumbnail_item_content, parent, false);
         return new MyViewHolder(itemView);
     }
 
@@ -278,13 +173,9 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
             holder.imageView.setImageBitmap(bitmap);
 
         } catch (Exception e) {
-            //holder.imageView.setI
+
         }
-
-
         holder.bind(brandList.get(position), itemListener);
-
-
     }
 
     @Override

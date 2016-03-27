@@ -4,6 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 public class AlphaListActivity extends AppCompatActivity implements AlphaListInterface {
+
+
+
     @Override
     public void onItemListClick(DrList_POJO objDrListPOJO, View view) {
 

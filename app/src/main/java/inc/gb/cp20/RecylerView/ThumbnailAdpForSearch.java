@@ -78,10 +78,7 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
 
             newTag = (TextView) view.findViewById(R.id.newtag);
 
-            pageCountLayout = (RelativeLayout) view.findViewById(R.id.pagelayout);
-            pageCountLayout.setVisibility(View.GONE);
-            refCountLayout = (RelativeLayout) view.findViewById(R.id.reflayout);
-            refCountLayout.setVisibility(View.GONE);
+
         }
 
         public void bind(final SearchData brandList, final int Position_) {

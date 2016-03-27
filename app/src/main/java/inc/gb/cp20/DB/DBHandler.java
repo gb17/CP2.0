@@ -213,8 +213,6 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
 
-
-
     // create all required tables
     public boolean executscript() {
         long starttime = System.currentTimeMillis();
@@ -488,4 +486,12 @@ public class DBHandler extends SQLiteOpenHelper {
         return strData;
     }
 
+    public void UpdateTBRAND() {
+        String Query = "update TBBRAND set col5 = ( select count(distinct b.col0) from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  TBBRAND.col3 and a.COL9 =  TBBRAND.col0 and a.COL10 = 'IPL'  and b.col8 = 'P'),\n" +
+                "\n" +
+                " col9 = ( select count (distinct b.col3) from TBDPS a , TBDRG b where a.col5 = b.col0 and a.col3 =  TBBRAND.col3 and a.COL9 = TBBRAND.col0 and a.COL10 = 'IPL'), \n" +
+                "\n" +
+                "col10  = ( select  count(distinct b.col0) from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  TBBRAND. col3 and a.COL9 = TBBRAND.col0 and a.COL10 = 'IPL'  and b.COL7 ='0'  and b.col8 = 'P')";
+        ExecuteQuery(Query);
+    }
 }

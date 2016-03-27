@@ -53,15 +53,13 @@
         android:orientation="horizontal">
 
 
-        <Button
+        <ImageView
             android:id="@+id/dr_btn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="-30dp"
-            android:background="#BF000000"
-            android:rotation="90"
-            android:text="BRand" />
+            android:layout_marginRight="-8.5dp"
+            android:src="@drawable/sidedrawer" />
 
         <LinearLayout
             android:id="@+id/drawer"

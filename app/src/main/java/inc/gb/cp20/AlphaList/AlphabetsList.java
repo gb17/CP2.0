@@ -194,8 +194,10 @@ public class AlphabetsList {
             }
         });
 
+
         return mainView;
     }
+
 
 //    public void TExtWithCross(String name) {
 //        final SpannableStringBuilder sb = new SpannableStringBuilder();

@@ -14,7 +14,7 @@
         android:layout_below="@+id/recycler_view_for_search"
         android:fontFamily="sans-serif-light"
         android:text="Header"
-        android:textColor="#757575"
+        android:textColor="@color/rhs_header"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -24,6 +24,9 @@
         android:layout_height="200dp"
         android:layout_below="@+id/header"
         android:layout_marginTop="5dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:scrollbars="horizontal" />
 
     <RelativeLayout
@@ -59,7 +62,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view_for_hr_sub"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="120dp"
             android:layout_below="@+id/closepage"
             android:scrollbars="horizontal" />
     </RelativeLayout>
@@ -96,7 +99,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view_for_hr_sub_ref"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="120dp"
             android:layout_below="@+id/closepage_ref"
             android:scrollbars="horizontal"
             android:visibility="gone" />

@@ -10,12 +10,14 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.Vector;
 
+import inc.gb.cp20.DB.DBHandler;
 import inc.gb.cp20.R;
 
 public class UserListAdapter extends BaseAdapter {
@@ -34,6 +36,7 @@ public class UserListAdapter extends BaseAdapter {
 
 
     Context context;
+    DBHandler dbHandler;
 
     public UserListAdapter(Vector<DrList_POJO> items,
                            Context context, boolean headerview, boolean play_icon, boolean tick_icon) {
@@ -46,6 +49,7 @@ public class UserListAdapter extends BaseAdapter {
         this.tick_icon = tick_icon;
         font = Typeface.createFromAsset(context.getAssets(),
                 "fontawesome-webfont.ttf");
+        dbHandler = DBHandler.getInstance(context);
     }
 
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -73,6 +77,9 @@ public class UserListAdapter extends BaseAdapter {
                     .findViewById(R.id.detail_area);
             holder.menudot.setTypeface(font);
 
+            holder.noplayImageView = (ImageView) convertView
+                    .findViewById(R.id.noplaylist);
+
 
             holder.tick = (TextView) convertView
                     .findViewById(R.id.tick1);
@@ -89,16 +96,6 @@ public class UserListAdapter extends BaseAdapter {
                 holder.play.setVisibility(View.VISIBLE);
             if (tick_icon)
                 holder.tick.setVisibility(View.VISIBLE);
-
-            holder.menudot.setOnClickListener(new OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    ((AlphaListActivity) context).onItemListMenuClick(items.get(position),v);
-
-
-                }
-            });
 
 
             convertView.setTag(holder);
@@ -123,9 +120,11 @@ public class UserListAdapter extends BaseAdapter {
                 holder.name.setText(drListPOJO.getCOL1());
                 holder.CLassTV.setText(drListPOJO.getCOL11());
                 holder.spcTV.setText(drListPOJO.getCOL10());
-
-                //  holder.drimageview.setImageResource(R.drawable.phy);
-
+                if (drListPOJO.getCOL15().equals("0"))
+                    holder.noplayImageView.setVisibility(View.VISIBLE);
+                else {
+                    holder.noplayImageView.setVisibility(View.GONE);
+                }
                 View ll = (RelativeLayout) holder.name.getParent();
                 ll.setFocusable(true);
                 ll.setSelected(true);
@@ -137,7 +136,21 @@ public class UserListAdapter extends BaseAdapter {
 
             @Override
             public void onClick(View v) {
-                ((AlphaListActivity) context).onItemListClick(items.get(position), v);
+                DrList_POJO drList_pojo = items.get(position);
+                if (drList_pojo.getCOL15().equals("0")) {
+
+                } else {
+                    ((AlphaListActivity) context).onItemListClick(items.get(position), v);
+                }
+
+            }
+        });
+
+        holder.menudot.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                ((AlphaListActivity) context).onItemListMenuClick(items.get(position), v);
             }
         });
 
@@ -149,7 +162,9 @@ public class UserListAdapter extends BaseAdapter {
         de.hdodenhof.circleimageview.CircleImageView drimageview;
         LinearLayout headingLL;
         RelativeLayout nameLL;
+        ImageView noplayImageView;
     }
+
 
     @Override
     public int getCount() {
@@ -188,7 +203,6 @@ public class UserListAdapter extends BaseAdapter {
         }
 
     }
-
 
 
 }

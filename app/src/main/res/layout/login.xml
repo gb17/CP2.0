@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="To login Please enter your password"
+            android:text="To login please enter your password"
             android:textColor="@color/rhs_header"
             android:textSize="18sp" />
 
@@ -39,6 +39,7 @@
             android:hint="Username"
             android:maxLines="1"
             android:padding="10dp"
+            android:textColor="@color/rhs_header"
             android:singleLine="true"
             android:textColorHint="#bbbbbb" />
 
@@ -47,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="-2dp"
-            android:hint="Enter your Password"
+            android:hint="Enter your password"
             android:inputType="textPassword"
             android:maxLines="1"
             android:padding="10dp"
@@ -68,7 +69,7 @@
                 android:padding="10dp"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:text="forgot Password"
+                android:text="forgot password"
                 android:textColor="#00FFFF" />
 
             <TextView
@@ -80,7 +81,7 @@
                 android:background="@android:color/transparent"
                 android:gravity="right|center_vertical"
                 android:padding="10dp"
-                android:text="Login"
+                android:text="LOGIN"
                 android:textColor="@color/page_count" />
         </RelativeLayout>
     </LinearLayout>

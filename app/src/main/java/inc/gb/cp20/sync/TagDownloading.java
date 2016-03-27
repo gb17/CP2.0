@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import inc.gb.cp20.ChnagePwd.ChangePasswordAcitvity;
+import inc.gb.cp20.ChangePwd.ChangePasswordAcitvity;
 import inc.gb.cp20.Configure.MainActivity;
 import inc.gb.cp20.DB.DBHandler;
 import inc.gb.cp20.Models.ACKTAG;
@@ -438,10 +438,10 @@ public class TagDownloading implements DownloadInterface {
         protected Boolean doInBackground(String... strings) {
             Boolean aBoolean = false;
 
-            String Urls[] = strings[0].split(",");
+            String Urls[] = strings[0].split("\\,");
 
             for (int i = 0; i < Urls.length; i++) {
-                String msg = Utility.downloadZipFile(Urls[0]);
+                String msg = Utility.downloadZipFile(Urls[i]);
                 if (!msg.startsWith("fail")) {
                     try {
                         File zipfile = new File(msg);

@@ -7,7 +7,8 @@
         android:id="@+id/detail_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/selector_for_list">
+        android:background="@drawable/selector_for_list"
+        android:padding="2dp">
 
 
         <LinearLayout
@@ -79,19 +80,6 @@
             android:textSize="14sp"
             android:textStyle="normal" />
 
-        <TextView
-            android:id="@+id/threedot_menu"
-            android:layout_width="75dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_alignRight="@+id/drnametextview"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="10dp"
-            android:gravity="right"
-            android:text="@string/menu_ellipsis"
-            android:textColor="#595959"
-            android:textSize="18sp"
-            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/play"
@@ -121,6 +109,31 @@
             android:textSize="20sp"
             android:visibility="gone" />
 
+        <TextView
+            android:id="@+id/threedot_menu"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:gravity="right"
+            android:paddingRight="5dp"
+            android:text="@string/menu_ellipsis"
+            android:textColor="#595959"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/noplaylist"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:gravity="right"
+            android:paddingRight="5dp"
+            android:src="@drawable/noplay"
+            android:textColor="#595959"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
 
     </RelativeLayout>
 

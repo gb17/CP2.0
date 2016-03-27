@@ -8,7 +8,7 @@ public interface RecyclerViewClickListener {
 
     void onItemClick(TBBRAND item, View v, int position);
 
-
+    void onRetryClick(TBBRAND item, View v, int position);
 
 
 }

@@ -7,11 +7,31 @@ public class IRCSFPOJO {
     private String CLIENTID;
     private String REPCODE;
     private String VERSION;
+    private String CATEGORYTYPE;
+    private String CATEGORYCODE;
 
-    public IRCSFPOJO(String CLIENTID, String REPCODE, String VERSION) {
+    public String getCATEGORYTYPE() {
+        return CATEGORYTYPE;
+    }
+
+    public void setCATEGORYTYPE(String CATEGORYTYPE) {
+        this.CATEGORYTYPE = CATEGORYTYPE;
+    }
+
+    public String getCATEGORYCODE() {
+        return CATEGORYCODE;
+    }
+
+    public void setCATEGORYCODE(String CATEGORYCODE) {
+        this.CATEGORYCODE = CATEGORYCODE;
+    }
+
+    public IRCSFPOJO(String CLIENTID, String REPCODE, String VERSION, String CATEGORYTYPE, String CATEGORYCODE) {
         this.CLIENTID = CLIENTID;
         this.REPCODE = REPCODE;
         this.VERSION = VERSION;
+        this.CATEGORYTYPE = CATEGORYTYPE;
+        this.CATEGORYCODE = CATEGORYCODE;
     }
 
     public String getCLIENTID() {

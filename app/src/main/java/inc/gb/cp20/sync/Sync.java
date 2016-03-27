@@ -152,10 +152,15 @@ public class Sync {
     }
 
 
-    public void downloadContentUrl(final DownloadInterface downloadInterface) {
+    public void downloadContentUrl(final DownloadInterface downloadInterface, int mode, String CATEGORYTYPE, String CATEGORYCODE) {
 
         RestClient.GitApiInterface service = RestClient.getClient();
-        IRCSFPOJO pojo = new IRCSFPOJO(context.getResources().getString(R.string.clientid), upwData[3], context.getResources().getString(R.string.version));
+        IRCSFPOJO pojo = null;
+        if (mode == 1)
+            pojo = new IRCSFPOJO(context.getResources().getString(R.string.clientid), upwData[3], context.getResources().getString(R.string.version), CATEGORYTYPE, CATEGORYCODE);
+        else if (mode == 2)
+            pojo = new IRCSFPOJO(context.getResources().getString(R.string.clientid), upwData[3], context.getResources().getString(R.string.version), CATEGORYTYPE, CATEGORYCODE);
+
 
         Call<List<IRCSFResponsePOJO>> lCall = service.downloadContentUrl(pojo);
 

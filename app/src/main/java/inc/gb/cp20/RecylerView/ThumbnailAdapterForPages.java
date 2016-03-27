@@ -3,6 +3,8 @@ package inc.gb.cp20.RecylerView;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +14,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
 import java.util.List;
 
 import inc.gb.cp20.DB.DBHandler;
@@ -23,6 +28,8 @@ public class ThumbnailAdapterForPages extends RecyclerView.Adapter<ThumbnailAdap
 
     private static RecyclerViewClickListener itemListener;
 
+
+    Bitmap bitmap;
     public static DBHandler dbHandler;
 
     public List<ContentPage> brandList;
@@ -88,11 +95,12 @@ public class ThumbnailAdapterForPages extends RecyclerView.Adapter<ThumbnailAdap
     public void onBindViewHolder(MyViewHolder holder, int position) {
         ContentPage tbbrand = brandList.get(position);
         holder.title.setText(tbbrand.getPageName());
-        if (position >= Imagearr.length - 1)
-            holder.imageView.setImageResource(R.drawable.dempi);
-        else {
-            holder.imageView.setImageResource(Imagearr[position]);
-        }
+
+
+        String filePath = new File(mContext.getFilesDir() + "/" + FilenameUtils.removeExtension(tbbrand.getImagepath()) + "/", FilenameUtils.removeExtension(tbbrand.getImagepath()) + ".png").getAbsolutePath();
+        bitmap = BitmapFactory.decodeFile(filePath);
+        holder.imageView.setImageBitmap(bitmap);
+        holder.bind(brandList.get(position), position);
 
         holder.bind(brandList.get(position), position);
 
