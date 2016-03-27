@@ -16,9 +16,9 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -33,6 +33,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import inc.gb.cp20.AlphaList.AlphaListActivity;
 import inc.gb.cp20.AlphaList.AlphabetsList;
 import inc.gb.cp20.AlphaList.DrList_POJO;
+import inc.gb.cp20.ChangePwd.ChangePasswordAcitvity;
 import inc.gb.cp20.DB.DBHandler;
 import inc.gb.cp20.List_Utilities.ContentAdapter;
 import inc.gb.cp20.Models.IRCSFResponsePOJO;
@@ -40,7 +41,6 @@ import inc.gb.cp20.Models.TBBRAND;
 import inc.gb.cp20.R;
 import inc.gb.cp20.RecylerView.HorizontalRecylerView;
 import inc.gb.cp20.Util.Utility;
-import inc.gb.cp20.ChangePwd.ChangePasswordAcitvity;
 import inc.gb.cp20.container.LightContainer;
 import inc.gb.cp20.interfaces.DownloadInterface;
 import inc.gb.cp20.interfaces.RecyclerViewClickListener;
@@ -70,7 +70,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
 
     LinearLayout drawerLinearLayout;
     LinearLayout complLinearLayout;
-    Button drawerButton;
+    ImageView drawerButton;
 
     String CALLSYNC = "";
 
@@ -78,8 +78,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_landing_screen);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+
 
         try {
             Bundle bundle = getIntent().getExtras();
@@ -94,7 +93,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         dbHandler = DBHandler.getInstance(this);
         drawerLinearLayout = (LinearLayout) findViewById(R.id.drawer);
-        drawerButton = (Button) findViewById(R.id.dr_btn);
+        drawerButton = (ImageView) findViewById(R.id.dr_btn);
 
         complLinearLayout = (LinearLayout) findViewById(R.id.compl);
 
@@ -114,13 +113,12 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         LinearLayout lhsLinearLayout = (LinearLayout) view.findViewById(R.id.lhs);
 
         try {
-            Updategbdb();
             AlphabetsList alphabetsList = new AlphabetsList(this);
             lhsLinearLayout.addView(alphabetsList.getAlphabestListView("TBPARTY", false, false, true));
             alphabetsList.setSidepannel(View.VISIBLE);
             alphabetsList.SerachViewVis(View.VISIBLE);
             defaultLayout();
-            CallDownloadIRCSF();
+            CallDownloadIRCSF(0);
 
 
         } catch (Exception e) {
@@ -130,9 +128,9 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
 
     }
 
-    public void CallDownloadContainer() {
+    public void CallDownloadContainer(int mode, String CATEGORYTYPE, String CATEGORYCODE) {
         sync = new Sync(this);
-        sync.downloadContentUrl(this);
+        sync.downloadContentUrl(this, mode, CATEGORYTYPE, CATEGORYCODE);
         dialog = new SweetAlertDialog(LandingPage.this, SweetAlertDialog.PROGRESS_TYPE);
         dialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
         dialog.setTitleText("Loading....");
@@ -224,7 +222,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                     break;
                 case 198://Download Container
                     drawerLinearLayout.setVisibility(View.GONE);
-                    CallDownloadIRCSF();
+                    CallDownloadIRCSF(1);
                     break;
             }
         }
@@ -245,6 +243,47 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         }
     }
 
+    //    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//
+//
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//
+//        MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
+//        SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String s) {
+//                databaseAdapter.open();
+//
+//                if (!s.equals("")) {
+//                    String[][] pdatat = databaseAdapter.genericSelect("SELECT * FROM TBBRND where col_3 like '%" + s + "%' group by col_2", 9);
+//                    RHS_Deatailing.removeAllViews();
+//                    if (pdatat != null)
+//                        for (int i = 0; i < pdatat.length; i++) {
+//                            HorizontalRecylerView horizontalRecylerView = new HorizontalRecylerView(LandingPage.this, pdatat[i][1], pdatat[i][0], s);
+//                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 230);
+//                            params.setMargins(0, 0, 0, 10);
+//
+//                            RHS_Deatailing.addView(horizontalRecylerView.getHorizontalRecylerView(getSupportFragmentManager()),
+//                                    new LinearLayout.LayoutParams(params));
+//                        }
+//                } else {
+//                    defaultLayout();
+//                }
+//
+//                return true;
+//            }
+//        });
+//        return true;
+//
+//
+//    }
     void showContentDownloadDialog(List<IRCSFResponsePOJO> listP) {
         list = listP;
         content_dialog = new Dialog(LandingPage.this);
@@ -405,6 +444,11 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
     }
 
     @Override
+    public void onRetryClick(TBBRAND item, View v, int position) {
+        CallDownloadContainer(2, item.getCOL0(), item.getCOL3());
+    }
+
+    @Override
     public void mainBody(List<IRCSFResponsePOJO> list) {
         if (dialog != null)
             dialog.dismiss();
@@ -503,26 +547,26 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (content_dialog != null)
+            if (content_dialog != null) {
                 content_dialog.dismiss();
+                dbHandler.UpdateTBRAND();
+                defaultLayout();
+
+            }
+
         }
     }
 
-    public void CallDownloadIRCSF() {
+    public void CallDownloadIRCSF(int mode) {
         String dataCVR[][] = dbHandler.genericSelect("*", DBHandler.TBCVR,
                 "", "", "", 4);
         if (dataCVR != null) {
             String dataCVRSplitCol2[] = dataCVR[0][2].split("\\^");
             if (!dataCVRSplitCol2[27].equals("0"))
-                CallDownloadContainer();
+                if (CALLSYNC.equals("1") || mode == 1)
+                    CallDownloadContainer(1, "", "");
 
         }
-    }
-
-
-    void Updategbdb() {
-        String Query = "update TBBRAND set col5 = ( select count(distinct b.col0) from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  TBBRAND.col3 and a.COL9 =  TBBRAND.col0 and a.COL10 = 'IPL'  and b.COL7 ='0' and b.col8 = 'P'), col9 = ( select count (distinct b.col3) from TBDPS a , TBDRG b where a.col5 = b.col0 and a.col3 =  TBBRAND.col3 and a.COL9 = TBBRAND.col0 and a.COL10 = 'IPL'), col10  = ( select  count(distinct b.col0) from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  TBBRAND. col3 and a.COL9 = TBBRAND.col0 and a.COL10 = 'IPL'  and b.COL7 ='0' and  b.col7 = 0 and b.col8 = 'P')";
-        dbHandler.ExecuteQuery(Query);
     }
 
 
