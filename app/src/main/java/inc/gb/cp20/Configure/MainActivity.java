@@ -375,10 +375,10 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                                                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                                         @Override
                                                         public void onClick(SweetAlertDialog sDialog) {
-                                                            dbHandler.deletealltable();
-                                                            Intent LandingIntent = new Intent(MainActivity.this, MainActivity.class);
-                                                            LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                            startActivity(LandingIntent);
+                                                            Intent ChangePwdIntent = new Intent(MainActivity.this, ChangePasswordAcitvity.class);
+                                                            ChangePwdIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                            startActivity(ChangePwdIntent);
+                                                            dialog.dismiss();
                                                         }
                                                     })
                                                     .show();
