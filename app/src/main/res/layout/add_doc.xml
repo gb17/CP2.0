@@ -105,7 +105,8 @@
                 android:text="DONE"
                 android:textColor="@color/page_count"
                 android:textSize="19sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="invisible" />
         </RelativeLayout>
 
         <LinearLayout
@@ -120,8 +121,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="6dp"
                 android:background="#d2d0d0"
+                android:padding="6dp"
                 android:text="ADD UNLISTED DOCTOR"
                 android:textColor="#151414"
                 android:textSize="19sp"
@@ -138,7 +139,7 @@
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
-                android:text="Physicain's Name*"
+                android:text="Doctor's Name*"
                 android:textColor="#212121"
                 android:textSize="18sp"
                 android:textStyle="italic" />
@@ -210,8 +211,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:background="@android:color/transparent"
-                android:textColor="@color/page_count"
                 android:gravity="center_horizontal"
+                android:textColor="@color/page_count"
                 android:textSize="19sp"
                 android:textStyle="bold" />
 

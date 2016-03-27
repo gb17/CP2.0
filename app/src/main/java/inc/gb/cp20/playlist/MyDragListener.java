@@ -10,6 +10,7 @@ import android.view.View.OnDragListener;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -57,16 +58,29 @@ class MyDragListener implements OnDragListener {
                             int firstVisiblePosition2 = layoutManager2.findFirstVisibleItemPosition();
                             chance2 = firstVisiblePosition2 + grid.indexOfChild(view);
                             String[] str = griddata.get(chance2);
-                            griddata.remove(chance2);
-                            recyclerdata.add(chance, str);
-                            PlaylistAdapter adapter = new PlaylistAdapter(context, griddata,
-                                    recyclerdata, 1);
-                            recycle.setAdapter(adapter);
-                            adapter.notifyDataSetChanged();
-                            BrandlistAdapter adapter2 = new BrandlistAdapter(context, griddata,
-                                    recyclerdata);
-                            grid.setAdapter(adapter2);
-                            adapter.notifyDataSetChanged();
+                            String strData[] = null;
+                            boolean flag = false;
+                            for (int k = 0; k < recyclerdata.size(); k++) {
+                                strData = recyclerdata.get(k);
+                                if (strData[0].equals(str[0])) {
+                                    flag = true;
+                                    break;
+                                }
+                            }
+                            if (flag) {
+                                Toast.makeText(context, "You cannot drop the same item again", Toast.LENGTH_SHORT).show();
+                            } else {
+                                griddata.remove(chance2);
+                                recyclerdata.add(chance, str);
+                                PlaylistAdapter adapter = new PlaylistAdapter(context, griddata,
+                                        recyclerdata, 1);
+                                recycle.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
+                                BrandlistAdapter adapter2 = new BrandlistAdapter(context, griddata,
+                                        recyclerdata);
+                                grid.setAdapter(adapter2);
+                                adapter.notifyDataSetChanged();
+                            }
                         } else {
                             chance2 = firstVisiblePosition + parent.indexOfChild(view);
                             String[] str = recyclerdata.get(chance2);
@@ -110,6 +124,38 @@ class MyDragListener implements OnDragListener {
                             recycle.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
                         }
+                    }
+                } else if (parent instanceof RelativeLayout) {
+                    RelativeLayout relative = (RelativeLayout) parent;
+                    RecyclerView recycle = (RecyclerView) relative.getChildAt(7);
+                    View view = (View) event.getLocalState();
+                    RecyclerView grid = (RecyclerView) view.getParent();
+                    LinearLayoutManager layoutManager2 = ((LinearLayoutManager) grid.getLayoutManager());
+                    int firstVisiblePosition2 = layoutManager2.findFirstVisibleItemPosition();
+                    int chance2 = firstVisiblePosition2 + grid.indexOfChild(view);
+                    String[] str = griddata.get(chance2);
+                    String strData[] = null;
+                    boolean flag = false;
+                    for (int k = 0; k < recyclerdata.size(); k++) {
+                        strData = recyclerdata.get(k);
+                        if (strData[0].equals(str[0])) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if (flag) {
+                        Toast.makeText(context, "You cannot drop the same item again", Toast.LENGTH_SHORT).show();
+                    } else {
+                        griddata.remove(chance2);
+                        recyclerdata.add(str);
+                        PlaylistAdapter adapter = new PlaylistAdapter(context, griddata,
+                                recyclerdata, 1);
+                        recycle.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                        BrandlistAdapter adapter2 = new BrandlistAdapter(context, griddata,
+                                recyclerdata);
+                        grid.setAdapter(adapter2);
+                        adapter.notifyDataSetChanged();
                     }
                 }
                 break;

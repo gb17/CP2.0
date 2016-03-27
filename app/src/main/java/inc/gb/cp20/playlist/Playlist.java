@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -24,8 +23,10 @@ import inc.gb.cp20.DB.DBHandler;
 import inc.gb.cp20.Landing.LandingPage;
 import inc.gb.cp20.R;
 import inc.gb.cp20.RecylerView.DividerItemDecoration;
+import inc.gb.cp20.Util.CmsInter;
 import inc.gb.cp20.Util.Utility;
 import inc.gb.cp20.container.LightContainer;
+import inc.gb.cp20.sync.Sync;
 
 /**
  * Created by Shubham on 3/4/16.
@@ -111,7 +112,8 @@ public class Playlist extends Activity {
         TextView data3 = (TextView) findViewById(R.id.data3);
         name = (TextView) findViewById(R.id.name);
         page_count = (TextView) findViewById(R.id.page_count);
-        page_count.setText("(" + recyclerData.size() + " Pages)");
+        if (recyclerData != null)
+            page_count.setText("(" + recyclerData.size() + " Pages)");
 
         if (custData != null) {
             nameStr = custData[0][0];
@@ -120,6 +122,12 @@ public class Playlist extends Activity {
             data2.setText(custData[0][1]);
             data3.setText(custData[0][2]);
         }
+        if (recyclerData != null)
+            for (int i = 0; i < recyclerData.size(); i++) {
+                String[] str = recyclerData.get(i);
+                if (str[7].equals("1"))
+                    name.setText("Custom Playlist");
+            }
 
         library = (TextView) findViewById(R.id.library);
         searchView = (EditText) findViewById(R.id.search);
@@ -192,7 +200,9 @@ public class Playlist extends Activity {
                     grid.setAdapter(new BrandlistAdapter(Playlist.this, gridData, recyclerData));
                 }
             }
-            recyclerView.setAdapter(new PlaylistAdapter(Playlist.this, gridData, recyclerData, 0));
+            recyclerView.setAdapter(new PlaylistAdapter(Playlist.this, gridData, recyclerData, 1));
+            recyclerView.setOnDragListener(
+                    new MyDragListener(Playlist.this, gridData, recyclerData));
         }
     };
 
@@ -263,11 +273,9 @@ public class Playlist extends Activity {
                 String[] strData = recyclerData.get(i);
                 int sequence = i + 1;
                 String query = "Insert into TBDPS2 select ' ', ' ', '" + sequence + "', ' ', ' ', COL6, '0', ' ', ' ', ' ', '" + customer_id + "', '0', ' '  from TBDPG where COL0 = '" + strData[0] + "'";
-                System.out.print("Shubham---->" + query);
-                Log.d("Shubham---->",  query);
                 db.execSQL(query);
             }
-            db.execSQL("update  TBDPS2  set COL11 = '1' where COL10 = '" + customer_id + "' and not exists (Select 1 from TBDPS a where a.COL5 = TBDPS2.COL5 and a.COL3 = TBDPS2.COL3 )");
+            db.execSQL("update  TBDPS2  set COL11 = '1' where COL10 = '" + customer_id + "' and not exists (Select 1 from TBDPS a where a.COL5 = TBDPS2.COL5 and a.COL3 = '" + category_code + "' )");
             db.execSQL("update  TBPARTY  set COL15 = '1' where COL0 = '" + customer_id + "'");
             String[][] tbdps2Data = handler.genericSelect("Select * from TBDPS2 where COL10 = '" + customer_id + "'", 12);
 
@@ -301,13 +309,27 @@ public class Playlist extends Activity {
 
                 db.insert("TBDPS3", null, cv);
             }
-
             page_count.setText("(" + recyclerData.size() + " Pages)");
-            Intent intent = new Intent(Playlist.this, LandingPage.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            SyncData();
         }
     };
+    private void SyncData() {
+        Sync sync = new Sync(Playlist.this);
+        sync.prepareRequest(2);
+        final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(Playlist.this, CmsInter.SUCCESS_TYPE);
+        sweetAlertDialog.setTitleText("Data Saved Successfully")
+                .setConfirmText("Ok")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sweetAlertDialog.dismiss();
+                        Intent intent = new Intent(Playlist.this, LandingPage.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
+                })
+                .show();
+    }
 
     View.OnClickListener resetListener = new View.OnClickListener() {
         @Override

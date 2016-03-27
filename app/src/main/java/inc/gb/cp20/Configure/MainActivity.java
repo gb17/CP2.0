@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -19,7 +20,10 @@ import android.widget.TextView;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +53,7 @@ import inc.gb.cp20.R;
 import inc.gb.cp20.Util.CmsInter;
 import inc.gb.cp20.Util.RestClient;
 import inc.gb.cp20.Util.Utility;
-import inc.gb.cp20.changepwd.ChangePasswordAcitvity;
+import inc.gb.cp20.ChangePwd.ChangePasswordAcitvity;
 import inc.gb.cp20.interfaces.DownloadInterface;
 import retrofit.Call;
 import retrofit.Callback;
@@ -90,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
         setContentView(R.layout.login);
 //        dbHandler = DBHandler.getInstance(MainActivity.this);
 //        SQLiteDatabase db = dbHandler.getWritableDatabase();
-//        db.delete("TBDPS2", null, null);
+//        db.delete("TXN102", null, null);
 //        db.delete("TBPHTAG", null, null);
 //        db.delete("TBNAME", null, null);
 //        Sync sync = new Sync(this);
@@ -112,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
             dbHandler = DBHandler.getInstance(this);
             dbHandler.createTables();
         } else if (CONFIG_FLAG) {
-            displaytext.setText("To login Please enter your password");
+            displaytext.setText("To login please enter your password");
             UsereditText.setText(UsernameString);
             UsereditText.setEnabled(false);
             loginButton.setText("LOGIN");
@@ -149,12 +153,13 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                     } else if (CONFIG_FLAG) {
                         if (PasswordString.equals(PasswordeditText.getText().toString())) {
                             backupDatabase();
-                            Intent LandingIntent = new Intent(MainActivity.this, LandingPage.class);
-                            LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            LandingIntent.putExtra("CALLSYNC", "1");
-                            startActivity(LandingIntent);
-                            //  getprogressDialog("Please Wait..");
-                            //   CallCVR(CONFIG_FLAG);
+//                            Intent LandingIntent = new Intent(MainActivity.this, LandingPage.class);
+//                            LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                            LandingIntent.putExtra("CALLSYNC", "1");
+//                            startActivity(LandingIntent);
+                            PasswordeditText.setText("");
+                            getprogressDialog("Please Wait..");
+                            CallCVR(CONFIG_FLAG);
                         } else {
                             Utility.showSweetAlert(MainActivity.this, "Invalid Password ", CmsInter.ERROR_TYPE);
                         }
@@ -164,7 +169,15 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
             }
         });
 
+        String url1 = "file://" + getFilesDir().getAbsolutePath() + "/welcome/welcome.htm";
+        File welcomeFile = new File(url1);
+        if(!welcomeFile.exists())
+            copyAsset("welcome");
 
+        String url2 = "file://" + getFilesDir().getAbsolutePath() + "/thank/thank.htm";
+        File thankFile = new File(url2);
+        if(!thankFile.exists())
+            copyAsset("thank");
     }
 
     public void getprogressDialog(String msg) {
@@ -202,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
             if (dataCVR != null) {
 
                 String dataCVRSplitCol2[] = dataCVR[0][2].split("\\^");
-                UsernameString = dataCVRSplitCol2[25];
+                UsernameString = dataCVRSplitCol2[9];
                 PasswordString = dataCVRSplitCol2[3];
                 mission = true;
             } else {
@@ -563,7 +576,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
             @Override
             public void onFailure(Throwable t) {
-                Utility.showSweetAlert(MainActivity.this, t.toString() + "ACKtagd", CmsInter.ERROR_TYPE);
+                Utility.showSweetAlert(MainActivity.this, t.toString(), CmsInter.ERROR_TYPE);
                 dialog.dismiss();
             }
         });
@@ -709,4 +722,55 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
         }
     }
 
+    private void copyAsset(String path) {
+        AssetManager manager = MainActivity.this.getAssets();
+        try {
+            String[] contents = manager.list(path);
+
+            // The documentation suggests that list throws an IOException, but
+            // doesn't
+            // say under what conditions. It'd be nice if it did so when the
+            // path was
+            // to a file. That doesn't appear to be the case. If the returned
+            // array is
+            // null or has 0 length, we assume the path is to a file. This means
+            // empty
+            // directories will get turned into files.
+            if (contents == null || contents.length == 0)
+                throw new IOException();
+
+            // Make the directory.
+            File dir = new File(MainActivity.this.getFilesDir(), path);
+            dir.mkdirs();
+
+            // Recurse on the contents.
+            for (String entry : contents) {
+                copyAsset(path + "/" + entry);
+            }
+        } catch (IOException e) {
+            copyFileAsset(path);
+        }
+    }
+
+    private void copyFileAsset(String path) {
+        File file = new File(MainActivity.this.getFilesDir(), path);
+        try {
+            InputStream in = MainActivity.this.getAssets().open(path);
+            OutputStream out = new FileOutputStream(file);
+            byte[] buffer = new byte[1024];
+            int read = in.read(buffer);
+            while (read != -1) {
+                out.write(buffer, 0, read);
+                read = in.read(buffer);
+            }
+            out.close();
+            in.close();
+        } catch (IOException e) {
+            Log.e("tag", "Exception", e);
+        }
+        if (path.contains(".zip")) {
+            String directory = MainActivity.this.getFilesDir().getAbsolutePath() + "/";
+            Utility.unZipFile(file, directory);
+        }
+    }
 }

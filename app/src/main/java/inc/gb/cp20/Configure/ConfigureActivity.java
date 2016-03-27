@@ -42,7 +42,7 @@ import inc.gb.cp20.R;
 import inc.gb.cp20.Util.CmsInter;
 import inc.gb.cp20.Util.RestClient;
 import inc.gb.cp20.Util.Utility;
-import inc.gb.cp20.changepwd.ChangePasswordAcitvity;
+import inc.gb.cp20.ChangePwd.ChangePasswordAcitvity;
 import inc.gb.cp20.interfaces.DownloadInterface;
 import retrofit.Call;
 import retrofit.Callback;
@@ -532,7 +532,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
     class TBImgClass extends AsyncTask<Void, Integer, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
-            String[][] tbImg = dbHandler.genericSelect("Select COL1 from TBIMG", 1);
+            String[][] tbImg = dbHandler.genericSelect("Select COL1 from TBIMG WHERE COL2 = 'Y'", 1);
             if (tbImg != null) {
                 SQLiteDatabase db = dbHandler.getWritableDatabase();
                 for (int i = 0; i < tbImg.length; i++) {
@@ -547,7 +547,8 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        //db.execSQL("DELETE FROM TBIMG where COL1 = '" + url + "'");
+                        db.execSQL("UPDATE TBIMG SET COL2 = 'N' where COL1 = '" + url + "'");
+
                     }
                 }
             }

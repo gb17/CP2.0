@@ -21,6 +21,7 @@ public class LightContainer extends Activity {
     public String category_code = "";
     public String category_name = "";
     public String thumbnail_category = "";
+    public String patch = "";
     public String index = "0";
 
     public String url = "";
@@ -41,24 +42,28 @@ public class LightContainer extends Activity {
         Bundle extras = getIntent().getExtras();
         customer_id = extras.getString("customer_id");
         customer_name = extras.getString("customer_name");
-         category_code = extras.getString("category_code");
+        category_code = extras.getString("category_code");
         category_name = extras.getString("category_name");
         thumbnail_category = extras.getString("thumbnail_category");
         index = extras.getString("index");
+        patch = extras.getString("patch");
 
 
         if (customer_name != null)
             name.setText(customer_name);
         if (index == null)
             index = "0";
+        if (patch == null)
+            patch = "";
 
         webView.getSettings().setPluginState(WebSettings.PluginState.ON);
         webView.getSettings().setJavaScriptEnabled(true);
 
         webView.getSettings().setAllowFileAccess(true);
         webView.setWebViewClient(new WebViewClient());
+        url = "file://" + getFilesDir().getAbsolutePath() + "/welcome/welcome.htm";
 
-        url = "file:///android_asset/WELCOME/welcome.htm";
+        // url = "file:///android_asset/WELCOME/welcome.htm";
         webView = (WebView) findViewById(R.id.webView);
         webView.post(new Runnable() {
             @Override
@@ -82,11 +87,11 @@ public class LightContainer extends Activity {
                 bundle.putString("customer_id", customer_id);
                 bundle.putString("customer_name", customer_name);
             }
-
             bundle.putString("category_code", category_code);
             bundle.putString("category_name", category_name);
             bundle.putString("thumbnail_category", thumbnail_category);
             bundle.putString("index", index);
+            bundle.putString("patch", patch);
             intent.putExtras(bundle);
             startActivityForResult(intent, 1);
         }

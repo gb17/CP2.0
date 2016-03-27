@@ -1,4 +1,4 @@
-package inc.gb.cp20.ChnagePwd;
+package inc.gb.cp20.ChangePwd;
 
 import android.app.Activity;
 import android.content.Context;

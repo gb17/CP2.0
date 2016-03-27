@@ -103,7 +103,10 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.MyView
 
     @Override
     public int getItemCount() {
-        return recyclerData.size();
+        if (recyclerData != null)
+            return recyclerData.size();
+        else
+            return 0;
     }
 
     public void remove(int position) {
