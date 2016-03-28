@@ -472,7 +472,7 @@ public class TagDownloading implements DownloadInterface {
     class TBImgClass extends AsyncTask<Void, Integer, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
-            String[][] tbImg = dbHandler.genericSelect("Select COL1 from TBIMG WHERE COL2 = 'Y'", 1);
+            String[][] tbImg = dbHandler.genericSelect("select COL1 from TBIMG WHERE COL2 = 'Y'", 1);
             if (tbImg != null) {
 
                 for (int i = 0; i < tbImg.length; i++) {
