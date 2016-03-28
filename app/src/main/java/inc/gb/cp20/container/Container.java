@@ -181,7 +181,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         currentDate = new SimpleDateFormat("dd-MM-yyyy").format(date);
 
         fillPlaystData();
-        String brandQuery = "SELECT COL0, COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8 FROM TBBRAND where COL0 = '" + thumbnail_category + "'";
+
+        String brandQuery = "SELECT COL0, COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8 FROM TBBRAND b where b.COL0 = '" + thumbnail_category + "' and exists (select 1 from TBDPS s, TBDPG t where s.col5 = t.col0 and s.col9= b.col0 and s.col1 =  b.col3 and t.col7 = '1' )";
+
 //        if (customer_id.equals(""))
 //            brandQuery = "SELECT * FROM TBBRND where col_4 <> '" + category_code + "'";
 

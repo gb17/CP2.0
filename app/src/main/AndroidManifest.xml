@@ -15,10 +15,13 @@
         <activity
             android:name=".Configure.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".ContentLib.ContentLibrary"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"></activity>
+
+        <!--<activity-->
+        <!--android:name=".ConatentLib.ContentLibrary"-->
+        <!--android:windowSoftInputMode="stateHidden">-->
+
+        <!--</activity>-->
 
 
         <activity
@@ -36,20 +39,17 @@
         <activity
             android:name=".Landing.LandingPage"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden">
-
-        </activity>
+            android:windowSoftInputMode="stateHidden"></activity>
 
         <activity android:name=".container.LightContainer" />
         <activity android:name=".container.Container" />
+        <activity android:name=".ContentLib.ContentLibrary" />
         <activity android:name=".container.VideoPlay" />
         <activity android:name=".playlist.Playlist" />
         <activity android:name=".Configure.ConfigureActivity" />
         <activity
-            android:name=".changepwd.ChangePasswordAcitvity"
-            android:windowSoftInputMode="stateHidden">
-
-        </activity>
+            android:name=".ChangePwd.ChangePasswordAcitvity"
+            android:windowSoftInputMode="stateHidden"></activity>
 
     </application>
 
