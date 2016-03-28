@@ -136,17 +136,20 @@ class MyDragListener implements OnDragListener {
                     String[] str = griddata.get(chance2);
                     String strData[] = null;
                     boolean flag = false;
-                    for (int k = 0; k < recyclerdata.size(); k++) {
-                        strData = recyclerdata.get(k);
-                        if (strData[0].equals(str[0])) {
-                            flag = true;
-                            break;
+                    if (recyclerdata != null)
+                        for (int k = 0; k < recyclerdata.size(); k++) {
+                            strData = recyclerdata.get(k);
+                            if (strData[0].equals(str[0])) {
+                                flag = true;
+                                break;
+                            }
                         }
-                    }
                     if (flag) {
                         Toast.makeText(context, "You cannot drop the same item again", Toast.LENGTH_SHORT).show();
                     } else {
                         griddata.remove(chance2);
+                        if(recyclerdata == null)
+                            recyclerdata = new ArrayList<>();
                         recyclerdata.add(str);
                         PlaylistAdapter adapter = new PlaylistAdapter(context, griddata,
                                 recyclerdata, 1);

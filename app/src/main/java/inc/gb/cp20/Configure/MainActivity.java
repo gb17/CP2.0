@@ -280,8 +280,6 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                 dialog.dismiss();
             }
         });
-
-
     }
 
     public void CallCVR(final boolean configflag) {

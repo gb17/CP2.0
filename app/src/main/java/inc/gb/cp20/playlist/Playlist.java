@@ -86,8 +86,8 @@ public class Playlist extends Activity {
                 "        where a.col5 = b.col0\n" +
                 "        and a.COL10 = '" + customer_id + "' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
 
-
-        recyclerData = twoDArrayToList(playListData);
+        if (playListData != null)
+            recyclerData = twoDArrayToList(playListData);
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -145,6 +145,8 @@ public class Playlist extends Activity {
         preview.setText(getResources().getString(R.string.play) + " Preview");
         preview.setTypeface(font);
         preview.setOnClickListener(previewListener);
+        if (playListData == null)
+            preview.setVisibility(View.INVISIBLE);
 
         done = (TextView) findViewById(R.id.done);
         done.setText(getResources().getString(R.string.icon_tick) + " Done");
@@ -200,9 +202,10 @@ public class Playlist extends Activity {
                     grid.setAdapter(new BrandlistAdapter(Playlist.this, gridData, recyclerData));
                 }
             }
-            recyclerView.setAdapter(new PlaylistAdapter(Playlist.this, gridData, recyclerData, 1));
+            PlaylistAdapter adapter = (PlaylistAdapter) recyclerView.getAdapter();
+            recyclerView.setAdapter(new PlaylistAdapter(Playlist.this, gridData, adapter.recyclerData, 1));
             recyclerView.setOnDragListener(
-                    new MyDragListener(Playlist.this, gridData, recyclerData));
+                    new MyDragListener(Playlist.this, gridData, adapter.recyclerData));
         }
     };
 
@@ -241,17 +244,19 @@ public class Playlist extends Activity {
             playListData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11 from TBDPS2 a , TBDPG b\n" +
                     "        where a.col5 = b.col0\n" +
                     "        and a.COL10 = '" + customer_id + "' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
-
-            recyclerData = twoDArrayToList(playListData);
+            if (playListData != null)
+                recyclerData = twoDArrayToList(playListData);
             if (gridData != null) {
                 gridData.clear();
                 grid.setAdapter(new BrandlistAdapter(Playlist.this, gridData, recyclerData));
             }
             recyclerView.setAdapter(new PlaylistAdapter(Playlist.this, gridData, recyclerData, 0));
-            page_count.setText("(" + recyclerData.size() + " Pages)");
+            if (playListData != null)
+                page_count.setText("(" + recyclerData.size() + " Pages)");
 
             edit.setVisibility(View.VISIBLE);
-            preview.setVisibility(View.VISIBLE);
+            if (playListData != null)
+                preview.setVisibility(View.VISIBLE);
             done.setVisibility(View.GONE);
             cancel.setVisibility(View.GONE);
             reset.setVisibility(View.GONE);
@@ -266,53 +271,58 @@ public class Playlist extends Activity {
     View.OnClickListener doneListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            SQLiteDatabase db = handler.getWritableDatabase();
-            db.execSQL("delete  from TBDPS2 where COL10 = '" + customer_id + "'");
+
             ArrayList<String[]> recyclerData = ((PlaylistAdapter) recyclerView.getAdapter()).recyclerData;
-            for (int i = 0; i < recyclerData.size(); i++) {
-                String[] strData = recyclerData.get(i);
-                int sequence = i + 1;
-                String query = "Insert into TBDPS2 select ' ', ' ', '" + sequence + "', ' ', ' ', COL6, '0', ' ', ' ', ' ', '" + customer_id + "', '0', ' '  from TBDPG where COL0 = '" + strData[0] + "'";
-                db.execSQL(query);
+            if (recyclerData != null) {
+                SQLiteDatabase db = handler.getWritableDatabase();
+                db.execSQL("delete  from TBDPS2 where COL10 = '" + customer_id + "'");
+
+                for (int i = 0; i < recyclerData.size(); i++) {
+                    String[] strData = recyclerData.get(i);
+                    int sequence = i + 1;
+                    String query = "Insert into TBDPS2 select ' ', ' ', '" + sequence + "', ' ', ' ', COL6, '0', ' ', ' ', ' ', '" + customer_id + "', '0', ' '  from TBDPG where COL0 = '" + strData[0] + "'";
+                    db.execSQL(query);
+                }
+                db.execSQL("update  TBDPS2  set COL11 = '1' where COL10 = '" + customer_id + "' and not exists (Select 1 from TBDPS a where a.COL5 = TBDPS2.COL5 and a.COL3 = '" + category_code + "' )");
+                db.execSQL("update  TBPARTY  set COL15 = '1' where COL0 = '" + customer_id + "'");
+                String[][] tbdps2Data = handler.genericSelect("Select * from TBDPS2 where COL10 = '" + customer_id + "'", 12);
+
+
+                Date date = new Date();
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                String txndate = formatter.format(date);
+
+                String uniqueNumber = Utility.getUniqueNo();
+
+                long time = System.currentTimeMillis();
+                db = handler.getWritableDatabase();
+                for (int i = 0; i < tbdps2Data.length; i++) {
+                    ContentValues cv = new ContentValues();
+                    cv.put("COL0", tbdps2Data[i][0]);
+                    cv.put("COL1", tbdps2Data[i][1]);
+                    cv.put("COL2", tbdps2Data[i][2]);
+                    cv.put("COL3", tbdps2Data[i][3]);
+                    cv.put("COL4", tbdps2Data[i][4]);
+                    cv.put("COL5", tbdps2Data[i][5]);
+                    cv.put("COL6", tbdps2Data[i][6]);
+                    cv.put("COL7", tbdps2Data[i][7]);
+                    cv.put("COL8", tbdps2Data[i][8]);
+                    cv.put("COL9", tbdps2Data[i][9]);
+                    cv.put("COL10", tbdps2Data[i][10]);
+                    cv.put("COL11", tbdps2Data[i][11]);
+                    cv.put("COL12", "0");
+                    cv.put("COL13", txndate);
+                    cv.put("COL14", uniqueNumber + i);
+                    cv.put("COL15", time);
+
+                    db.insert("TBDPS3", null, cv);
+                }
+                page_count.setText("(" + recyclerData.size() + " Pages)");
+                SyncData();
             }
-            db.execSQL("update  TBDPS2  set COL11 = '1' where COL10 = '" + customer_id + "' and not exists (Select 1 from TBDPS a where a.COL5 = TBDPS2.COL5 and a.COL3 = '" + category_code + "' )");
-            db.execSQL("update  TBPARTY  set COL15 = '1' where COL0 = '" + customer_id + "'");
-            String[][] tbdps2Data = handler.genericSelect("Select * from TBDPS2 where COL10 = '" + customer_id + "'", 12);
-
-
-            Date date = new Date();
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-            String txndate = formatter.format(date);
-
-            String uniqueNumber = Utility.getUniqueNo();
-
-            long time = System.currentTimeMillis();
-            db = handler.getWritableDatabase();
-            for (int i = 0; i < tbdps2Data.length; i++) {
-                ContentValues cv = new ContentValues();
-                cv.put("COL0", tbdps2Data[i][0]);
-                cv.put("COL1", tbdps2Data[i][1]);
-                cv.put("COL2", tbdps2Data[i][2]);
-                cv.put("COL3", tbdps2Data[i][3]);
-                cv.put("COL4", tbdps2Data[i][4]);
-                cv.put("COL5", tbdps2Data[i][5]);
-                cv.put("COL6", tbdps2Data[i][6]);
-                cv.put("COL7", tbdps2Data[i][7]);
-                cv.put("COL8", tbdps2Data[i][8]);
-                cv.put("COL9", tbdps2Data[i][9]);
-                cv.put("COL10", tbdps2Data[i][10]);
-                cv.put("COL11", tbdps2Data[i][11]);
-                cv.put("COL12", "0");
-                cv.put("COL13", txndate);
-                cv.put("COL14", uniqueNumber + i);
-                cv.put("COL15", time);
-
-                db.insert("TBDPS3", null, cv);
-            }
-            page_count.setText("(" + recyclerData.size() + " Pages)");
-            SyncData();
         }
     };
+
     private void SyncData() {
         Sync sync = new Sync(Playlist.this);
         sync.prepareRequest(2);
@@ -383,8 +393,8 @@ public class Playlist extends Activity {
         playListData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, '0' from TBDPS a , TBDPG b\n" +
                 "        where a.col5 = b.col0\n" +
                 "        and a.COL3 = '" + category_code + "' and a.COL9 = '" + category_name + "' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
-
-        recyclerData = twoDArrayToList(playListData);
+        if (playListData != null)
+            recyclerData = twoDArrayToList(playListData);
 
         searchText = searchView.getText().toString();
         if (searchText.equals("")) {
@@ -401,6 +411,7 @@ public class Playlist extends Activity {
         }
 
         recyclerView.setAdapter(new PlaylistAdapter(Playlist.this, gridData, recyclerData, 0));
-        page_count.setText("(" + recyclerData.size() + " Pages)");
+        if (playListData != null)
+            page_count.setText("(" + recyclerData.size() + " Pages)");
     }
 }

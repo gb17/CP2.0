@@ -236,7 +236,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                 intent.putExtra("fileName", refData[position][0]);
                                 startActivityForResult(intent, 1001);
                             } else if (refData[position][2].toLowerCase().equals("pdf")) {
-                                String path1 = Container.this.getFilesDir().getAbsolutePath() + "/" + FilenameUtils.removeExtension(playstData[position][2]) + "/"
+                                String path1 = Container.this.getFilesDir().getAbsolutePath() + "/"
                                         + refData[position][0];
                                 File file1 = new File(path1);
                                 if (file1.exists()) {
@@ -642,7 +642,6 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
     private void hideDrawer() {
         if (mylinear.getVisibility() == View.VISIBLE) {
-
             if (gesturesView.getVisibility() == View.VISIBLE) {
                 gesturesView.cancelClearAnimation();
                 gesturesView.clear(true);
@@ -685,6 +684,12 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 if (flagForPlaylist)
                     backtoplaylist.setVisibility(View.VISIBLE);
             }
+        } else if (gesturesView.getVisibility() == View.VISIBLE) {
+            gesturesView.cancelClearAnimation();
+            gesturesView.clear(true);
+            gesturesView.setVisibility(View.GONE);
+            ImageView image = (ImageView) findViewById(R.id.annot1);
+            image.setTag("1");
         }
     }
 
