@@ -273,7 +273,7 @@ public class Playlist extends Activity {
         public void onClick(View view) {
 
             ArrayList<String[]> recyclerData = ((PlaylistAdapter) recyclerView.getAdapter()).recyclerData;
-            if (recyclerData != null) {
+            if (recyclerData.size() > 0) {
                 SQLiteDatabase db = handler.getWritableDatabase();
                 db.execSQL("delete  from TBDPS2 where COL10 = '" + customer_id + "'");
 
@@ -317,8 +317,11 @@ public class Playlist extends Activity {
 
                     db.insert("TBDPS3", null, cv);
                 }
-                page_count.setText("(" + recyclerData.size() + " Pages)");
+                if (playListData != null)
+                    page_count.setText("(" + recyclerData.size() + " Pages)");
                 SyncData();
+            } else {
+                Utility.showSweetAlert(Playlist.this, "Please select at least one pages", CmsInter.WARNING_TYPE);
             }
         }
     };
@@ -393,25 +396,28 @@ public class Playlist extends Activity {
         playListData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, '0' from TBDPS a , TBDPG b\n" +
                 "        where a.col5 = b.col0\n" +
                 "        and a.COL3 = '" + category_code + "' and a.COL9 = '" + category_name + "' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
-        if (playListData != null)
+        if (playListData == null) {
+            Utility.showSweetAlert(Playlist.this, "No default playlist available", CmsInter.NORMAL_TYPE);
+        } else {
             recyclerData = twoDArrayToList(playListData);
 
-        searchText = searchView.getText().toString();
-        if (searchText.equals("")) {
-            if (gridData != null) {
-                gridData.clear();
-                grid.setAdapter(new BrandlistAdapter(Playlist.this, gridData, recyclerData));
+            searchText = searchView.getText().toString();
+            if (searchText.equals("")) {
+                if (gridData != null) {
+                    gridData.clear();
+                    grid.setAdapter(new BrandlistAdapter(Playlist.this, gridData, recyclerData));
+                }
+            } else {
+                brandListData = handler.genericSelect("select COL0, 1, COL1, COL2, COL3, COL5, COL16, '0' from TBDPG b where COL4 like '%" + searchText + "%' and not exists (Select 1 from TBDPS2 a where COL10 = '" + customer_id + "' and a.COL5 = b.COL0)", 8);
+                if (brandListData != null) {
+                    gridData = twoDArrayToList(brandListData);
+                    grid.setAdapter(new BrandlistAdapter(Playlist.this, gridData, recyclerData));
+                }
             }
-        } else {
-            brandListData = handler.genericSelect("select COL0, 1, COL1, COL2, COL3, COL5, COL16, '0' from TBDPG b where COL4 like '%" + searchText + "%' and not exists (Select 1 from TBDPS2 a where COL10 = '" + customer_id + "' and a.COL5 = b.COL0)", 8);
-            if (brandListData != null) {
-                gridData = twoDArrayToList(brandListData);
-                grid.setAdapter(new BrandlistAdapter(Playlist.this, gridData, recyclerData));
-            }
-        }
 
-        recyclerView.setAdapter(new PlaylistAdapter(Playlist.this, gridData, recyclerData, 0));
-        if (playListData != null)
-            page_count.setText("(" + recyclerData.size() + " Pages)");
+            recyclerView.setAdapter(new PlaylistAdapter(Playlist.this, gridData, recyclerData, 0));
+            if (playListData != null)
+                page_count.setText("(" + recyclerData.size() + " Pages)");
+        }
     }
 }

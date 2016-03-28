@@ -1161,12 +1161,13 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
         String[][] strData = handler.getTagData("TBDPL");
         if (strData != null) {
-            cgDataDPL = new String[strData.length];
-            cgCodeDPL = new String[strData.length];
-
+            cgDataDPL = new String[strData.length + 1];
+            cgCodeDPL = new String[strData.length + 1];
+            cgDataDPL[0] = "Select Patch";
+            cgCodeDPL[0] = "0";
             for (int j = 0; j < strData.length; j++) {
-                cgDataDPL[j] = strData[j][1];
-                cgCodeDPL[j] = strData[j][0];
+                cgDataDPL[j + 1] = strData[j][1];
+                cgCodeDPL[j + 1] = strData[j][0];
             }
             ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDPL);
             spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -1174,12 +1175,13 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         }
         String[][] strData2 = handler.getTagData("TBDSP");
         if (strData2 != null) {
-            cgDataDSP = new String[strData2.length];
-            cgCodeDSP = new String[strData2.length];
-
+            cgDataDSP = new String[strData2.length + 1];
+            cgCodeDSP = new String[strData2.length + 1];
+            cgDataDSP[0] = "Select Speciality";
+            cgCodeDSP[0] = "0";
             for (int j = 0; j < strData2.length; j++) {
-                cgDataDSP[j] = strData2[j][1];
-                cgCodeDSP[j] = strData2[j][0];
+                cgDataDSP[j + 1] = strData2[j][1];
+                cgCodeDSP[j + 1] = strData2[j][0];
             }
             ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDSP);
             spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -1187,12 +1189,13 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         }
         String[][] strData3 = handler.getTagData("TBDDC");
         if (strData3 != null) {
-            cgDataDDC = new String[strData3.length];
-            cgCodeDDC = new String[strData3.length];
-
+            cgDataDDC = new String[strData3.length + 1];
+            cgCodeDDC = new String[strData3.length + 1];
+            cgDataDDC[0] = "Select Class";
+            cgCodeDDC[0] = "0";
             for (int j = 0; j < strData3.length; j++) {
-                cgDataDDC[j] = strData3[j][1];
-                cgCodeDDC[j] = strData3[j][0];
+                cgDataDDC[j + 1] = strData3[j][1];
+                cgCodeDDC[j + 1] = strData3[j][0];
             }
             ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDDC);
             spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -1232,7 +1235,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                     public void onClick(View view) {
                                         String str = phy_name.getText().toString();
                                         phy_name.setText("");
-                                        if (!str.equals("")) {
+                                        if (!str.equals("") && patch.getSelectedItemPosition() != 0 && speciality.getSelectedItemPosition() != 0) {
                                             String patStr = cgDataDPL[patch.getSelectedItemPosition()];
                                             String specStr = cgDataDSP[speciality.getSelectedItemPosition()];
                                             String clasStr = cgDataDDC[clas.getSelectedItemPosition()];

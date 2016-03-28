@@ -133,77 +133,44 @@
                 android:layout_height="2dp"
                 android:background="#000000" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:text="Doctor's Name*"
-                android:textColor="#212121"
-                android:textSize="18sp"
-                android:textStyle="italic" />
 
             <EditText
                 android:id="@+id/phy_name"
                 android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
-                android:background="@drawable/edit_text_bg" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
-                android:text="Patch*"
-                android:textColor="#212121"
-                android:textSize="18sp"
-                android:textStyle="italic" />
+                android:background="@drawable/edit_text_bg"
+                android:hint="Doctor's Name*"
+                android:paddingLeft="10dp"
+                android:textSize="16sp" />
+
 
             <Spinner
                 android:id="@+id/patch"
                 android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
-                android:background="@drawable/drop_down_bg" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
-                android:text="Speciality*"
-                android:textColor="#212121"
-                android:textSize="18sp"
-                android:textStyle="italic" />
+                android:background="@drawable/drop_down_bg" />
 
             <Spinner
                 android:id="@+id/speciality"
                 android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/drop_down_bg" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:text="Class*"
-                android:textColor="#212121"
-                android:textSize="18sp"
-                android:textStyle="italic" />
 
             <Spinner
                 android:id="@+id/clas"
                 android:layout_width="300dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
-                android:background="@drawable/drop_down_bg" />
+                android:layout_marginTop="20dp"
+                android:background="@drawable/drop_down_bg"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/move"
