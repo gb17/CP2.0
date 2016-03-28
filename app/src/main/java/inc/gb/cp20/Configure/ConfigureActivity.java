@@ -12,12 +12,14 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.daimajia.numberprogressbar.NumberProgressBar;
+import com.trncic.library.DottedProgressBar;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import inc.gb.cp20.ChangePwd.ChangePasswordAcitvity;
 import inc.gb.cp20.DB.DBHandler;
 import inc.gb.cp20.Landing.LandingPage;
 import inc.gb.cp20.Models.ACKTAG;
@@ -42,7 +44,6 @@ import inc.gb.cp20.R;
 import inc.gb.cp20.Util.CmsInter;
 import inc.gb.cp20.Util.RestClient;
 import inc.gb.cp20.Util.Utility;
-import inc.gb.cp20.ChangePwd.ChangePasswordAcitvity;
 import inc.gb.cp20.interfaces.DownloadInterface;
 import retrofit.Call;
 import retrofit.Callback;
@@ -65,7 +66,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
     String ClientID = "";
     DBHandler dbHandler;
     SweetAlertDialog configAlertDialog;
-
+    DottedProgressBar progressBar;
     private List<TBCVR> CvrList = new ArrayList<>();
 
     @Override
@@ -74,6 +75,9 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
         setContentView(R.layout.configure_layout);
         numberProgressBar = (NumberProgressBar) findViewById(R.id.progress_config);
         dbHandler = DBHandler.getInstance(this);
+        progressBar = (DottedProgressBar) findViewById(R.id.progress);
+        progressBar.startProgress();
+
 
         try {
             Bundle bundle = getIntent().getExtras();
@@ -436,6 +440,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
             @Override
             public void onResponse(Response<ACKTAG> response, Retrofit retrofit) {
                 numberProgressBar.setProgress(100);
+                progressBar.stopProgress();
                 configAlertDialog = new SweetAlertDialog(ConfigureActivity.this, SweetAlertDialog.SUCCESS_TYPE)
                         .setTitleText("System Configured.")
                         .setConfirmText("Ok")
@@ -534,7 +539,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
         protected Void doInBackground(Void... voids) {
             String[][] tbImg = dbHandler.genericSelect("Select COL1 from TBIMG WHERE COL2 = 'Y'", 1);
             if (tbImg != null) {
-                SQLiteDatabase db = dbHandler.getWritableDatabase();
+
                 for (int i = 0; i < tbImg.length; i++) {
                     String url = tbImg[i][0];
                     String msg = Utility.downloadZipFile(url);
@@ -547,7 +552,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        db.execSQL("UPDATE TBIMG SET COL2 = 'N' where COL1 = '" + url + "'");
+                        dbHandler.ExecuteQuery("UPDATE TBIMG SET COL2 = 'N' where COL1 = '" + url + "'");
 
                     }
                 }

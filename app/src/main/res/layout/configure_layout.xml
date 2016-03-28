@@ -11,17 +11,39 @@
         android:layout_height="3sp"
         android:layout_centerInParent="true" />
 
+    <com.trncic.library.DottedProgressBar
+        android:id="@+id/progress"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/tpview"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="30dp"
+        android:padding="10dp"
+        app:activeDot="@drawable/active_dot"
+        app:dotSize="20dp"
+        app:inactiveDot="@drawable/inactive_dot"
+        app:jumpingSpeed="670"
+        app:spacing="15dp" />
+
     <com.daimajia.numberprogressbar.NumberProgressBar
         android:id="@+id/progress_config"
         android:layout_width="400dp"
         android:layout_height="20dp"
-        android:layout_below="@+id/tpview"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="50dp"
+        android:layout_below="@+id/progress"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:foregroundGravity="center_vertical"
         app:progress="0"
         app:progress_reached_bar_height="10dp"
         app:progress_text_size="10sp"
         app:progress_unreached_bar_height="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/progress_config"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Initializing content..." />
 
 </RelativeLayout>

@@ -13,9 +13,11 @@
         android:layout_toLeftOf="@+id/sideIndex"
         android:layout_weight="1"
         android:background="@color/search_bg"
+        android:hint="Select Doctor"
         android:paddingLeft="5dp"
         android:singleLine="true"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:textColorHint="#b3b0b0" />
 
 
     <LinearLayout
