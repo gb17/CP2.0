@@ -273,7 +273,7 @@ public class Playlist extends Activity {
         public void onClick(View view) {
 
             ArrayList<String[]> recyclerData = ((PlaylistAdapter) recyclerView.getAdapter()).recyclerData;
-            if (recyclerData.size() > 0) {
+            if (recyclerData != null && !recyclerData.isEmpty()) {
                 SQLiteDatabase db = handler.getWritableDatabase();
                 db.execSQL("delete  from TBDPS2 where COL10 = '" + customer_id + "'");
 
