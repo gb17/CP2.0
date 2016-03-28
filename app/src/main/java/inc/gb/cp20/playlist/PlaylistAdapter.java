@@ -27,7 +27,7 @@ import inc.gb.cp20.R;
 public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.MyViewHolder> {
 
     ArrayList<String[]> griddata;
-    ArrayList<String[]> recyclerData;
+    public ArrayList<String[]> recyclerData;
     Context mContext;
     //Playlist.MyOnLongClickListener listener;
     int visBit = 0;

@@ -14,8 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.commons.io.FilenameUtils;
-
 import java.io.File;
 import java.util.List;
 
@@ -69,7 +67,7 @@ public class ThumbnailAdapterForRefrence extends RecyclerView.Adapter<ThumbnailA
                         intent.putExtra("fileName", brandList.getRefrenceName());
                         ((Activity) mContext).startActivityForResult(intent, 1001);
                     } else if (brandList.getRefrenceName().contains("pdf")) {
-                        String path1 = mContext.getFilesDir().getAbsolutePath() + "/" + FilenameUtils.removeExtension(brandList.getRefrenceName()) + "/"
+                        String path1 = mContext.getFilesDir().getAbsolutePath() + "/"
                                 + brandList.getRefrenceName();
                         File file1 = new File(path1);
                         if (file1.exists()) {

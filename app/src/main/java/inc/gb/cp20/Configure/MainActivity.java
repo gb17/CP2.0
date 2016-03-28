@@ -157,9 +157,11 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 //                            LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //                            LandingIntent.putExtra("CALLSYNC", "1");
 //                            startActivity(LandingIntent);
-                            PasswordeditText.setText("");
+
                             getprogressDialog("Please Wait..");
                             CallCVR(CONFIG_FLAG);
+
+                            PasswordeditText.setText("");
                         } else {
                             Utility.showSweetAlert(MainActivity.this, "Invalid Password ", CmsInter.ERROR_TYPE);
                         }
