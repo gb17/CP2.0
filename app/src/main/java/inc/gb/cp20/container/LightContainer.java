@@ -47,14 +47,25 @@ public class LightContainer extends Activity {
         thumbnail_category = extras.getString("thumbnail_category");
         index = extras.getString("index");
         patch = extras.getString("patch");
-
-
-        if (customer_name != null)
-            name.setText(customer_name);
         if (index == null)
             index = "0";
         if (patch == null)
             patch = "";
+
+        if (customer_name != null)
+            name.setText(customer_name);
+        else{
+            Intent intent = new Intent(LightContainer.this, Container.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("category_code", category_code);
+            bundle.putString("category_name", category_name);
+            bundle.putString("thumbnail_category", thumbnail_category);
+            bundle.putString("index", index);
+            bundle.putString("patch", patch);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+
 
         webView.getSettings().setPluginState(WebSettings.PluginState.ON);
         webView.getSettings().setJavaScriptEnabled(true);
@@ -93,23 +104,7 @@ public class LightContainer extends Activity {
             bundle.putString("index", index);
             bundle.putString("patch", patch);
             intent.putExtras(bundle);
-            startActivityForResult(intent, 1);
+            startActivity(intent);
         }
     };
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            String result = data.getStringExtra("result");
-            url = "file:///android_asset/THANK/thank.htm";
-            webView = (WebView) findViewById(R.id.webView);
-            webView.post(new Runnable() {
-                @Override
-                public void run() {
-                    webView.loadUrl(url);
-                }
-            });
-        }
-    }
 }

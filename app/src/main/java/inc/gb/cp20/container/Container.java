@@ -96,6 +96,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     int groupId = 0;
     private Typeface font;
     int playIndex = 0;
+    int previousIndex = 0;
     String currentDate;
     private String emailFlag = "0";
     private String likedislikeFlag = "0";
@@ -522,7 +523,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     private void fillPlayList(int index) {
         Bitmap bitmap = null;
         content2.removeAllViews();
-        if (playstData != null)
+        if (playstData != null) {
             for (int i = 0; i < playstData.length; i++) {
                 LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = inflater.inflate(R.layout.playlist_groups, null);
@@ -546,6 +547,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 }
                 content2.addView(view);
             }
+        }
     }
 
     private void fillBrandList() {
@@ -583,6 +585,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             imageView.setScaleX(1.4f);
             imageView.setScaleY(1.4f);
 //            imageView.setBackgroundResource(R.drawable.image_bg);
+            previousIndex = 0;
             playIndex = 0;
             playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11 from TBDPS a , TBDPG b\n" +
                     "        where a.col5 = b.col0\n" +
@@ -609,6 +612,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             imageView.setScaleX(1.4f);
             imageView.setScaleY(1.4f);
 //            imageView.setBackgroundResource(R.drawable.image_bg);
+            previousIndex = playIndex;
             playIndex = view.getId();
             displayFocussedBrands(playIndex);
             hideDrawer();
@@ -619,22 +623,39 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         @Override
         public void onClick(View view) {
             int id = view.getId();
+            previousIndex = playIndex;
             if (id == R.id.previousbrand) {
                 if (playIndex > 0) {
                     playIndex--;
+                    ImageView imageView = (ImageView) ((RelativeLayout) content2.getChildAt(playIndex)).getChildAt(0);
                     for (int i = 0; i < content2.getChildCount(); i++) {
-                        content2.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+                        ImageView child = (ImageView) ((RelativeLayout) content2.getChildAt(i)).getChildAt(0);
+                        child.setScaleX(1.0f);
+                        child.setScaleY(1.0f);
                     }
-                    content2.getChildAt(playIndex).setBackgroundColor(Color.parseColor("#67E0ED"));
+                    imageView.setScaleX(1.4f);
+                    imageView.setScaleY(1.4f);
                     displayFocussedBrands(playIndex);
                 }
             } else if (id == R.id.nextbrand) {
                 if (playIndex < playstData.length - 1) {
                     playIndex++;
+                    ImageView imageView = (ImageView) ((RelativeLayout) content2.getChildAt(playIndex)).getChildAt(0);
                     for (int i = 0; i < content2.getChildCount(); i++) {
-                        content2.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+                        ImageView child = (ImageView) ((RelativeLayout) content2.getChildAt(i)).getChildAt(0);
+                        child.setScaleX(1.0f);
+                        child.setScaleY(1.0f);
                     }
-                    content2.getChildAt(playIndex).setBackgroundColor(Color.parseColor("#67E0ED"));
+                    imageView.setScaleX(1.4f);
+                    imageView.setScaleY(1.4f);
+                    displayFocussedBrands(playIndex);
+                } else if (playIndex < playstData.length && !customer_id.equals("")) {
+                    playIndex++;
+                    for (int i = 0; i < content2.getChildCount(); i++) {
+                        ImageView child = (ImageView) ((RelativeLayout) content2.getChildAt(i)).getChildAt(0);
+                        child.setScaleX(1.0f);
+                        child.setScaleY(1.0f);
+                    }
                     displayFocussedBrands(playIndex);
                 }
             }
@@ -703,7 +724,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             startTimeString = formatter.format(date);
             savingCount = 1;
         } else {
-            saveData(PLAYLISTINDEX);
+            if (previousIndex != playstData.length)
+                saveData(PLAYLISTINDEX);
+
             startTime = System.currentTimeMillis();
             Date date = new Date();
             DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
@@ -731,32 +754,50 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             bitmap = null;
         }
 
-        webView.getSettings().setPluginState(WebSettings.PluginState.ON);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setAllowFileAccess(true);
-        webView.setWebViewClient(new WebViewClient());
-        final String url = "file://" + getFilesDir().getAbsolutePath() + "/" + FilenameUtils.removeExtension(playstData[playIndex][2]) + "/" + playstData[playIndex][2];
+        if (playIndex == playstData.length) {
+            final String url = "file://" + getFilesDir().getAbsolutePath() + "/thank/thank.htm";
+            webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setAllowFileAccess(true);
+            webView.setWebViewClient(new WebViewClient());
 
-        if (playstData[playIndex][5].equals("1")) {//Emailable
-            iconsBar.getChildAt(0).setVisibility(View.VISIBLE);
-            iconsBar.getChildAt(1).setVisibility(View.VISIBLE);
-        } else {
             iconsBar.getChildAt(0).setVisibility(View.GONE);
             iconsBar.getChildAt(1).setVisibility(View.GONE);
-        }
-        String refCount[][] = handler.genericSelect("Select count (1) from TBDRG where COL0 = '" + playstData[playIndex][0] + "'", 1);
-        if (Integer.parseInt(refCount[0][0]) > 0) {//Reference
-            reference.setVisibility(View.VISIBLE);
-            reference.setTag(playstData[playIndex][0]);
-        } else
             reference.setVisibility(View.GONE);
-        // startTime = System.currentTimeMillis();
-        webView.post(new Runnable() {
-            @Override
-            public void run() {
-                webView.loadUrl(url);
+            webView.post(new Runnable() {
+                @Override
+                public void run() {
+                    webView.loadUrl(url);
+                }
+            });
+        } else {
+            webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setAllowFileAccess(true);
+            webView.setWebViewClient(new WebViewClient());
+            final String url = "file://" + getFilesDir().getAbsolutePath() + "/" + FilenameUtils.removeExtension(playstData[playIndex][2]) + "/" + playstData[playIndex][2];
+
+            if (playstData[playIndex][5].equals("1")) {//Emailable
+                iconsBar.getChildAt(0).setVisibility(View.VISIBLE);
+                iconsBar.getChildAt(1).setVisibility(View.VISIBLE);
+            } else {
+                iconsBar.getChildAt(0).setVisibility(View.GONE);
+                iconsBar.getChildAt(1).setVisibility(View.GONE);
             }
-        });
+            String refCount[][] = handler.genericSelect("Select count (1) from TBDRG where COL0 = '" + playstData[playIndex][0] + "'", 1);
+            if (Integer.parseInt(refCount[0][0]) > 0) {//Reference
+                reference.setVisibility(View.VISIBLE);
+                reference.setTag(playstData[playIndex][0]);
+            } else
+                reference.setVisibility(View.GONE);
+            // startTime = System.currentTimeMillis();
+            webView.post(new Runnable() {
+                @Override
+                public void run() {
+                    webView.loadUrl(url);
+                }
+            });
+        }
     }
 
 
@@ -926,9 +967,11 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1001)
-            saveData(REFERENCEINDEX);
-        else if (requestCode == 1212 && resultCode == RESULT_OK) {
+        if (requestCode == 1001) {
+            previousIndex = playIndex;
+            if (previousIndex != playstData.length)
+                saveData(REFERENCEINDEX);
+        } else if (requestCode == 1212 && resultCode == RESULT_OK) {
             String category_code = data.getStringExtra("category_code");
             String category_name = data.getStringExtra("category_name");
             String page_number = data.getStringExtra("page_number");
@@ -1064,7 +1107,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         sDialog.cancel();
-                        saveData(PLAYLISTINDEX);
+                        previousIndex = playIndex;
+                        if (previousIndex != playstData.length)
+                            saveData(PLAYLISTINDEX);
                         if (!customer_id.equals(""))
                             showAddDocDialog();
                         else
@@ -1075,7 +1120,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         sDialog.cancel();
-                        saveData(PLAYLISTINDEX);
+                        previousIndex = playIndex;
+                        if (previousIndex != playstData.length)
+                            saveData(PLAYLISTINDEX);
                         SQLiteDatabase db = handler.getWritableDatabase();
                         db.execSQL("update  TXN102  set COL20 = '-1' where COL18 = '" + randomNumber + "'");
                         Intent intent = new Intent(Container.this, LandingPage.class);
@@ -1116,6 +1163,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.cancel();
                         showAddDocScreen();
                     }
                 })
@@ -1240,10 +1288,12 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                         if (!str.equals("") && patch.getSelectedItemPosition() != 0 && speciality.getSelectedItemPosition() != 0) {
                                             String patStr = cgDataDPL[patch.getSelectedItemPosition()];
                                             String specStr = cgDataDSP[speciality.getSelectedItemPosition()];
-                                            String clasStr = cgDataDDC[clas.getSelectedItemPosition()];
+                                            //String clasStr = cgDataDDC[clas.getSelectedItemPosition()];
+                                            String clasStr = "";
                                             String patCodeStr = cgCodeDPL[patch.getSelectedItemPosition()];
                                             String specCodeStr = cgCodeDSP[speciality.getSelectedItemPosition()];
-                                            String clasCodeStr = cgCodeDDC[clas.getSelectedItemPosition()];
+                                            //String clasCodeStr = cgCodeDDC[clas.getSelectedItemPosition()];
+                                            String clasCodeStr = "";
 
                                             ContentValues cv = new ContentValues();
 
@@ -1376,7 +1426,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     @Override
     public void onBackPressed() {
         if (index.equals("3")) {
-            saveData(PLAYLISTINDEX);
+            previousIndex = playIndex;
+            if (previousIndex != playstData.length)
+                saveData(PLAYLISTINDEX);
             super.onBackPressed();
         } else if (playstData != null) {
             showAlertForDetailing();
@@ -1407,7 +1459,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         values.put("COL6", brandcode); //brandcode
 
         if (dataIndex == PLAYLISTINDEX) {
-            values.put("COL7", playstData[playIndex][0]); //pagecode
+            values.put("COL7", playstData[previousIndex][0]); //pagecode
         } else if (dataIndex == REFERENCEINDEX) {
             values.put("COL7", refData[position][3]); //referenceid
         }
@@ -1440,7 +1492,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             values.put("COL17", ""); //reference pageid
         } else if (dataIndex == REFERENCEINDEX) {
             values.put("COL16", ""); //like/dislike
-            values.put("COL17", playstData[playIndex][0]); //reference pageid
+            values.put("COL17", playstData[previousIndex][0]); //reference pageid
         }
 
         values.put("COL18", randomNumber); //randrom number
@@ -1448,7 +1500,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         values.put("COL20", "0");
 
         if (dataIndex == PLAYLISTINDEX) {
-            values.put("COL21", playstData[playIndex][7]); //playlistid
+            values.put("COL21", playstData[previousIndex][7]); //playlistid
         } else if (dataIndex == REFERENCEINDEX) {
             values.put("COL21", ""); //playlistid
         }

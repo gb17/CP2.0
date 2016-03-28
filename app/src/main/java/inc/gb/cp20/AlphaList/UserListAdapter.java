@@ -120,7 +120,7 @@ public class UserListAdapter extends BaseAdapter {
                 holder.name.setText(drListPOJO.getCOL1());
                 holder.CLassTV.setText(drListPOJO.getCOL11());
                 holder.spcTV.setText(drListPOJO.getCOL10());
-                if (drListPOJO.getCOL15().equals("0"))
+                if (drListPOJO.getCOL15()!=null && drListPOJO.getCOL15().equals("0"))
                     holder.noplayImageView.setVisibility(View.VISIBLE);
                 else {
                     holder.noplayImageView.setVisibility(View.GONE);
