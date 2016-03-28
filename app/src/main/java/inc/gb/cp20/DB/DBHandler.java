@@ -489,9 +489,15 @@ public class DBHandler extends SQLiteOpenHelper {
     public void UpdateTBRAND() {
         String Query = "update TBBRAND set col5 = ( select count(distinct b.col0) from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  TBBRAND.col3 and a.COL9 =  TBBRAND.col0 and a.COL10 = 'IPL'  and b.col8 = 'P'),\n" +
                 "\n" +
-                " col9 = ( select count (distinct b.col3) from TBDPS a , TBDRG b where a.col5 = b.col0 and a.col3 =  TBBRAND.col3 and a.COL9 = TBBRAND.col0 and a.COL10 = 'IPL'), \n" +
+                " col9 = ( select count (distinct b.col1) from TBDPS a , TBDRG b where a.col5 = b.col0 and a.col3 =  TBBRAND.col3 and a.COL9 = TBBRAND.col0 and a.COL10 = 'IPL'), \n" +
                 "\n" +
                 "col10  = ( select  count(distinct b.col0) from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  TBBRAND. col3 and a.COL9 = TBBRAND.col0 and a.COL10 = 'IPL'  and b.COL7 ='0'  and b.col8 = 'P')";
         ExecuteQuery(Query);
+    }
+
+    public void getBrandAndPlaylistCount(String thumbnail_category) {
+        String brandQuery = "SELECT COL0, COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8 FROM TBBRAND b where b.COL0 = '" + thumbnail_category + "' and exists (select 1 from TBDPS s, TBDPG t where s.col5 = t.col0 and s.col9= b.col0 and s.col1 =  b.col3 and t.col7 = '1' )";
+        ExecuteQuery(brandQuery);
+
     }
 }

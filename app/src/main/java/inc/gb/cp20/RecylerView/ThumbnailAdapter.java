@@ -186,7 +186,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
                         childScrollView.setVisibility(View.VISIBLE);
                         layout.removeAllViews();
                         fb.setVisibility(View.VISIBLE);
-                        String Query = " select l.COL1,l.COL2,l.COL15  from TBDRG l\n" +
+                        String Query = " select DISTINCT l.COL1,l.COL2,l.COL15  from TBDRG l\n" +
                                 "        where exists(\n" +
                                 "        select 1\n" +
                                 "        from TBDPS a\n" +

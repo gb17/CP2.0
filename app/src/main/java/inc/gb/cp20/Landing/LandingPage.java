@@ -40,6 +40,7 @@ import inc.gb.cp20.Models.IRCSFResponsePOJO;
 import inc.gb.cp20.Models.TBBRAND;
 import inc.gb.cp20.R;
 import inc.gb.cp20.RecylerView.HorizontalRecylerView;
+import inc.gb.cp20.Util.CmsInter;
 import inc.gb.cp20.Util.Utility;
 import inc.gb.cp20.container.LightContainer;
 import inc.gb.cp20.interfaces.DownloadInterface;
@@ -522,12 +523,11 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                 "", "", "", 4);
         if (dataCVR != null) {
             String dataCVRSplitCol2[] = dataCVR[0][2].split("\\^");
-            if (!dataCVRSplitCol2[27].equals("0"))
+            if (!dataCVRSplitCol2[27].equals("0")) {
                 if (CALLSYNC.equals("1") || mode == 1)
                     CallDownloadContainer(1, "", "");
-
+            } else if (mode == 1)
+                Utility.showSweetAlert(LandingPage.this, "No content to download.", CmsInter.NORMAL_TYPE);
         }
     }
-
-
 }

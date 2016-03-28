@@ -430,6 +430,7 @@ public class TagDownloading implements DownloadInterface {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            new TBImgClass().execute();
             Log.d("Mai yaha hu", "on pre exceutr");
 
         }
@@ -465,6 +466,33 @@ public class TagDownloading implements DownloadInterface {
             super.onPostExecute(bool);
             onTaskCompleted(bool);
             Log.d("Mai yaha hu", " onPostExecute");
+        }
+    }
+
+    class TBImgClass extends AsyncTask<Void, Integer, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String[][] tbImg = dbHandler.genericSelect("Select COL1 from TBIMG WHERE COL2 = 'Y'", 1);
+            if (tbImg != null) {
+
+                for (int i = 0; i < tbImg.length; i++) {
+                    String url = tbImg[i][0];
+                    String msg = Utility.downloadZipFile(url);
+                    if (!msg.startsWith("fail")) {
+                        try {
+                            File zipfile = new File(msg);
+                            String directory = mContext.getFilesDir().getAbsolutePath()
+                                    + "/";
+                            String str = Utility.unZipFile(zipfile, directory);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        dbHandler.ExecuteQuery("UPDATE TBIMG SET COL2 = 'N' where COL1 = '" + url + "'");
+
+                    }
+                }
+            }
+            return null;
         }
     }
 }
