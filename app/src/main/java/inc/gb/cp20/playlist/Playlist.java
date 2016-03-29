@@ -361,14 +361,17 @@ public class Playlist extends Activity {
                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override
                         public void onClick(SweetAlertDialog sDialog) {
-                            makePlaylistAsDefault();
-                            sDialog
-                                    .setTitleText("Reset Done!")
-                                    .setContentText("Your Playlist is reset!")
-                                    .setConfirmText("OK")
-                                    .showCancelButton(false)
-                                    .setConfirmClickListener(null)
-                                    .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                            boolean flag = makePlaylistAsDefault();
+                            if (flag) {
+                                sDialog
+                                        .setTitleText("Reset Done!")
+                                        .setContentText("Your Playlist is reset!")
+                                        .setConfirmText("OK")
+                                        .showCancelButton(false)
+                                        .setConfirmClickListener(null)
+                                        .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                            } else
+                                sDialog.cancel();
                         }
                     })
                     .show();
@@ -391,13 +394,14 @@ public class Playlist extends Activity {
         }
     };
 
-    private void makePlaylistAsDefault() {
+    private boolean makePlaylistAsDefault() {
         //initialize playlist
         playListData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, '0' from TBDPS a , TBDPG b\n" +
                 "        where a.col5 = b.col0\n" +
                 "        and a.COL3 = '" + category_code + "' and a.COL9 = '" + category_name + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
         if (playListData == null) {
             Utility.showSweetAlert(Playlist.this, "No default playlist available", CmsInter.NORMAL_TYPE);
+            return false;
         } else {
             recyclerData = twoDArrayToList(playListData);
 
@@ -418,6 +422,7 @@ public class Playlist extends Activity {
             recyclerView.setAdapter(new PlaylistAdapter(Playlist.this, gridData, recyclerData, 0));
             if (playListData != null)
                 page_count.setText("(" + recyclerData.size() + " Pages)");
+            return true;
         }
     }
 }

@@ -64,6 +64,7 @@ public class LightContainer extends Activity {
             bundle.putString("patch", patch);
             intent.putExtras(bundle);
             startActivity(intent);
+            finish();
         }
 
 
@@ -105,6 +106,7 @@ public class LightContainer extends Activity {
             bundle.putString("patch", patch);
             intent.putExtras(bundle);
             startActivity(intent);
+            finish();
         }
     };
 }

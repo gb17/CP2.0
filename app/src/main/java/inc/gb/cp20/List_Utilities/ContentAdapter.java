@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -60,7 +61,7 @@ public class ContentAdapter extends BaseAdapter {
             holder.checkBox = (CheckBox) convertView
                     .findViewById(R.id.check);
             holder.category = (TextView) convertView.findViewById(R.id.cnt_category);
-            holder.type = (TextView) convertView.findViewById(R.id.cnt_type);
+            holder.type = (ImageView) convertView.findViewById(R.id.cnt_type);
             holder.size = (TextView) convertView.findViewById(R.id.file_size);
             holder.date = (TextView) convertView.findViewById(R.id.effect_date);
             holder.status = (TextView) convertView.findViewById(R.id.status);
@@ -99,16 +100,15 @@ public class ContentAdapter extends BaseAdapter {
         holder.checkBox.setChecked(mCheckedState[position]);
         holder.category.setText(pojo.getCNT_CATEGORY());
         if (pojo.getCNT_TYPE().equalsIgnoreCase("html"))
-            holder.type.setText(context.getResources().getString(R.string.html_icon));
+            holder.type.setImageResource(R.drawable.html);
         else if (pojo.getCNT_TYPE().equalsIgnoreCase("pdf"))
-            holder.type.setText(context.getResources().getString(R.string.pdf_icon));
+            holder.type.setImageResource(R.drawable.pdfsmall);
         else if (pojo.getCNT_TYPE().equalsIgnoreCase("mp4"))
-            holder.type.setText(context.getResources().getString(R.string.play_icon));
+            holder.type.setImageResource(R.drawable.play);
         else
-            holder.type.setText(context.getResources().getString(R.string.html_icon));
+            holder.type.setImageResource(R.drawable.html);
         holder.date.setText(pojo.getEFFECT_DATE());
         holder.size.setText(pojo.getFILE_SIZE());
-        holder.type.setTypeface(font);
         holder.status.setText(pojo.getSTATUS());
         return convertView;
     }
@@ -116,7 +116,7 @@ public class ContentAdapter extends BaseAdapter {
     static class ViewHolder {
         public CheckBox checkBox;
         public TextView category;
-        public TextView type;
+        public ImageView type;
         public TextView status;
         public TextView date;
         public TextView size;
