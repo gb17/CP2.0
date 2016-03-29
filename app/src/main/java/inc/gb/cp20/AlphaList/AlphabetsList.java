@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Vector;
 
 import inc.gb.cp20.R;
+import inc.gb.cp20.Util.CmsInter;
 
 
 /**
@@ -92,7 +93,7 @@ public class AlphabetsList {
         searchView = (EditText) mainView.findViewById(R.id.searchView);
         sidePannel = (LinearLayout) mainView.findViewById(R.id.sideIndex);
         selectedIndex = (TextView) mainView.findViewById(R.id.selectedIndex);
-        setAdapter(0, booksLV, TabelName, play_icon, tick_icon, header);
+        setAdapter(0, booksLV, TabelName, play_icon, tick_icon, header, CmsInter.LIST_LANDING);
 
         LinearLayout sideIndex = (LinearLayout) mainView.findViewById(R.id.sideIndex);
         sideIndex.setOnClickListener(onClicked);
@@ -135,7 +136,7 @@ public class AlphabetsList {
                     // TODO Auto-generated method stub
                     final ListView lw = booksLV;
                     if (scrollState == 0) {
-                        searchView.startAnimation(animate);
+                      //  searchView.startAnimation(animate);
                         searchView.setVisibility(View.VISIBLE);
                         //  Log.i("a", "scrolling stopped...");
                     }
@@ -146,11 +147,11 @@ public class AlphabetsList {
 
                         if (currentFirstVisibleItem > mLastFirstVisibleItem) {
                             // mIsScrollingUp = false;
-                            searchView.startAnimation(animate);
+                         //   searchView.startAnimation(animate);
                             searchView.setVisibility(View.VISIBLE);
                         } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
                             //  mIsScrollingUp = true;
-                            searchView.startAnimation(animate);
+                          //  searchView.startAnimation(animate);
                             searchView.setVisibility(View.GONE);
                         }
                         mLastFirstVisibleItem = currentFirstVisibleItem;
@@ -181,7 +182,7 @@ public class AlphabetsList {
                 Vector<DrList_POJO> subsidiesList = getIndexedBooks(userVector);
                 totalListSize = subsidiesList.size();
 
-                userListAdapter = new UserListAdapter(subsidiesList, mContext, true, false, false);
+                userListAdapter = new UserListAdapter(subsidiesList, mContext, true, false, false, CmsInter.LIST_LANDING);
                 booksLV.setAdapter(userListAdapter);
                 userListAdapter.notifyDataSetChanged();
 
@@ -490,14 +491,14 @@ public class AlphabetsList {
         }
     };
 
-    public void setAdapter(int index, ListView booksLV, String tableName, boolean play_icon, boolean tick_icon, boolean header) {
+    public void setAdapter(int index, ListView booksLV, String tableName, boolean play_icon, boolean tick_icon, boolean header, int indexforList) {
         if (index == 0)
             userVector = UserService.getUserList(mContext, tableName, "");
 
         Vector<DrList_POJO> subsidiesList = getIndexedBooks(userVector);
         totalListSize = subsidiesList.size();
 
-        userListAdapter = new UserListAdapter(subsidiesList, mContext, header, play_icon, tick_icon);
+        userListAdapter = new UserListAdapter(subsidiesList, mContext, header, play_icon, tick_icon, indexforList);
         booksLV.setAdapter(userListAdapter);
         userListAdapter.notifyDataSetChanged();
     }

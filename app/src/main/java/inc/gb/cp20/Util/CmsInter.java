@@ -20,11 +20,14 @@ public interface CmsInter {
     int CUSTOM_IMAGE_TYPE = 4;
     int PROGRESS_TYPE = 5;
 
-    String AppVerison="1.0";
+    int LIST_LANDING = 1;
+    int LIST_TAG_DOC = 2;
 
-    String FLAG="Y";
+    String AppVerison = "1.0";
 
-    String Change_PWD="13";
+    String FLAG = "Y";
+
+    String Change_PWD = "13";
     String AL_TRANSACTION_DELETE = "Do you want to abort this transaction and start over,All previously saved would be deleted";
     String AL_SRESP_NOK = "Server response not ok";
     String AL_CON_ESTB_FAIL = "Could not establish connection ";
@@ -88,4 +91,6 @@ public interface CmsInter {
     String EMAIL_SENT_MSG = "Email Request has been send, customer will receive email in next 10 mins.";
     String EMAIL_NOT_AVAILABLE = "Your E-mail ID is not available ";
     String COMPLETE_NA = "Please complete Need Analysis before proceeding";
+
+
 }

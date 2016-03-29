@@ -9,6 +9,15 @@ public class RefrenceContent {
     String RefrenceName;
     String category_code;
     String category_name;
+    String pagename_name;
+
+    public String getPagename_name() {
+        return pagename_name;
+    }
+
+    public void setPagename_name(String pagename_name) {
+        this.pagename_name = pagename_name;
+    }
 
     public String getRefrenceCode() {
         return RefrenceCode;

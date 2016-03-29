@@ -19,6 +19,7 @@ import java.util.Vector;
 
 import inc.gb.cp20.DB.DBHandler;
 import inc.gb.cp20.R;
+import inc.gb.cp20.Util.CmsInter;
 
 public class UserListAdapter extends BaseAdapter {
 
@@ -37,9 +38,10 @@ public class UserListAdapter extends BaseAdapter {
 
     Context context;
     DBHandler dbHandler;
+    int index;
 
     public UserListAdapter(Vector<DrList_POJO> items,
-                           Context context, boolean headerview, boolean play_icon, boolean tick_icon) {
+                           Context context, boolean headerview, boolean play_icon, boolean tick_icon, int index) {
         Log.i(TAG, TAG);
 
         this.items = items;
@@ -50,6 +52,7 @@ public class UserListAdapter extends BaseAdapter {
         font = Typeface.createFromAsset(context.getAssets(),
                 "fontawesome-webfont.ttf");
         dbHandler = DBHandler.getInstance(context);
+        this.index = index;
     }
 
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -120,7 +123,7 @@ public class UserListAdapter extends BaseAdapter {
                 holder.name.setText(drListPOJO.getCOL1());
                 holder.CLassTV.setText(drListPOJO.getCOL11());
                 holder.spcTV.setText(drListPOJO.getCOL10());
-                if (drListPOJO.getCOL15()!=null && drListPOJO.getCOL15().equals("0"))
+                if (drListPOJO.getCOL15() != null && drListPOJO.getCOL15().equals("0"))
                     holder.noplayImageView.setVisibility(View.VISIBLE);
                 else {
                     holder.noplayImageView.setVisibility(View.GONE);
@@ -137,7 +140,7 @@ public class UserListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 DrList_POJO drList_pojo = items.get(position);
-                if (drList_pojo.getCOL15().equals("0")) {
+                if (drList_pojo.getCOL15().equals("0") && index == CmsInter.LIST_LANDING) {
 
                 } else {
                     ((AlphaListActivity) context).onItemListClick(items.get(position), v);

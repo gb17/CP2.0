@@ -49,11 +49,11 @@
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/image_layout"
             android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
             android:maxLines="2"
-            android:text="Data1gfhgfhdghdfghdfghdfghdfgh"
-            android:textColor="#0b0b0b"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:text="Dr Name"
+            android:textColor="@color/dr_name"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/drspcltextview"
@@ -62,10 +62,10 @@
             android:layout_below="@+id/drnametextview"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/image_layout"
+            android:fontFamily="sans-serif-medium"
             android:text="Data2"
-            android:textColor="#0b0b0b"
-            android:textSize="16sp"
-            android:textStyle="normal" />
+            android:textColor="@color/spcl_name"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/drclasstextview"
@@ -74,10 +74,10 @@
             android:layout_below="@+id/drspcltextview"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/image_layout"
+            android:fontFamily="sans-serif-medium"
             android:text="Data3"
-            android:textColor="#0b0b0b"
-            android:textSize="14sp"
-            android:textStyle="normal" />
+            android:textColor="@color/class_name"
+            android:textSize="12sp" />
 
 
         <TextView

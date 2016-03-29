@@ -2,7 +2,6 @@ package inc.gb.cp20.ContentLib;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -142,7 +141,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter_sub);
-        final LinearLayoutManager layoutManagerpages = new LinearLayoutManager(ContentLibrary.this, LinearLayoutManager.HORIZONTAL, false);
+         LinearLayoutManager layoutManagerpages = new LinearLayoutManager(ContentLibrary.this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManagerpages);
         preparePageData((RelativeLayout) recyclerView.getParent(), item, WhereQuery, mAdapter_sub, thumbnailPOJOList_sub);
 
@@ -157,12 +156,12 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 
-                visibleItemCount = layoutManagerpages.getChildCount();
-                totalItemCount = layoutManagerpages.getItemCount();
-                pastVisiblesItems = layoutManagerpages.findFirstVisibleItemPosition();
-                firstVisiblePosition = layoutManagerpages.findFirstVisibleItemPosition();
-                findLastVisibleItemPosition = layoutManagerpages.findLastVisibleItemPosition();
-                pagecount.setText((firstVisiblePosition + 1) + "-" + (findLastVisibleItemPosition + 1) + " of " + layoutManagerpages.getItemCount() + " Pages  " + ContentLibrary.this.getResources().getString(R.string.cross));
+//                visibleItemCount = layoutManagerpages.getChildCount();
+//                totalItemCount = layoutManagerpages.getItemCount();
+//                pastVisiblesItems = layoutManagerpages.findFirstVisibleItemPosition();
+//                firstVisiblePosition = layoutManagerpages.findFirstVisibleItemPosition();
+//                findLastVisibleItemPosition = layoutManagerpages.findLastVisibleItemPosition();
+//                pagecount.setText((firstVisiblePosition + 1) + "-" + (findLastVisibleItemPosition + 1) + " of " + layoutManagerpages.getItemCount() + " Pages  " + ContentLibrary.this.getResources().getString(R.string.cross));
 
             }
         });
@@ -203,17 +202,24 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         recyclerView.setLayoutManager(layoutManagerRef);
         prepareRefrneceData((RelativeLayout) recyclerView.getParent(), item, WhereQuery, mAdapter_ref, thumbnailPOJOList_sub);
 
+        visibleItemCount = layoutManagerRef.getChildCount();
+        totalItemCount = layoutManagerRef.getItemCount();
+        pastVisiblesItems = layoutManagerRef.findFirstVisibleItemPosition();
+        firstVisiblePosition = layoutManagerRef.findFirstVisibleItemPosition();
+        findLastVisibleItemPosition = layoutManagerRef.findLastVisibleItemPosition();
+        refcount.setText((firstVisiblePosition + 1) + "-" + (findLastVisibleItemPosition + 1) + " of " + totalItemCount + " References  ");
+
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 
-                visibleItemCount = layoutManagerRef.getChildCount();
-                totalItemCount = layoutManagerRef.getItemCount();
-                pastVisiblesItems = layoutManagerRef.findFirstVisibleItemPosition();
-                firstVisiblePosition = layoutManagerRef.findFirstVisibleItemPosition();
-                findLastVisibleItemPosition = layoutManagerRef.findLastVisibleItemPosition();
-                refcount.setText((firstVisiblePosition + 1) + "-" + (findLastVisibleItemPosition + 1) + " of " + totalItemCount + " References  ");
+//                visibleItemCount = layoutManagerRef.getChildCount();
+//                totalItemCount = layoutManagerRef.getItemCount();
+//                pastVisiblesItems = layoutManagerRef.findFirstVisibleItemPosition();
+//                firstVisiblePosition = layoutManagerRef.findFirstVisibleItemPosition();
+//                findLastVisibleItemPosition = layoutManagerRef.findLastVisibleItemPosition();
+//                refcount.setText((firstVisiblePosition + 1) + "-" + (findLastVisibleItemPosition + 1) + " of " + totalItemCount + " References  ");
             }
         });
 
@@ -278,7 +284,10 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
 
     private void prepareRefrneceData(RelativeLayout recyclerView, TBBRAND itme, String whereQuery, ThumbnailAdapterForRefrence mAdapter, List<RefrenceContent> thumbnailPOJOList) {
 
-        String Query = " select l.COL1,l.COL2,l.COL15  from TBDRG l\n" +
+        String Query = " select l.COL1,l.COL2,l.COL15  ,(\n" +
+                "select k.col2  from TBDPG k\n" +
+                "where k.col0 = l.col0\n" +
+                ") pagename from TBDRG l\n" +
                 "        where exists(\n" +
                 "        select 1\n" +
                 "        from TBDPS a\n" +
@@ -298,6 +307,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
                 tbbrand.setRefrenceName(cursor.getString(cursor.getColumnIndex("COL1")));
                 tbbrand.setRefrenceCode(cursor.getString(cursor.getColumnIndex("COL2")));
                 tbbrand.setCategory_code(cursor.getString(cursor.getColumnIndex("COL15")));
+                tbbrand.setPagename_name(cursor.getString(cursor.getColumnIndex("pagename")));
                 thumbnailPOJOList.add(tbbrand);
             } while (cursor.moveToNext());
         } else {
@@ -429,10 +439,12 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
             for (int i = 0; i < visibleItemCount; i++) {
                 RelativeLayout parent = (RelativeLayout) recyclerView.getChildAt(i);
                 TextView child = (TextView) parent.getChildAt(1);
-                child.setTextColor(Color.parseColor("#424242"));
+                // child.setTextColor(Color.parseColor("#424242"));
+                child.setBackground(getResources().getDrawable(R.drawable.gray));
             }
 
-            title.setTextColor(Color.parseColor("#FF0000"));
+            //   title.setTextColor(Color.parseColor("#FF0000"));
+            title.setBackground(getResources().getDrawable(R.drawable.greendropdown));
 
 
             RelativeLayout RelativeLayoutsd_Page = (RelativeLayout) relativeLayout.getChildAt(2);

@@ -46,7 +46,7 @@ public class ThumbnailAdapterForRefrence extends RecyclerView.Adapter<ThumbnailA
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title;
+        public TextView title, page_name;
 
         ImageView imageView;
 
@@ -55,6 +55,7 @@ public class ThumbnailAdapterForRefrence extends RecyclerView.Adapter<ThumbnailA
             super(view);
             title = (TextView) view.findViewById(R.id.title);
             imageView = (ImageView) view.findViewById(R.id.bandimage);
+            page_name = (TextView) view.findViewById(R.id.page_name);
         }
 
         public void bind(final RefrenceContent brandList, final RecyclerViewClickListener listener) {
@@ -107,6 +108,7 @@ public class ThumbnailAdapterForRefrence extends RecyclerView.Adapter<ThumbnailA
     public void onBindViewHolder(MyViewHolder holder, int position) {
         RefrenceContent tbbrand = brandList.get(position);
         holder.title.setText(tbbrand.getRefrenceName());
+        holder.page_name.setText(tbbrand.getPagename_name());
         if (tbbrand.getRefrenceName().toLowerCase().contains("mp4")) {
             holder.imageView.setImageResource(R.drawable.vdoicon);
         } else if (tbbrand.getRefrenceName().toLowerCase().contains("pdf")) {
