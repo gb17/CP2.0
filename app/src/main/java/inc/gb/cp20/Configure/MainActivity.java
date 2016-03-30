@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import inc.gb.cp20.ChangePwd.ChangePasswordAcitvity;
 import inc.gb.cp20.DB.DBHandler;
 import inc.gb.cp20.Landing.LandingPage;
 import inc.gb.cp20.Models.ACKTAG;
@@ -53,7 +54,6 @@ import inc.gb.cp20.R;
 import inc.gb.cp20.Util.CmsInter;
 import inc.gb.cp20.Util.RestClient;
 import inc.gb.cp20.Util.Utility;
-import inc.gb.cp20.ChangePwd.ChangePasswordAcitvity;
 import inc.gb.cp20.interfaces.DownloadInterface;
 import retrofit.Call;
 import retrofit.Callback;
@@ -85,13 +85,14 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
     SweetAlertDialog configAlertDialog = null;
     TextView forgotpwd;
     TextView loginButton;
-    TextView displaytext;
+    TextView displaytext, display_text_network;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+//        GPSTracker tracker = new GPSTracker(MainActivity.this);
 //        dbHandler = DBHandler.getInstance(MainActivity.this);
 //        SQLiteDatabase db = dbHandler.getWritableDatabase();
 //        db.delete("TXN102", null, null);
@@ -105,18 +106,21 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
         loginButton = (TextView) findViewById(R.id.loginclick);
         forgotpwd = (TextView) findViewById(R.id.forgotpwd);
         displaytext = (TextView) findViewById(R.id.display_text);
+        display_text_network = (TextView) findViewById(R.id.display_text_network);
 
         //To login Please enter your password
 
         CONFIG_FLAG = checkConfigOrNot();
         if (!CONFIG_FLAG) {
             displaytext.setText("Please enter the username and password given to\nyou to configure the system");
+            display_text_network.setVisibility(View.VISIBLE);
             loginButton.setText("CONFIGURE");
             forgotpwd.setVisibility(View.GONE);
             dbHandler = DBHandler.getInstance(this);
             dbHandler.createTables();
         } else if (CONFIG_FLAG) {
             displaytext.setText("To login please enter your password");
+            display_text_network.setVisibility(View.GONE);
             UsereditText.setText(UsernameString);
             UsereditText.setEnabled(false);
             loginButton.setText("LOGIN");
@@ -139,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
                 if (UsereditText.getText().toString().equalsIgnoreCase("")
                         || PasswordeditText.getText().toString().equals("")) {
-                    Utility.showSweetAlert(MainActivity.this, "Username/Password is Mandatory", CmsInter.ERROR_TYPE);
+                    Utility.showSweetAlert(MainActivity.this, "Username/Password is mandatory.", CmsInter.ERROR_TYPE);
 
                 } else {
                     if (!CONFIG_FLAG) {
@@ -163,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
                             PasswordeditText.setText("");
                         } else {
-                            Utility.showSweetAlert(MainActivity.this, "Invalid Password ", CmsInter.ERROR_TYPE);
+                            Utility.showSweetAlert(MainActivity.this, "Invalid Password.", CmsInter.ERROR_TYPE);
                         }
                     }
 

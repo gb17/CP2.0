@@ -29,16 +29,16 @@ public class BrandlistAdapter extends RecyclerView.Adapter<BrandlistAdapter.NewV
     Context mContext;
 
     public class NewViewHolder extends RecyclerView.ViewHolder {
-        public TextView PageName, pageCount, threedotMenu;
-        ImageView PageIcon, pagesCountIcon;
+        public TextView PageName, refCount, threedotMenu;
+        ImageView PageIcon, refCountIcon;
 
         public NewViewHolder(View view) {
             super(view);
             PageName = (TextView) view.findViewById(R.id.title);
             PageIcon = (ImageView) view.findViewById(R.id.bandimage);
-            pageCount = (TextView) view.findViewById(R.id.pagecount);
+            refCount = (TextView) view.findViewById(R.id.refcount);
             threedotMenu = (TextView) view.findViewById(R.id.threedot);
-            pagesCountIcon = (ImageView) itemView.findViewById(R.id.page);
+            refCountIcon = (ImageView) itemView.findViewById(R.id.ref);
         }
     }
 
@@ -51,7 +51,7 @@ public class BrandlistAdapter extends RecyclerView.Adapter<BrandlistAdapter.NewV
     @Override
     public NewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.tumbnail_item, parent, false);
+                .inflate(R.layout.thumbail_item_library, parent, false);
         itemView.setOnLongClickListener(new MyOnLongClickListener());
         itemView.setOnDragListener(
                 new MyDragListener(mContext, gridData, gridDataForRecycler));
@@ -65,8 +65,15 @@ public class BrandlistAdapter extends RecyclerView.Adapter<BrandlistAdapter.NewV
         String filePath = new File(mContext.getFilesDir() + "/" + FilenameUtils.removeExtension(str[2]) + "/", FilenameUtils.removeExtension(str[2]) + ".png").getAbsolutePath();
         Bitmap bitmap = BitmapFactory.decodeFile(filePath);
         holder.PageIcon.setImageBitmap(bitmap);
-        holder.pageCount.setVisibility(View.GONE);
-        holder.pagesCountIcon.setVisibility(View.INVISIBLE);
+
+        if (Integer.parseInt(str[8]) > 0) {
+            holder.refCountIcon.setVisibility(View.VISIBLE);
+            holder.refCount.setVisibility(View.VISIBLE);
+            holder.refCount.setText(str[8]);
+        } else {
+            holder.refCountIcon.setVisibility(View.INVISIBLE);
+            holder.refCount.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

@@ -34,6 +34,7 @@ import inc.gb.cp20.AlphaList.AlphaListActivity;
 import inc.gb.cp20.AlphaList.AlphabetsList;
 import inc.gb.cp20.AlphaList.DrList_POJO;
 import inc.gb.cp20.ChangePwd.ChangePasswordAcitvity;
+import inc.gb.cp20.Configure.MainActivity;
 import inc.gb.cp20.DB.DBHandler;
 import inc.gb.cp20.List_Utilities.ContentAdapter;
 import inc.gb.cp20.Models.IRCSFResponsePOJO;
@@ -80,7 +81,6 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_landing_screen);
 
-
         try {
             Bundle bundle = getIntent().getExtras();
             if (bundle != null)
@@ -105,10 +105,8 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
             }
         });
 
-
         //  backupDatabase();
         view = findViewById(R.id.viewid);
-
 
         RHS_Deatailing = (LinearLayout) view.findViewById(R.id.rhsdetaling);
         LinearLayout lhsLinearLayout = (LinearLayout) view.findViewById(R.id.lhs);
@@ -120,13 +118,9 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
             alphabetsList.SerachViewVis(View.VISIBLE);
             defaultLayout();
             CallDownloadIRCSF(0);
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void CallDownloadContainer(int mode, String CATEGORYTYPE, String CATEGORYCODE) {
@@ -217,9 +211,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                     sync.prepareRequest(0);
                     break;
                 case 197://LogOut
-                    drawerLinearLayout.setVisibility(View.GONE);
-                    finish();
-
+                    showAlertForLogout();
                     break;
                 case 198://Download Container
                     drawerLinearLayout.setVisibility(View.GONE);
@@ -240,7 +232,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 240);
             params.setMargins(0, 0, 0, 10);
             RHS_Deatailing.addView(horizontalRecylerView.getHorizontalRecylerView(getSupportFragmentManager()),
-                    new LinearLayout.LayoutParams(params));
+                    params);
         }
     }
 
@@ -529,5 +521,35 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
             } else if (mode == 1)
                 Utility.showSweetAlert(LandingPage.this, "No content to download.", CmsInter.NORMAL_TYPE);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        showAlertForLogout();
+    }
+
+    private void showAlertForLogout() {
+        SweetAlertDialog sDialog = new SweetAlertDialog(LandingPage.this, SweetAlertDialog.WARNING_TYPE);
+        sDialog.setTitleText("Do you want to logout?")
+                .setCancelText("No!")
+                .setConfirmText("Yes!")
+                .showCancelButton(true)
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.cancel();
+                    }
+                })
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.cancel();
+                        Intent intent = new Intent(LandingPage.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish(); // This call is missing.
+                    }
+                })
+                .show();
     }
 }

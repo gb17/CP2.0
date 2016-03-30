@@ -33,8 +33,8 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.MyView
     int visBit = 0;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView PageName, pageCount, threedotMenu;
-        ImageView PageIcon, pagesCountIcon, custom;
+        public TextView PageName, pageCount, refCount, threedotMenu;
+        ImageView PageIcon, pagesCountIcon, custom, refCountIcon;
 
         public MyViewHolder(View view) {
             super(view);
@@ -44,6 +44,8 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.MyView
             threedotMenu = (TextView) view.findViewById(R.id.threedot);
             pagesCountIcon = (ImageView) itemView.findViewById(R.id.page);
             custom = (ImageView) itemView.findViewById(R.id.custom);
+            refCountIcon = (ImageView) itemView.findViewById(R.id.ref);
+            refCount = (TextView) view.findViewById(R.id.refcount);
         }
     }
 
@@ -75,7 +77,8 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.MyView
         Bitmap bitmap = BitmapFactory.decodeFile(filePath);
         holder.PageIcon.setImageBitmap(bitmap);
         holder.pageCount.setVisibility(View.GONE);
-        holder.pagesCountIcon.setImageResource(R.drawable.delete);
+        holder.pagesCountIcon.setImageResource(R.drawable.deletenew);
+        holder.pagesCountIcon.setScaleType(ImageView.ScaleType.FIT_XY);
         if (str[7].equals("1"))
             holder.custom.setVisibility(View.VISIBLE);
         else
@@ -86,6 +89,15 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.MyView
             holder.custom.setVisibility(View.GONE);
         } else
             holder.pagesCountIcon.setVisibility(View.GONE);
+
+        if (Integer.parseInt(str[8]) > 0) {
+            holder.refCountIcon.setVisibility(View.VISIBLE);
+            holder.refCount.setVisibility(View.VISIBLE);
+            holder.refCount.setText(str[8]);
+        } else {
+            holder.refCountIcon.setVisibility(View.INVISIBLE);
+            holder.refCount.setVisibility(View.INVISIBLE);
+        }
 
         holder.pagesCountIcon.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -181,7 +181,7 @@ public class ChangePasswordAcitvity extends Activity implements View.OnClickList
 
     public void ChangePassword(String newpassword) {
 
-        getprogressDialog("Changing Pasword...");
+        getprogressDialog("Changing Password...");
         ChangePassword changePassword = new ChangePassword();
         changePassword.setCLIENTID(getResources().getString(R.string.clientid));
         changePassword.setREPCODE(Repcode);

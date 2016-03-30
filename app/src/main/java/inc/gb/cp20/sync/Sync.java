@@ -63,7 +63,7 @@ public class Sync {
                     ContainerPOJO pojo = new ContainerPOJO(context.getResources().getString(R.string.clientid), upwData[3], containerData[i][0], containerData[i][1],
                             containerData[i][2], containerData[i][3], containerData[i][4], containerData[i][5], containerData[i][6], containerData[i][7],
                             containerData[i][8], containerData[i][14], containerData[i][13], containerData[i][10], containerData[i][9], containerData[i][16], containerData[i][15] + "^" + containerData[i][20],
-                            containerData[i][17], containerData[i][22], "", "", containerData[i][19], containerData[i][21], batchNumber, containerData[i][23], containerData[i][24], containerData[i][25], containerData[i][26]);
+                            containerData[i][17], containerData[i][22], "", "", containerData[i][19], containerData[i][21], batchNumber, containerData[i][23], containerData[i][24], containerData[i][25], containerData[i][26], containerData[i][12]);
                     containerLs.add(pojo);
                 }
         } else if (index == 2) {
@@ -71,7 +71,7 @@ public class Sync {
 
             if (containerData != null)
                 for (int i = 0; i < containerData.length; i++) {
-                    ContainerPOJO pojo = new ContainerPOJO(context.getResources().getString(R.string.clientid), upwData[3], upwData[9], upwData[10], null, containerData[i][13], containerData[i][10], "", containerData[i][1], containerData[i][5], containerData[i][2], null, "-1", null, null, null, null, null, containerData[i][15], "", "", containerData[i][14], "", batchNumber, "", "", "", "");
+                    ContainerPOJO pojo = new ContainerPOJO(context.getResources().getString(R.string.clientid), upwData[3], upwData[9], upwData[10], null, containerData[i][13], containerData[i][10], "", containerData[i][1], containerData[i][5], containerData[i][2], null, "-1", null, null, null, null, null, containerData[i][15], "", "", containerData[i][14], "", batchNumber, "", "", "", "", "");
                     containerLs.add(pojo);
                 }
         }

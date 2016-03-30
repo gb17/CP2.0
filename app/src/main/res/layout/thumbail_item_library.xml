@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="213dp"
-    android:layout_height="190dp"
-    android:background="@color/thumbnail_producname_backgrounf">
+    android:layout_height="190dp">
+
 
     <ImageView
         android:id="@+id/bandimage"
         android:layout_width="216dp"
         android:layout_height="150dp"
+        android:background="#FFFFFF"
         android:scaleType="fitXY"
         android:src="@drawable/newcfix1" />
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/bandimage"
-        android:layout_marginLeft="10dp"
+        android:background="@color/thumbnail_producname_backgrounf"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:includeFontPadding="false"
+        android:paddingLeft="10dp"
         android:text="Fade pill"
         android:textColor="@color/thumbnail_productname_title"
         android:textSize="16sp" />
+
 
     <ImageView
         android:id="@+id/ref"
@@ -53,63 +55,6 @@
         android:textSize="16sp" />
 
 
-    <ImageView
-        android:id="@+id/page"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_above="@+id/refcount"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/ref"
-        android:background="@drawable/bg_circle"
-        android:padding="8dp"
-        android:src="@drawable/page_icon" />
-
-    <TextView
-        android:id="@+id/pagecount"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/page"
-        android:layout_centerHorizontal="true"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/refcount"
-        android:gravity="center"
-        android:includeFontPadding="false"
-        android:text="9"
-        android:textColor="@color/page_count"
-        android:textSize="16sp" />
-
-    <ImageView
-        android:id="@+id/custom"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_above="@+id/refcount"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/ref"
-        android:visibility="gone"
-        android:src="@drawable/custom"
-        android:scaleType="fitXY"/>
-
-
-    <RelativeLayout
-        android:id="@+id/pagelayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="130dp"
-        android:visibility="gone">
-
-        <android.support.design.widget.FloatingActionButton
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/page_icon"
-            app:backgroundTint="@android:color/darker_gray"
-            app:fabSize="mini" />
-
-
-    </RelativeLayout>
-
     <RelativeLayout
         android:id="@+id/reflayout"
         android:layout_width="wrap_content"
@@ -135,25 +80,11 @@
         android:textSize="10dp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/close"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:background="#BF000000"
-        android:gravity="right"
-        android:text="@string/cross"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:textStyle="normal"
-        android:visibility="gone" />
 
     <ScrollView
         android:id="@+id/childScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/close"
         android:background="#BF000000"
         android:visibility="gone">
 
@@ -165,5 +96,57 @@
         </RelativeLayout>
     </ScrollView>
 
+
+    <RelativeLayout
+        android:id="@+id/masklay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#8C000000"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/bg_roundeddown"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="@string/icon_download"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="-10dp"
+                android:padding="10dp"
+                android:text="RETRY"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="2dp"
+        android:gravity="right"
+        android:text="@string/cross"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="normal"
+        android:visibility="gone" />
 
 </RelativeLayout>

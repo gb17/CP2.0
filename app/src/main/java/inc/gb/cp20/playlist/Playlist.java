@@ -2,6 +2,7 @@ package inc.gb.cp20.playlist;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
@@ -10,6 +11,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -82,9 +84,9 @@ public class Playlist extends Activity {
             db.execSQL(" insert into TBDPS2 select A.COL0, A.COL1, A.COL2, A.COL3, A.COL4, A.COL5, A.COL6, A.COL7, A.COL8, A.COL9, '" + customer_id + "', '0', A.COL11 from TBDPS A WHERE COL3 = '" + category_code + "' and COL9 = '" + category_name + "'");
         }
         //initialize playlist
-        playListData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11 from TBDPS2 a , TBDPG b\n" +
+        playListData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11, (select count(1) from TBDRG r where r.col0 = b.col0 ) ref from TBDPS2 a , TBDPG b\n" +
                 "        where a.col5 = b.col0\n" +
-                "        and a.COL10 = '" + customer_id + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
+                "        and a.COL10 = '" + customer_id + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 9);
 
         if (playListData != null)
             recyclerData = twoDArrayToList(playListData);
@@ -181,7 +183,7 @@ public class Playlist extends Activity {
     public ArrayList<String[]> twoDArrayToList(String[][] twoDArray) {
         ArrayList<String[]> list = new ArrayList<String[]>();
         for (int i = 0; i < twoDArray.length; i++)
-            list.add(new String[]{twoDArray[i][0], twoDArray[i][1], twoDArray[i][2], twoDArray[i][3], twoDArray[i][4], twoDArray[i][5], twoDArray[i][6], twoDArray[i][7]});
+            list.add(new String[]{twoDArray[i][0], twoDArray[i][1], twoDArray[i][2], twoDArray[i][3], twoDArray[i][4], twoDArray[i][5], twoDArray[i][6], twoDArray[i][7], twoDArray[i][8]});
         return list;
     }
 
@@ -196,16 +198,25 @@ public class Playlist extends Activity {
                     grid.setAdapter(new BrandlistAdapter(Playlist.this, gridData, recyclerData));
                 }
             } else {
-                brandListData = handler.genericSelect("select COL0, 1, COL1, COL2, COL3, COL5, COL16, '0' from TBDPG b where COL4 like '%" + searchText + "%' and COL7 = '1' and not exists (Select 1 from TBDPS2 a where COL10 = '" + customer_id + "' and a.COL5 = b.COL0) and COL8 = 'P'", 8);
+                brandListData = handler.genericSelect("select COL0, 1, COL1, COL2, COL3, COL5, COL16, '0', (select count(1) from TBDRG r where r.col0 = b.col0 ) ref from TBDPG b where COL4 like '%" + searchText + "%' and COL7 = '1' and not exists (Select 1 from TBDPS2 a where COL10 = '" + customer_id + "' and a.COL5 = b.COL0) and COL8 = 'P'", 9);
                 if (brandListData != null) {
                     gridData = twoDArrayToList(brandListData);
                     grid.setAdapter(new BrandlistAdapter(Playlist.this, gridData, recyclerData));
+                } else {
+                    Utility.showSweetAlert(Playlist.this, "No result found.", CmsInter.NORMAL_TYPE);
+                    if (gridData != null) {
+                        gridData.clear();
+                        grid.setAdapter(new BrandlistAdapter(Playlist.this, gridData, recyclerData));
+                    }
                 }
             }
             PlaylistAdapter adapter = (PlaylistAdapter) recyclerView.getAdapter();
             recyclerView.setAdapter(new PlaylistAdapter(Playlist.this, gridData, adapter.recyclerData, 1));
             recyclerView.setOnDragListener(
                     new MyDragListener(Playlist.this, gridData, adapter.recyclerData));
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(),
+                    InputMethodManager.RESULT_UNCHANGED_SHOWN);
         }
     };
 
@@ -241,9 +252,9 @@ public class Playlist extends Activity {
     View.OnClickListener cancelListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            playListData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11 from TBDPS2 a , TBDPG b\n" +
+            playListData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11, (select count(1) from TBDRG r where r.col0 = b.col0 ) ref from TBDPS2 a , TBDPG b\n" +
                     "        where a.col5 = b.col0\n" +
-                    "        and a.COL10 = '" + customer_id + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
+                    "        and a.COL10 = '" + customer_id + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 9);
             if (playListData != null)
                 recyclerData = twoDArrayToList(playListData);
             if (gridData != null) {
@@ -396,9 +407,9 @@ public class Playlist extends Activity {
 
     private boolean makePlaylistAsDefault() {
         //initialize playlist
-        playListData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, '0' from TBDPS a , TBDPG b\n" +
+        playListData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, '0', (select count(1) from TBDRG r where r.col0 = b.col0 ) ref from TBDPS a , TBDPG b\n" +
                 "        where a.col5 = b.col0\n" +
-                "        and a.COL3 = '" + category_code + "' and a.COL9 = '" + category_name + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
+                "        and a.COL3 = '" + category_code + "' and a.COL9 = '" + category_name + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 9);
         if (playListData == null) {
             Utility.showSweetAlert(Playlist.this, "No default playlist available", CmsInter.NORMAL_TYPE);
             return false;
@@ -412,14 +423,17 @@ public class Playlist extends Activity {
                     grid.setAdapter(new BrandlistAdapter(Playlist.this, gridData, recyclerData));
                 }
             } else {
-                brandListData = handler.genericSelect("select COL0, 1, COL1, COL2, COL3, COL5, COL16, '0' from TBDPG b where COL4 like '%" + searchText + "%' and COL7 = '1' and not exists (Select 1 from TBDPS2 a where COL10 = '" + customer_id + "' and a.COL5 = b.COL0)", 8);
+                brandListData = handler.genericSelect("select COL0, 1, COL1, COL2, COL3, COL5, COL16, '0', (select count(1) from TBDRG r where r.col0 = b.col0 ) ref from TBDPG b where COL4 like '%" + searchText + "%' and COL7 = '1' and not exists (Select 1 from TBDPS2 a where COL10 = '" + customer_id + "' and a.COL5 = b.COL0)", 9);
                 if (brandListData != null) {
                     gridData = twoDArrayToList(brandListData);
+                    grid.setAdapter(new BrandlistAdapter(Playlist.this, gridData, recyclerData));
+                } else if (gridData != null) {
+                    gridData.clear();
                     grid.setAdapter(new BrandlistAdapter(Playlist.this, gridData, recyclerData));
                 }
             }
 
-            recyclerView.setAdapter(new PlaylistAdapter(Playlist.this, gridData, recyclerData, 0));
+            recyclerView.setAdapter(new PlaylistAdapter(Playlist.this, gridData, recyclerData, 1));
             if (playListData != null)
                 page_count.setText("(" + recyclerData.size() + " Pages)");
             return true;

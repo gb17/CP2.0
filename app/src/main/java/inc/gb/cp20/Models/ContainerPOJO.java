@@ -32,9 +32,10 @@ public class ContainerPOJO {
     private String PARAM2;
     private String PARAM3;
     private String PARAM4;
+    private String PARAM5;
 
 
-    public ContainerPOJO(String CLIENTID, String REPCODE, String BU, String GEOCODE, String PATCHCODE, String TXNDATE, String CODE, String NAME, String BRNDCODE, String CNTNT_ID, String DURATION, String STARTTIME, String EMAIL_FLAG, String LONGITUDE, String LATITUDE, String LIKE_FLAG, String SOURCE, String REFPAGEID, String PCODE, String OUT, String MESSAGE, String TXNID, String PLAYLISTID, String BATCHCODE, String PARAM1, String PARAM2, String PARAM3, String PARAM4) {
+    public ContainerPOJO(String CLIENTID, String REPCODE, String BU, String GEOCODE, String PATCHCODE, String TXNDATE, String CODE, String NAME, String BRNDCODE, String CNTNT_ID, String DURATION, String STARTTIME, String EMAIL_FLAG, String LONGITUDE, String LATITUDE, String LIKE_FLAG, String SOURCE, String REFPAGEID, String PCODE, String OUT, String MESSAGE, String TXNID, String PLAYLISTID, String BATCHCODE, String PARAM1, String PARAM2, String PARAM3, String PARAM4, String PARAM5) {
         this.CLIENTID = CLIENTID;
         this.REPCODE = REPCODE;
         this.BU = BU;
@@ -63,6 +64,15 @@ public class ContainerPOJO {
         this.PARAM2 = PARAM2;
         this.PARAM3 = PARAM3;
         this.PARAM4 = PARAM4;
+        this.PARAM5 = PARAM5;
+    }
+
+    public String getPARAM5() {
+        return PARAM5;
+    }
+
+    public void setPARAM5(String PARAM5) {
+        this.PARAM5 = PARAM5;
     }
 
     public String getBATCHCODE() {

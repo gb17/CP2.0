@@ -60,6 +60,7 @@ import inc.gb.cp20.R;
 import inc.gb.cp20.Util.CmsInter;
 import inc.gb.cp20.Util.Utility;
 import inc.gb.cp20.sync.Sync;
+import inc.gb.cp20.tracker.GPSTracker;
 import inc.gb.cp20.widget.ColorPickerDialog;
 
 /**
@@ -135,6 +136,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     private String TERRITORY = "";
     private String patch = "";
 
+    private GPSTracker tracker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -192,6 +195,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
         brandData = handler.genericSelect(brandQuery, 9);
         setContentView(R.layout.container);
+        tracker = new GPSTracker(Container.this);
 
         backtoplaylist = (ImageView) findViewById(R.id.backtoplaylist);
         backtoplaylist.setOnClickListener(this);
@@ -485,6 +489,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         handler = DBHandler.getInstance(Container.this);
         SQLiteDatabase db = handler.getWritableDatabase();
 
+        double latitude = tracker.getLatitude();
+        double longitude = tracker.getLongitude();
+
         ContentValues values = new ContentValues();
         values.put("COL0", BU); //BU
         values.put("COL1", TERRITORY); //Territory
@@ -495,8 +502,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         values.put("COL6", brandcode); //brandcode
         values.put("COL7", refData[refEmailPos][3]); //referenceid
         values.put("COL8", ""); //duration
-        values.put("COL9", "18.9750"); //latitude
-        values.put("COL10", "72.8258"); //longitude
+        values.put("COL9", latitude); //latitude
+        values.put("COL10", longitude); //longitude
         values.put("COL11", "0"); //Syncflag
         values.put("COL12", "1"); //hardcode
         values.put("COL13", "1"); //Email
@@ -625,6 +632,11 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         @Override
         public void onClick(View view) {
             int id = view.getId();
+            gesturesView.cancelClearAnimation();
+            gesturesView.clear(true);
+            gesturesView.setVisibility(View.GONE);
+            ImageView image = (ImageView) findViewById(R.id.annot1);
+            image.setTag("1");
             previousIndex = playIndex;
             if (id == R.id.previousbrand) {
                 if (playIndex > 0) {
@@ -951,6 +963,11 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 case R.id.close: //close
                     if (!index.equals("3")) {
                         showAlertForDetailing();
+                    } else {
+                        previousIndex = playIndex;
+                        if (previousIndex != playstData.length)
+                            saveData(PLAYLISTINDEX);
+                        finish();
                     }
                     break;
             }
@@ -1064,8 +1081,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
                     @Override
                     public void run() {
-                        list2.setAdapter(0, rightList, "TBNAME", false, false, false,CmsInter.LIST_TAG_DOC);
-                        list.setAdapter(1, leftList, "TBPARTY", false, false, true,CmsInter.LIST_TAG_DOC);
+                        list2.setAdapter(0, rightList, "TBNAME", false, false, false, CmsInter.LIST_TAG_DOC);
+                        list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC);
 
                     }
                 });
@@ -1307,7 +1324,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 newPojo = list.userVector.get(m);
                 if (newPojo.getCOL0().equals(customer_id)) {
                     list.userVector.remove(m);
-                    list.setAdapter(1, leftList, "TBPARTY", false, false, true,CmsInter.LIST_TAG_DOC);
+                    list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC);
                     break;
                 }
             }
@@ -1352,6 +1369,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                             String specCodeStr = cgCodeDSP[speciality.getSelectedItemPosition()];
                                             //String clasCodeStr = cgCodeDDC[clas.getSelectedItemPosition()];
                                             String clasCodeStr = "";
+//                                            String hqStr = cgDataDTG[hq.getSelectedItemPosition()];
+                                            String hqCodeStr = cgCodeDTG[hq.getSelectedItemPosition()];
 
                                             ContentValues cv = new ContentValues();
 
@@ -1377,7 +1396,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                             cv.put("COL9", "");
                                             cv.put("COL10", specStr);
                                             cv.put("COL11", clasStr);
-                                            cv.put("COL12", "");
+                                            cv.put("COL12", hqCodeStr);
                                             cv.put("COL13", territory_code);
                                             cv.put("COL14", str);
 
@@ -1397,7 +1416,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
                                                         @Override
                                                         public void run() {
-                                                            list2.setAdapter(0, rightList, "TBNAME", false, false, false,CmsInter.LIST_TAG_DOC);
+                                                            list2.setAdapter(0, rightList, "TBNAME", false, false, false, CmsInter.LIST_TAG_DOC);
                                                             //rightList.invalidateViews();
                                                             // TODO Auto-generated method stub
 
@@ -1408,8 +1427,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                             patch.setSelection(0);
                                             speciality.setSelection(0);
                                             clas.setSelection(0);
-                                        }else {
-                                            Utility.showSweetAlert(Container.this,"Please select some values.",CmsInter.ERROR_TYPE);
+                                        } else {
+                                            Utility.showSweetAlert(Container.this, "Please select some values.", CmsInter.ERROR_TYPE);
                                         }
                                     }
                                 }
@@ -1508,6 +1527,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         }
         SQLiteDatabase db = handler.getWritableDatabase();
 
+        double latitude = tracker.getLatitude();
+        double longitude = tracker.getLongitude();
+
         ContentValues values = new ContentValues();
         values.put("COL0", BU); //BU
         values.put("COL1", TERRITORY); //Territory
@@ -1524,8 +1546,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         }
 
         values.put("COL8", duration); //duration
-        values.put("COL9", "18.9750"); //latitude
-        values.put("COL10", "72.8258"); //longitude
+        values.put("COL9", latitude); //latitude
+        values.put("COL10", longitude); //longitude
         values.put("COL11", "0"); //Syncflag
         values.put("COL12", "1"); //hardcode
 
