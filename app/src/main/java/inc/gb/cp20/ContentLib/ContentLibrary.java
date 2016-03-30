@@ -50,7 +50,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
 
     int firstVisiblePosition = -1;
     int findLastVisibleItemPosition = -1;
-    LinearLayoutManager layoutManager1, layoutManager2, layoutManager3;
+    LinearLayoutManager layoutManager3;
     DBHandler dbHandler;
     LinearLayout content_view;
 
@@ -67,8 +67,6 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         recyclerView_search.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.HORIZONTAL));
         recyclerView_search.setItemAnimator(new DefaultItemAnimator());
         recyclerView_search.setLayoutManager(layoutManager3);
-
-
         defaultLayout();
 
     }
@@ -78,11 +76,11 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         if (content_view != null)
             content_view.removeAllViews();
 
-        for (int i = 0; i < pdatat.length; i++) {
+        for (int i = 0; i < 1; i++) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, 0, 0, 5);
             content_view.addView(getContenLibraryView(pdatat[i][1], pdatat[i][2]),
-                    new LinearLayout.LayoutParams(params));
+                    params);
         }
     }
 
@@ -127,7 +125,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         return libView;
     }
 
-    public void getsubPagelist(RecyclerView recyclerView, final RelativeLayout Ref_RelativeLayout, TBBRAND item) {
+    public void getsubPagelist(RecyclerView recyclerView, final RelativeLayout Ref_RelativeLayout, TBBRAND item, final TextView selectedtextTextView) {
 
         final RelativeLayout gbRelativeLayout = (RelativeLayout) recyclerView.getParent();
         final TextView pagecount = (TextView) gbRelativeLayout.getChildAt(1);
@@ -141,16 +139,16 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter_sub);
-         LinearLayoutManager layoutManagerpages = new LinearLayoutManager(ContentLibrary.this, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager layoutManagerpages = new LinearLayoutManager(ContentLibrary.this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManagerpages);
         preparePageData((RelativeLayout) recyclerView.getParent(), item, WhereQuery, mAdapter_sub, thumbnailPOJOList_sub);
 
-        visibleItemCount = layoutManagerpages.getChildCount();
-        totalItemCount = layoutManagerpages.getItemCount();
-        pastVisiblesItems = layoutManagerpages.findFirstVisibleItemPosition();
-        firstVisiblePosition = layoutManagerpages.findFirstVisibleItemPosition();
-        findLastVisibleItemPosition = layoutManagerpages.findLastVisibleItemPosition();
-        pagecount.setText((firstVisiblePosition + 1) + "-" + (findLastVisibleItemPosition + 1) + " of " + layoutManagerpages.getItemCount() + " Pages  " + ContentLibrary.this.getResources().getString(R.string.cross));
+//        visibleItemCount = recyclerView.getChildCount();
+//        totalItemCount = layoutManagerpages.getItemCount();
+//        pastVisiblesItems = layoutManagerpages.findFirstVisibleItemPosition();
+//        firstVisiblePosition = layoutManagerpages.findFirstVisibleItemPosition();
+//        findLastVisibleItemPosition = layoutManagerpages.findLastVisibleItemPosition();
+//        pagecount.setText((firstVisiblePosition + 1) + "-" + (findLastVisibleItemPosition + 1) + " of " + layoutManagerpages.getItemCount() + " Pages  " + ContentLibrary.this.getResources().getString(R.string.cross));
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -170,6 +168,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         pagecount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                selectedtextTextView.setBackground(getResources().getDrawable(R.drawable.gray));
                 gbRelativeLayout.setVisibility(View.GONE);
                 Ref_RelativeLayout.setVisibility(View.GONE);
 
@@ -202,7 +201,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         recyclerView.setLayoutManager(layoutManagerRef);
         prepareRefrneceData((RelativeLayout) recyclerView.getParent(), item, WhereQuery, mAdapter_ref, thumbnailPOJOList_sub);
 
-        visibleItemCount = layoutManagerRef.getChildCount();
+        visibleItemCount = recyclerView.getChildCount();
         totalItemCount = layoutManagerRef.getItemCount();
         pastVisiblesItems = layoutManagerRef.findFirstVisibleItemPosition();
         firstVisiblePosition = layoutManagerRef.findFirstVisibleItemPosition();
@@ -214,12 +213,12 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 
-//                visibleItemCount = layoutManagerRef.getChildCount();
-//                totalItemCount = layoutManagerRef.getItemCount();
-//                pastVisiblesItems = layoutManagerRef.findFirstVisibleItemPosition();
-//                firstVisiblePosition = layoutManagerRef.findFirstVisibleItemPosition();
-//                findLastVisibleItemPosition = layoutManagerRef.findLastVisibleItemPosition();
-//                refcount.setText((firstVisiblePosition + 1) + "-" + (findLastVisibleItemPosition + 1) + " of " + totalItemCount + " References  ");
+                visibleItemCount = layoutManagerRef.getChildCount();
+                totalItemCount = layoutManagerRef.getItemCount();
+                pastVisiblesItems = layoutManagerRef.findFirstVisibleItemPosition();
+                firstVisiblePosition = layoutManagerRef.findFirstVisibleItemPosition();
+                findLastVisibleItemPosition = layoutManagerRef.findLastVisibleItemPosition();
+                refcount.setText((firstVisiblePosition + 1) + "-" + (findLastVisibleItemPosition + 1) + " of " + totalItemCount + " References  ");
             }
         });
 
@@ -284,7 +283,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
 
     private void prepareRefrneceData(RelativeLayout recyclerView, TBBRAND itme, String whereQuery, ThumbnailAdapterForRefrence mAdapter, List<RefrenceContent> thumbnailPOJOList) {
 
-        String Query = " select l.COL1,l.COL2,l.COL15  ,(\n" +
+        String Query = " select DISTINCT l.COL1,l.COL2,l.COL15  ,(\n" +
                 "select k.col2  from TBDPG k\n" +
                 "where k.col0 = l.col0\n" +
                 ") pagename from TBDRG l\n" +
@@ -321,9 +320,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
 
     private void preparePageData(RelativeLayout relativeLayout, TBBRAND itme, String whereQuery, ThumbnailAdapterForPages mAdapter, List<ContentPage> thumbnailPOJOList) {
 
-        String Query = "";
-
-        Query = "select  b.col1 imagepath, a.COL2, b.COL2 ,b.COl0,a.COL9 , a.COL1\n" +
+        String Query = "select  b.col1 imagepath, a.COL2, b.COL2 ,b.COl0,a.COL9 , a.COL1\n" +
                 "        from  TBDPS a, TBDPG b\n" +
                 "        where a.col5 = b.col0\n" +
                 "        and a.col9 = '" + itme.getCOL0() + "'\n" +
@@ -352,6 +349,15 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
 
 
         mAdapter.notifyDataSetChanged();
+
+
+        //        visibleItemCount = recyclerView.getChildCount();
+//        totalItemCount = layoutManagerpages.getItemCount();
+//        pastVisiblesItems = layoutManagerpages.findFirstVisibleItemPosition();
+//        firstVisiblePosition = layoutManagerpages.findFirstVisibleItemPosition();
+//        findLastVisibleItemPosition = layoutManagerpages.findLastVisibleItemPosition();
+//        pagecount.setText((firstVisiblePosition + 1) + "-" + (findLastVisibleItemPosition + 1) + " of " + layoutManagerpages.getItemCount() + " Pages  " + ContentLibrary.this.getResources().getString(R.string.cross));
+
     }
 
     private void prepareData(String TableName, String Code, String whereQuery, ThumbnailAdapterForContentLibrary mAdapter, List<TBBRAND> thumbnailPOJOList) {
@@ -391,13 +397,27 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
     private void prepareSerachData(String TableName, String whereQuery, ThumbnailAdpForSearch mAdapter, List<SearchData> thumbnailPOJOList) {
 
 
-        String Query = "select  b.col1 imagepath , b.COL2 ,b.COl0,a.COL9 , a.COL1  from  TBDPS a, TBDPG b\n" +
-                "    where a.col5 = b.col0\n" +
-                "    and a.col10 = 'IPL'\n" +
-                "     and b.col8 = 'P'\n" +
-                "   and b.col7='1'\n" +
-                "                and b.COL4 like '%" + whereQuery + "%'\n" +
-                "                     order by  CAST (a.col2 AS INTEGER) ASC ";
+//        String Query = "select  b.col1 imagepath , b.COL2 ,b.COl0,a.COL9 , a.COL1  from  TBDPS a, TBDPG b\n" +
+//                "    where a.col5 = b.col0\n" +
+//                "    and a.col10 = 'IPL'\n" +
+//                "     and b.col8 = 'P'\n" +
+//                "   and b.col7='1'\n" +
+//                "                and b.COL4 like '%" + whereQuery + "%'\n" +
+//                "                     order by  CAST (a.col2 AS INTEGER) ASC ";
+
+        String Query = "select  b.col1 imagepath , b.COL2 aa ,b.COl0,a.COL9 , a.COL1 , b.col2  pagename , a.col4 cat_name , b.col8 ,b.col4\n" +
+                " from  TBDPS a, TBDPG b where a.col5 = b.col0 and a.col10 = 'IPL' and b.col8 = 'P' and b.col7='1'  and b.col4 like '%" + whereQuery + "%'   union\n" +
+                "select  a.col1 imagepath  , aa  , a.COL2 ,  a.COL9 , a.COL1 , (select b.col2 from  TBDPG b where b.col0= n.col5) page_name,\n" +
+                "                n.col4 cat_name , 'R' ,' '\n" +
+                "                from TBDRG a, TBDPS n \n" +
+                "              where a.col0 = n.col5\n" +
+                "                and a.col6 = n.col3\n" +
+                "                 and exists (\n" +
+                "               select 1\n" +
+                "                from TBDPG g\n" +
+                "                where g.col0 = a.col2\n" +
+                "                and  g.col8 = 'R' and g.col7='1'  and g.COL4 like '%" + whereQuery + "%')\n" +
+                "order by 2";
 
         SearchData searchData;
         Cursor cursor = dbHandler.getCusrsor(Query);
@@ -444,7 +464,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
             }
 
             //   title.setTextColor(Color.parseColor("#FF0000"));
-            title.setBackground(getResources().getDrawable(R.drawable.greendropdown));
+            title.setBackground(getResources().getDrawable(R.drawable.gray_green));
 
 
             RelativeLayout RelativeLayoutsd_Page = (RelativeLayout) relativeLayout.getChildAt(2);
@@ -454,7 +474,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
             RecyclerView recyclerViewPage = (RecyclerView) RelativeLayoutsd_Page.getChildAt(2);
             recyclerViewPage.setVisibility(View.VISIBLE);
 
-            getsubPagelist(recyclerViewPage, RelativeLayout_Ref, item);
+            getsubPagelist(recyclerViewPage, RelativeLayout_Ref, item, title);
 
 
             RecyclerView recyclerView_Ref = (RecyclerView) RelativeLayout_Ref.getChildAt(2);

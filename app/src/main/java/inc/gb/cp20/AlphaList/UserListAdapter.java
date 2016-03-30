@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -149,11 +150,11 @@ public class UserListAdapter extends BaseAdapter {
             }
         });
 
-        holder.menudot.setOnClickListener(new OnClickListener() {
-
+        holder.menudot.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
+            public boolean onTouch(View v, MotionEvent event) {
                 ((AlphaListActivity) context).onItemListMenuClick(items.get(position), v);
+                return true;
             }
         });
 

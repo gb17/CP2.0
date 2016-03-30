@@ -24,6 +24,16 @@
             android:textColor="@color/rhs_header"
             android:textSize="18sp" />
 
+        <TextView
+            android:id="@+id/display_text_network"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="It requires a working internet connection, This may take a few minutes."
+            android:textColor="@color/class_name"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
         <!--<TextView-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
@@ -36,11 +46,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:hint="Username"
+            android:hint="Username *"
             android:maxLines="1"
             android:padding="10dp"
-            android:textColor="@color/rhs_header"
             android:singleLine="true"
+            android:textColor="@color/rhs_header"
             android:textColorHint="#bbbbbb" />
 
         <EditText
@@ -48,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="-2dp"
-            android:hint="Enter your password"
+            android:hint="Password *"
             android:inputType="textPassword"
             android:maxLines="1"
             android:padding="10dp"

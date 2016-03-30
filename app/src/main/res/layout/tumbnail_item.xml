@@ -18,7 +18,7 @@
         android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/bandimage"
-        android:background="@color/thumbnail_producname_backgrounf"
+        android:background="@drawable/rectangle_shp"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:includeFontPadding="false"

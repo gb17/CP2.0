@@ -136,7 +136,7 @@ public class AlphabetsList {
                     // TODO Auto-generated method stub
                     final ListView lw = booksLV;
                     if (scrollState == 0) {
-                      //  searchView.startAnimation(animate);
+                        //  searchView.startAnimation(animate);
                         searchView.setVisibility(View.VISIBLE);
                         //  Log.i("a", "scrolling stopped...");
                     }
@@ -147,11 +147,11 @@ public class AlphabetsList {
 
                         if (currentFirstVisibleItem > mLastFirstVisibleItem) {
                             // mIsScrollingUp = false;
-                         //   searchView.startAnimation(animate);
+                            //   searchView.startAnimation(animate);
                             searchView.setVisibility(View.VISIBLE);
                         } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
                             //  mIsScrollingUp = true;
-                          //  searchView.startAnimation(animate);
+                            //  searchView.startAnimation(animate);
                             searchView.setVisibility(View.GONE);
                         }
                         mLastFirstVisibleItem = currentFirstVisibleItem;
@@ -324,8 +324,12 @@ public class AlphabetsList {
         } else if (itemPosition >= dealList.size()) {
             itemPosition = dealList.size() - 1;
         }
+        try {
+            selectedIndex.setText(alphaList.get(itemPosition));
+        } catch (Exception e) {
 
-        selectedIndex.setText(alphaList.get(itemPosition));
+        }
+
 
         ListView listView = (ListView) view.findViewById(R.id.booksLV);
 
@@ -469,8 +473,12 @@ public class AlphabetsList {
             public boolean onTouch(View v, MotionEvent event) {
                 sideIndexX = event.getX();
                 sideIndexY = event.getY();
+                try {
+                    displayListItem(mainView);
+                } catch (Exception e) {
 
-                displayListItem(mainView);
+                }
+
 
                 if (event.getActionMasked() == MotionEvent.ACTION_UP) {
                     selectedIndex.setText("");
