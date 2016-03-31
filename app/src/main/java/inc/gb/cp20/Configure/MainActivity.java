@@ -49,9 +49,9 @@ import inc.gb.cp20.Models.TBDTH;
 import inc.gb.cp20.Models.TBPARTY;
 import inc.gb.cp20.Models.TBTBC;
 import inc.gb.cp20.Models.TablesConfig;
-import inc.gb.cp20.Models.UPW;
 import inc.gb.cp20.R;
 import inc.gb.cp20.Util.CmsInter;
+import inc.gb.cp20.Util.Connectivity;
 import inc.gb.cp20.Util.RestClient;
 import inc.gb.cp20.Util.Utility;
 import inc.gb.cp20.interfaces.DownloadInterface;
@@ -152,18 +152,19 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                         LandingIntent.putExtra("USERNAME", UsereditText.getText().toString());
                         LandingIntent.putExtra("PASSWORD", PasswordeditText.getText().toString());
                         startActivity(LandingIntent);
-//                        getprogressDialog("Configuring..");
-//                        callUpw(UsereditText.getText().toString(), PasswordeditText.getText().toString());
+
                     } else if (CONFIG_FLAG) {
                         if (PasswordString.equals(PasswordeditText.getText().toString())) {
                             backupDatabase();
-//                            Intent LandingIntent = new Intent(MainActivity.this, LandingPage.class);
-//                            LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                            LandingIntent.putExtra("CALLSYNC", "1");
-//                            startActivity(LandingIntent);
-
-                            getprogressDialog("Please Wait..");
-                            CallCVR(CONFIG_FLAG);
+                            if (Connectivity.isConnected(MainActivity.this)) {
+                                getprogressDialog("Please Wait..");
+                                CallCVR(CONFIG_FLAG);
+                            } else {
+                                Intent LandingIntent = new Intent(MainActivity.this, LandingPage.class);
+                                LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                LandingIntent.putExtra("CALLSYNC", "1");
+                                startActivity(LandingIntent);
+                            }
 
                             PasswordeditText.setText("");
                         } else {
@@ -236,57 +237,6 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
     }
 
-    public void callUpw(String UserName, String Password) {
-        dialog.show();
-        UPW upw1 = new UPW();
-        upw1.setCLIENTID(getResources().getString(R.string.clientid));
-        upw1.setVALUE("");
-        upw1.setVERSION(getResources().getString(R.string.version));
-        upw1.setCONTROLNO("6");
-        upw1.setOLDPWD(Password);
-        upw1.setUSERNAME(UserName);
-
-
-        //   final Call<UPW> call = api.CallUPW(upw1);
-        RestClient.GitApiInterface service = RestClient.getClient();
-        final Call<UPW> call = service.CallUPW(upw1);
-        call.enqueue(new Callback<UPW>() {
-            @Override
-            public void onResponse(Response<UPW> response, Retrofit retrofit) {
-                if (response.body() != null) {
-                    UPW upw = response.body();
-                    if (upw.getMSG().contains("Success")) {
-                        SQLiteDatabase db = dbHandler.getWritableDatabase();
-                        ContentValues values = new ContentValues();
-                        values.put("USERNAME", upw.getUSERNAME());
-                        values.put("VAL", upw.getVALUE());
-                        values.put("CLIENTID", upw.getCLIENTID());
-                        values.put("CONTROLNO", upw.getCONTROLNO());
-                        values.put("OLDPWD", upw.getOLDPWD());
-                        values.put("VERSION", upw.getVERSION());
-                        dbHandler.genricDelete(DBHandler.TBUPW);
-                        db.insert(DBHandler.TBUPW, null, values);
-                        db.close();
-                        CallCVR(CONFIG_FLAG);
-                    } else {
-                        Utility.showSweetAlert(MainActivity.this, upw.getMSG(), CmsInter.ERROR_TYPE);
-                        dialog.dismiss();
-                    }
-
-                } else {
-                    Utility.showSweetAlert(MainActivity.this, "Network Error.", CmsInter.ERROR_TYPE);
-                    dialog.dismiss();
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-
-                Utility.showSweetAlert(MainActivity.this, t.toString(), CmsInter.ERROR_TYPE);
-                dialog.dismiss();
-            }
-        });
-    }
 
     public void CallCVR(final boolean configflag) {
 
@@ -406,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
                 @Override
                 public void onFailure(Throwable t) {
-                    Utility.showSweetAlert(MainActivity.this, t.toString(), CmsInter.ERROR_TYPE);
+                    Utility.showSweetAlert(MainActivity.this, "Network Error", CmsInter.ERROR_TYPE);
                     dialog.dismiss();
                 }
 
@@ -446,7 +396,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
                     @Override
                     public void onFailure(Throwable t) {
-                        Log.d("TAG", t.toString());
+                        Utility.showSweetAlert(MainActivity.this, "Network Error", CmsInter.ERROR_TYPE);
                     }
                 });
 
@@ -628,23 +578,25 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                     @Override
                                     public void onClick(SweetAlertDialog sDialog) {
-                                        Intent loginIntent = new Intent(MainActivity.this, MainActivity.class);
-                                        loginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(loginIntent);
+                                        dialog.dismiss();
+                                        sweetAlertDialog.dismiss();
                                     }
                                 })
                                 .show();
                     } else {
+                        dialog.dismiss();
                         Utility.showSweetAlert(MainActivity.this, chg.getMSG(), CmsInter.ERROR_TYPE);
                     }
                 } else {
+                    dialog.dismiss();
                     Utility.showSweetAlert(MainActivity.this, "Network Error", CmsInter.ERROR_TYPE);
                 }
             }
 
             @Override
             public void onFailure(Throwable t) {
-
+                dialog.dismiss();
+                Utility.showSweetAlert(MainActivity.this, "Network Error", CmsInter.ERROR_TYPE);
             }
         });
 

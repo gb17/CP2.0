@@ -1,28 +1,46 @@
 package inc.gb.cp20.ContentLib;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.Html;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import inc.gb.cp20.DB.DBHandler;
+import inc.gb.cp20.List_Utilities.ContentAdapter;
 import inc.gb.cp20.Models.ContentPage;
+import inc.gb.cp20.Models.IRCSFResponsePOJO;
 import inc.gb.cp20.Models.RefrenceContent;
 import inc.gb.cp20.Models.SearchData;
 import inc.gb.cp20.Models.TBBRAND;
@@ -32,10 +50,13 @@ import inc.gb.cp20.RecylerView.ThumbnailAdapterForContentLibrary;
 import inc.gb.cp20.RecylerView.ThumbnailAdapterForPages;
 import inc.gb.cp20.RecylerView.ThumbnailAdapterForRefrence;
 import inc.gb.cp20.RecylerView.ThumbnailAdpForSearch;
+import inc.gb.cp20.Util.Utility;
+import inc.gb.cp20.interfaces.DownloadInterface;
 import inc.gb.cp20.interfaces.RecyclerViewClickListener;
+import inc.gb.cp20.sync.Sync;
 
 
-public class ContentLibrary extends AppCompatActivity implements RecyclerViewClickListener {
+public class ContentLibrary extends AppCompatActivity implements RecyclerViewClickListener, DownloadInterface {
 
 
     private RecyclerView recyclerView, recyclerView_sub, recyclerView_ref, recyclerView_search;
@@ -43,7 +64,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
 
     RelativeLayout sublistRelativeLayout, ref_sublistRelativeLayout;
     String WhereQuery = "";
-    Typeface font;
+
     int a = 0;
     LinearLayoutManager layoutManager_main_list;
 
@@ -52,12 +73,32 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
     int firstVisiblePosition = -1;
     int findLastVisibleItemPosition = -1;
     LinearLayoutManager layoutManager3;
-    DBHandler dbHandler;
+
     LinearLayout content_view;
 
     int scrollforpage = 0;
     int scrollforref = 0;
     int scrollforpage_scr = 0;
+
+
+    //Call IRCSF
+    View view;
+    LinearLayout RHS_Deatailing;
+    List<IRCSFResponsePOJO> list;
+
+    Sync sync;
+    SweetAlertDialog dialog;
+    Dialog content_dialog;
+    Typeface font;
+
+    DownloadContentAsync downloadAsync;
+    ProgressBar progress;
+    TextView total, files;
+    int totalSize = 0;
+    ListView listView;
+
+    DBHandler dbHandler;
+    TextView search_result;
 
 
     @Override
@@ -72,6 +113,10 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         recyclerView_search.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.HORIZONTAL));
         recyclerView_search.setItemAnimator(new DefaultItemAnimator());
         recyclerView_search.setLayoutManager(layoutManager3);
+
+        search_result = (TextView) findViewById(R.id.search_result);
+
+
         defaultLayout();
 
     }
@@ -130,7 +175,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         return libView;
     }
 
-    public void getsubPagelist(RecyclerView recyclerView, final RelativeLayout Ref_RelativeLayout, TBBRAND item, final TextView selectedtextTextView) {
+    public void getsubPagelist(RecyclerView recyclerView, final RelativeLayout Ref_RelativeLayout, TBBRAND item, final ImageView selectedtextTextView) {
 
         final RelativeLayout gbRelativeLayout = (RelativeLayout) recyclerView.getParent();
         final TextView pagecount = (TextView) gbRelativeLayout.getChildAt(1);
@@ -156,33 +201,20 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         firstVisiblePosition = layoutManagerpages.findFirstVisibleItemPosition();
         findLastVisibleItemPosition = layoutManagerpages.findLastVisibleItemPosition();
         scrollforpage_scr = 0;
+        if (totalItemCount == 1)
+            pagecount.setText("1-1 of 1 Pages" + ContentLibrary.this.getResources().getString(R.string.cross));
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 
-//                if (scrollforpage == 0) {
-//                    visibleItemCount = layoutManagerpages.getChildCount();
-//                    totalItemCount = layoutManagerpages.getItemCount();
-//                    pastVisiblesItems = layoutManagerpages.findFirstVisibleItemPosition();
-//                    firstVisiblePosition = layoutManagerpages.findFirstVisibleItemPosition();
-//                    findLastVisibleItemPosition = layoutManagerpages.findLastVisibleItemPosition();
-//                    pagecount.setText((firstVisiblePosition + 1) + "-" + (findLastVisibleItemPosition + 1) + " of " + layoutManagerpages.getItemCount() + " Pages  " + ContentLibrary.this.getResources().getString(R.string.cross));
-//                    scrollforpage = 1;
-//
-//                }
-            //    if (dx != 0) {
-
-                    //  if (scrollforpage_scr == 0) {
-                    visibleItemCount = layoutManagerpages.getChildCount();
-                    totalItemCount = layoutManagerpages.getItemCount();
-                    pastVisiblesItems = layoutManagerpages.findFirstVisibleItemPosition();
-                    firstVisiblePosition = layoutManagerpages.findFirstVisibleItemPosition();
-                    findLastVisibleItemPosition = layoutManagerpages.findLastVisibleItemPosition();
-                    if (visibleItemCount != 0)
-                        pagecount.setText((firstVisiblePosition + 1) + "-" + (findLastVisibleItemPosition + 1) + " of " + layoutManagerpages.getItemCount() + " Pages  " + ContentLibrary.this.getResources().getString(R.string.cross));
-
-                    //  }
-              //  }
+                visibleItemCount = layoutManagerpages.getChildCount();
+                totalItemCount = layoutManagerpages.getItemCount();
+                pastVisiblesItems = layoutManagerpages.findFirstVisibleItemPosition();
+                firstVisiblePosition = layoutManagerpages.findFirstVisibleItemPosition();
+                findLastVisibleItemPosition = layoutManagerpages.findLastVisibleItemPosition();
+                if (visibleItemCount != 0)
+                    pagecount.setText((firstVisiblePosition + 1) + "-" + (findLastVisibleItemPosition + 1) + " of " + layoutManagerpages.getItemCount() + " Pages  " + ContentLibrary.this.getResources().getString(R.string.cross));
             }
         });
 
@@ -190,7 +222,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         pagecount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedtextTextView.setBackground(getResources().getDrawable(R.drawable.gray));
+                selectedtextTextView.setVisibility(View.GONE);
                 gbRelativeLayout.setVisibility(View.GONE);
                 Ref_RelativeLayout.setVisibility(View.GONE);
 
@@ -256,7 +288,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
 
     public void getSearchList(String whereQuery) {
 
-
+        search_result.setVisibility(View.VISIBLE);
         recyclerView_search.setVisibility(View.VISIBLE);
         List<SearchData> thumbnailPOJOList_sub = new ArrayList<>();
         ThumbnailAdpForSearch mAdapter_search = new ThumbnailAdpForSearch(thumbnailPOJOList_sub, ContentLibrary.this, getSupportFragmentManager(), this);
@@ -299,6 +331,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
                     getSearchList(s.toString());
                 } else {
                     recyclerView_search.setVisibility(View.GONE);
+                    search_result.setVisibility(View.GONE);
                 }
 
                 return true;
@@ -457,8 +490,14 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
 
         }
 
-        if (cursor.getCount() != 0)
+        if (cursor.getCount() != 0) {
             mAdapter.notifyDataSetChanged();
+            String text = "Your search for <font color='#0a937f'>  " + whereQuery + " </font>  returned " + cursor.getCount() + " result(s)";
+            search_result.setText(Html.fromHtml(text), TextView.BufferType.SPANNABLE);
+        } else {
+            String text = "Your search for <font color='#0a937f'>  " + whereQuery + " </font>  returned " + cursor.getCount() + " result";
+            search_result.setText(Html.fromHtml(text), TextView.BufferType.SPANNABLE);
+        }
     }
 
 
@@ -477,16 +516,17 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
             visibleItemCount = layoutManager.getChildCount();
             totalItemCount = layoutManager.getItemCount();
 
-            TextView title = (TextView) mainRelativeLayout.getChildAt(1);
+
+            ImageView imageViewu = (ImageView) mainRelativeLayout.getChildAt(11);
             for (int i = 0; i < visibleItemCount; i++) {
                 RelativeLayout parent = (RelativeLayout) recyclerView.getChildAt(i);
                 TextView child = (TextView) parent.getChildAt(1);
-                // child.setTextColor(Color.parseColor("#424242"));
-                child.setBackground(getResources().getDrawable(R.drawable.gray));
+                ImageView imageView = (ImageView) parent.getChildAt(11);
+                imageView.setVisibility(View.GONE);
             }
 
-            //   title.setTextColor(Color.parseColor("#FF0000"));
-            title.setBackground(getResources().getDrawable(R.drawable.gray_green));
+
+            imageViewu.setVisibility(View.VISIBLE);
 
 
             RelativeLayout RelativeLayoutsd_Page = (RelativeLayout) relativeLayout.getChildAt(2);
@@ -496,7 +536,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
             RecyclerView recyclerViewPage = (RecyclerView) RelativeLayoutsd_Page.getChildAt(2);
             recyclerViewPage.setVisibility(View.VISIBLE);
 
-            getsubPagelist(recyclerViewPage, RelativeLayout_Ref, item, title);
+            getsubPagelist(recyclerViewPage, RelativeLayout_Ref, item, imageViewu);
 
 
             RecyclerView recyclerView_Ref = (RecyclerView) RelativeLayout_Ref.getChildAt(2);
@@ -510,13 +550,233 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
 
     @Override
     public void onRetryClick(TBBRAND item, View v, int position) {
-
+        CallDownloadContainer(2, item.getCOL0(), item.getCOL3());
     }
 
     @Override
     public void onBackPressed() {
         setResult(RESULT_CANCELED);
         finish();
+    }
+
+    public void CallDownloadContainer(int mode, String CATEGORYTYPE, String CATEGORYCODE) {
+        sync = new Sync(ContentLibrary.this);
+        sync.downloadContentUrl(ContentLibrary.this, mode, CATEGORYTYPE, CATEGORYCODE);
+        dialog = new SweetAlertDialog(ContentLibrary.this, SweetAlertDialog.PROGRESS_TYPE);
+        dialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        dialog.setTitleText("Loading....");
+        dialog.setContentText("Please Wait....");
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    @Override
+    public void mainBody(List<IRCSFResponsePOJO> list) {
+        if (dialog != null)
+            dialog.dismiss();
+        if (list != null)
+            if (list.size() > 0)
+                showContentDownloadDialog(list);
+    }
+
+    @Override
+    public void onTaskCompleted(boolean b) {
+
+    }
+
+    void showContentDownloadDialog(List<IRCSFResponsePOJO> listP) {
+        list = listP;
+        content_dialog = new Dialog(ContentLibrary.this);
+        content_dialog.getWindow();
+        content_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        content_dialog.setContentView(R.layout.list);
+        content_dialog.setCancelable(false);
+        content_dialog.getWindow().setBackgroundDrawable(
+                new ColorDrawable(Color.WHITE));
+        Display display = ((WindowManager) ContentLibrary.this
+                .getSystemService(ContentLibrary.this.WINDOW_SERVICE))
+                .getDefaultDisplay();
+        content_dialog.setCancelable(false);
+        int width = display.getWidth();
+        int height = display.getHeight();
+        content_dialog.getWindow().setLayout((10 * width) / 12, (5 * height) / 8);
+        content_dialog.setContentView(R.layout.list);
+        TextView header = (TextView) content_dialog.findViewById(R.id.header);
+        header.setText(getResources().getString(R.string.refresh) + " Content update available (" + list.size() + " update)");
+        header.setTypeface(font);
+        listView = (ListView) content_dialog.findViewById(R.id.list);
+        listView.setAdapter(new ContentAdapter(ContentLibrary.this, list));
+
+        CheckBox checkall = (CheckBox) content_dialog.findViewById(R.id.checkall);
+        checkall.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                ContentAdapter adapter = (ContentAdapter) listView.getAdapter();
+                if (compoundButton.isChecked()) {
+                    compoundButton.setChecked(true);
+                    for (int i = 0; i < adapter.getCount(); i++) {
+//                        LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i);
+//                        CheckBox cb = (CheckBox) itemLayout.getChildAt(0);
+//                        cb.setChecked(true);
+                        adapter.mCheckedState[i] = compoundButton.isChecked();
+                        adapter.notifyDataSetChanged();
+                    }
+                } else {
+                    compoundButton.setChecked(false);
+                    for (int i = 0; i < adapter.getCount(); i++) {
+//                        LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i);
+//                        CheckBox cb = (CheckBox) itemLayout.getChildAt(0);
+//                        cb.setChecked(false);
+                        adapter.mCheckedState[i] = compoundButton.isChecked();
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+        final TextView download_now = (TextView) content_dialog.findViewById(R.id.download_now);
+        final TextView download_later = (TextView) content_dialog.findViewById(R.id.download_later);
+        final TextView cancel = (TextView) content_dialog.findViewById(R.id.cancel);
+        final TextView Status_bar = (TextView) content_dialog.findViewById(R.id.status_tag);
+
+        total = (TextView) content_dialog.findViewById(R.id.total);
+        files = (TextView) content_dialog.findViewById(R.id.files);
+        progress = (ProgressBar) content_dialog.findViewById(R.id.progress);
+
+        download_now.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ContentAdapter adapter = (ContentAdapter) listView.getAdapter();
+                ArrayList<String[]> urlString = new ArrayList<>();
+                for (int i = 0; i < list.size(); i++) {
+                    if (adapter.mCheckedState[i]) {
+                        IRCSFResponsePOJO pojo = list.get(i);
+                        urlString.add(new String[]{pojo.getENTRYNO(), pojo.getPATH(), pojo.getFILE_SIZE(), i + ""});
+                        totalSize = totalSize + Integer.parseInt(pojo.getFILE_SIZE());
+                    }
+                }
+                if (urlString.size() > 0) {
+                    total.setVisibility(View.VISIBLE);
+                    files.setVisibility(View.VISIBLE);
+                    progress.setVisibility(View.VISIBLE);
+                    download_now.setVisibility(View.GONE);
+                    download_later.setVisibility(View.GONE);
+                    cancel.setVisibility(View.VISIBLE);
+                    Status_bar.setVisibility(View.VISIBLE);
+                    downloadAsync = new DownloadContentAsync(urlString);
+                    downloadAsync.execute();
+                }
+            }
+        });
+        download_later.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                content_dialog.dismiss();
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                downloadAsync.cancel(true);
+                content_dialog.dismiss();
+            }
+        });
+        content_dialog.show();
+    }
+
+
+    class DownloadContentAsync extends AsyncTask<Void, Integer, Void> {
+        ArrayList<String[]> urlString;
+        boolean flag = false;
+        int pos = 0;
+        int downloadedSize = 0;
+
+        public DownloadContentAsync(ArrayList<String[]> urlString) {
+            this.urlString = urlString;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            SQLiteDatabase db = dbHandler.getWritableDatabase();
+            try {
+                for (int i = 0; i < urlString.size(); i++) {
+                    if (isCancelled()) break;
+
+                    String[] urls = urlString.get(i);
+                    pos = Integer.parseInt(urls[3]);
+                    IRCSFResponsePOJO pojo = list.get(pos);
+                    pojo.setSTATUS("In Progress");
+                    ContentLibrary.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((ContentAdapter) listView.getAdapter()).notifyDataSetChanged();
+                        }
+                    });
+                    String msg = Utility.downloadZipFile(urls[1]);
+                    if (isCancelled()) break;
+                    if (!msg.startsWith("fail")) {
+                        try {
+                            File zipfile = new File(msg);
+                            String directory = ContentLibrary.this.getFilesDir().getAbsolutePath()
+                                    + "/";
+                            String str = Utility.unZipFile(zipfile, directory);
+                            if (isCancelled()) break;
+                            if (str.equalsIgnoreCase("success")) {
+                                sync.contentAcknowledge(urls[0]);
+                                db.execSQL("UPDATE TBDPG SET COL7 = '1' where COL0 = '" + urls[0] + "'");
+                                flag = true;
+                                downloadedSize = downloadedSize + Integer.parseInt(urls[2]);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    if (!flag)
+                        pojo.setSTATUS("Failed");
+                    else
+                        pojo.setSTATUS("Completed");
+                    ContentLibrary.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((ContentAdapter) listView.getAdapter()).notifyDataSetChanged();
+                        }
+                    });
+
+                    publishProgress(i + 1);
+                }
+            } catch (Exception e) {
+                Log.e("Error: ", e.getMessage());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress.setProgress(0);
+            progress.setMax(urlString.size());
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values[0]);
+            progress.setProgress(values[0]);
+            files.setText(values[0] + " of " + urlString.size() + " files updates");
+            total.setText(downloadedSize + " of " + totalSize + " size");
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (content_dialog != null) {
+                content_dialog.dismiss();
+                dbHandler.UpdateTBRAND();
+                defaultLayout();
+
+            }
+
+        }
     }
 
 }

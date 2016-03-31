@@ -75,6 +75,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
 
             pageFloatingActionButton = (ImageView) view.findViewById(R.id.ref);
             refFloatingActionButton = (ImageView) view.findViewById(R.id.page);
+
             //Chnages made to swtich page to refrence
             pageCount = (TextView) view.findViewById(R.id.refcount);
             refCount = (TextView) view.findViewById(R.id.pagecount);
@@ -121,7 +122,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
                 public void onClick(View v) {
 
                     //if (masklayRelativeLayout.getVisibility() == View.VISIBLE)
-                        listener.onItemClick(brandList, v, getLayoutPosition());
+                    listener.onItemClick(brandList, v, getLayoutPosition());
                 }
             });
 
@@ -252,11 +253,15 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         TBBRAND tbbrand = brandList.get(position);
+        holder.title.setText(tbbrand.getCOL2());
 
         if (!tbbrand.getCOL10().equals("0"))
             holder.masklayRelativeLayout.setVisibility(View.VISIBLE);
+        else {
+            holder.masklayRelativeLayout.setVisibility(View.GONE);
+        }
 
-        holder.title.setText(tbbrand.getCOL2());
+
         if (tbbrand.getCOL5().equals("0") || tbbrand.getCOL5().equals("")) {
             holder.pageCount.setText("");
             holder.pageFloatingActionButton.setVisibility(View.INVISIBLE);

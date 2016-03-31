@@ -150,6 +150,9 @@ public class ThumbnailAdapterForContentLibrary extends RecyclerView.Adapter<Thum
 
         if (!tbbrand.getCOL10().equals("0"))
             holder.masklayRelativeLayout.setVisibility(View.VISIBLE);
+        else {
+            holder.masklayRelativeLayout.setVisibility(View.GONE);
+        }
 
         holder.title.setText(tbbrand.getCOL2());
         if (tbbrand.getCOL5().equals("0") || tbbrand.getCOL5().equals("")) {
