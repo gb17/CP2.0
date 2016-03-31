@@ -119,6 +119,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
             defaultLayout();
             CallDownloadIRCSF(0);
         } catch (Exception e) {
+            new TagDownloading(LandingPage.this);
             e.printStackTrace();
         }
     }

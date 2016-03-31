@@ -155,8 +155,16 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
 
             @Override
             public void onFailure(Throwable t) {
-
-                Utility.showSweetAlert(ConfigureActivity.this, t.toString(), CmsInter.ERROR_TYPE);
+                final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(ConfigureActivity.this, CmsInter.ERROR_TYPE);
+                sweetAlertDialog.setTitleText(t.toString())
+                        .setConfirmText("Ok")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                finish();
+                            }
+                        })
+                        .show();
 
             }
         });

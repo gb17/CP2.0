@@ -55,15 +55,15 @@ public class Sync {
         List<ContainerPOJO> containerLs = new ArrayList<>();
         String containerData[][] = null;
         if (index == 1) {
-            containerData = dbHandler.genericSelect("select a.*, ' ' pcode , ' ' pname , ' ' patch, ' ' spec, ' ' class  from TXN102 a where col11 = 0 and not exists ( select 1 from TBPHTAG B WHERE b.col0 = a.col18 ) union \n" +
-                    "select a.*,  b.col1 pcode, b.col2 pname, b.col3 patch, b.col4 spec, b.col5 class  from TXN102 a , tbphtag b where  a.col18 = b.col0 AND A.COL11 = 0", 27);
+            containerData = dbHandler.genericSelect("select a.*, ' ' pcode , ' ' pname , ' ' patch, ' ' spec, ' ' class, ' ' hqcode  from TXN102 a where col11 = 0 and not exists ( select 1 from TBPHTAG B WHERE b.col0 = a.col18 ) union \n" +
+                    "select a.*,  b.col1 pcode, b.col2 pname, b.col3 patch, b.col4 spec, b.col5 class, b.col12 hqcode  from TXN102 a , tbphtag b where  a.col18 = b.col0 AND A.COL11 = 0", 28);
 
             if (containerData != null)
                 for (int i = 0; i < containerData.length; i++) {
                     ContainerPOJO pojo = new ContainerPOJO(context.getResources().getString(R.string.clientid), upwData[3], containerData[i][0], containerData[i][1],
                             containerData[i][2], containerData[i][3], containerData[i][4], containerData[i][5], containerData[i][6], containerData[i][7],
                             containerData[i][8], containerData[i][14], containerData[i][13], containerData[i][10], containerData[i][9], containerData[i][16], containerData[i][15] + "^" + containerData[i][20],
-                            containerData[i][17], containerData[i][22], "", "", containerData[i][19], containerData[i][21], batchNumber, containerData[i][23], containerData[i][24], containerData[i][25], containerData[i][26], containerData[i][12]);
+                            containerData[i][17], containerData[i][22], "", "", containerData[i][19], containerData[i][21], batchNumber, containerData[i][23], containerData[i][24], containerData[i][25], containerData[i][26], containerData[i][27]);
                     containerLs.add(pojo);
                 }
         } else if (index == 2) {
