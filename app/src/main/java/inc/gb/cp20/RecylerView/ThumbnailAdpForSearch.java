@@ -12,8 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.apache.commons.io.FilenameUtils;
@@ -37,10 +35,6 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
     FragmentManager fragmentManager;
 
     Bitmap bitmap;
-    Integer Imagearr[] = {R.drawable.dempi, R.drawable.newace, R.drawable.newcfix1, R.drawable.newcfix3, R.drawable.newjade
-            , R.drawable.newmezzo, R.drawable.newstillsep, R.drawable.solsuna, R.drawable.stelpep, R.drawable.zepine, R.drawable.stelpep, R.drawable.zepine,
-            R.drawable.dempi, R.drawable.newace, R.drawable.newcfix1, R.drawable.newcfix3, R.drawable.newjade
-            , R.drawable.newmezzo, R.drawable.newstillsep, R.drawable.solsuna, R.drawable.stelpep, R.drawable.zepine, R.drawable.stelpep, R.drawable.zepine};
 
     public ThumbnailAdpForSearch(List<SearchData> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener) {
         this.brandList = brandList;
@@ -52,31 +46,17 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, fb, pageCount, refCount, newTag;
+        public TextView title, brandname, pagename, newTag;
+        ImageView imageView;
 
-        ImageView imageView, pageFloatingActionButton, refFloatingActionButton;
-        RelativeLayout layout, pageCountLayout, refCountLayout;
-        ScrollView childScrollView;
 
         public MyViewHolder(View view) {
             super(view);
             title = (TextView) view.findViewById(R.id.title);
             imageView = (ImageView) view.findViewById(R.id.bandimage);
-
-            layout = (RelativeLayout) view.findViewById(R.id.layoutsc);
-            fb = (TextView) view.findViewById(R.id.close);
-            childScrollView = (ScrollView) view.findViewById(R.id.childScroll);
-
-            pageFloatingActionButton = (ImageView) view.findViewById(R.id.page);
-            pageFloatingActionButton.setVisibility(View.GONE);
-            refFloatingActionButton = (ImageView) view.findViewById(R.id.ref);
-            refFloatingActionButton.setVisibility(View.GONE);
-            pageCount = (TextView) view.findViewById(R.id.pagecount);
-            pageCount.setVisibility(View.GONE);
-            refCount = (TextView) view.findViewById(R.id.refcount);
-            refCount.setVisibility(View.GONE);
-
             newTag = (TextView) view.findViewById(R.id.newtag);
+            brandname = (TextView) view.findViewById(R.id.brand_name);
+            pagename = (TextView) view.findViewById(R.id.page_name);
 
 
         }
@@ -104,7 +84,7 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.tumbnail_item, parent, false);
+                .inflate(R.layout.tumbnail_item_search, parent, false);
         return new MyViewHolder(itemView);
     }
 
@@ -112,9 +92,20 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
     public void onBindViewHolder(MyViewHolder holder, int position) {
         SearchData tbdpg = brandList.get(position);
         holder.title.setText(tbdpg.getPageNamee());
+        holder.pagename.setText(tbdpg.getSubpageName());
+        holder.brandname.setText(tbdpg.getCat_Name());
         String filePath = new File(mContext.getFilesDir() + "/" + FilenameUtils.removeExtension(tbdpg.getImagePath()) + "/", FilenameUtils.removeExtension(tbdpg.getImagePath()) + ".png").getAbsolutePath();
-        bitmap = BitmapFactory.decodeFile(filePath);
-        holder.imageView.setImageBitmap(bitmap);
+        if (tbdpg.getPageNamee().toLowerCase().contains("mp4")) {
+            holder.imageView.setScaleType(ImageView.ScaleType.CENTER);
+            holder.imageView.setImageResource(R.drawable.vdoicon);
+        } else if (tbdpg.getPageNamee().toLowerCase().contains("pdf")) {
+            holder.imageView.setScaleType(ImageView.ScaleType.CENTER);
+            holder.imageView.setImageResource(R.drawable.pdficon);
+        } else {
+            bitmap = BitmapFactory.decodeFile(filePath);
+            holder.imageView.setImageBitmap(bitmap);
+        }
+
         holder.bind(brandList.get(position), position);
 
     }

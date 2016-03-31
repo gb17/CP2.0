@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="213dp"
+    android:layout_height="wrap_content">
+
+
+    <ImageView
+        android:id="@+id/bandimage"
+        android:layout_width="216dp"
+        android:layout_height="150dp"
+        android:background="@color/thumbnail_producname_backgrounf"
+        android:scaleType="fitXY"
+
+        android:src="@drawable/newcfix1" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/bandimage"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_horizontal"
+        android:includeFontPadding="false"
+
+        android:text="Fade pill"
+        android:textColor="@color/thumbnail_productname_title"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/page_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="3dp"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_horizontal|center_vertical"
+        android:includeFontPadding="false"
+        android:text="Fade pill"
+        android:textColor="@color/page_count"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/brand_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/page_name"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="3dp"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_horizontal|center_vertical"
+        android:includeFontPadding="false"
+        android:text="Fade pill"
+        android:textColor="@color/rhs_header"
+        android:textSize="16sp" />
+
+
+    <TextView
+        android:id="@+id/newtag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp"
+        android:background="#3e783d"
+        android:padding="4dp"
+        android:text="NEW"
+        android:textColor="@android:color/white"
+        android:textSize="10dp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+</RelativeLayout>

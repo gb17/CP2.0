@@ -9,6 +9,24 @@ public class SearchData {
     String Cat_Type;
     String Brand_code;
     String PageCode;
+    String SubpageName;
+    String Cat_Name;
+
+    public String getCat_Name() {
+        return Cat_Name;
+    }
+
+    public void setCat_Name(String cat_Name) {
+        Cat_Name = cat_Name;
+    }
+
+    public String getSubpageName() {
+        return SubpageName;
+    }
+
+    public void setSubpageName(String subpageName) {
+        SubpageName = subpageName;
+    }
 
     public String getImagePath() {
         return ImagePath;

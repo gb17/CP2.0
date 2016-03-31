@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -141,7 +140,7 @@ public class UserListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 DrList_POJO drList_pojo = items.get(position);
-                if (drList_pojo.getCOL15().equals("0") && index == CmsInter.LIST_LANDING) {
+                if (drList_pojo.getCOL15() != null && drList_pojo.getCOL15().equals("0") && index == CmsInter.LIST_LANDING) {
 
                 } else {
                     ((AlphaListActivity) context).onItemListClick(items.get(position), v);
@@ -150,11 +149,10 @@ public class UserListAdapter extends BaseAdapter {
             }
         });
 
-        holder.menudot.setOnTouchListener(new View.OnTouchListener() {
+        holder.menudot.setOnClickListener(new OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View v) {
                 ((AlphaListActivity) context).onItemListMenuClick(items.get(position), v);
-                return true;
             }
         });
 

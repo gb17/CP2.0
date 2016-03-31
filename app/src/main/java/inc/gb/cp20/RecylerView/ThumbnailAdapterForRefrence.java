@@ -47,7 +47,6 @@ public class ThumbnailAdapterForRefrence extends RecyclerView.Adapter<ThumbnailA
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, page_name;
-
         ImageView imageView;
 
 

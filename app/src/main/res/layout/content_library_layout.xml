@@ -20,7 +20,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view_for_search"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="240dp"
                 android:layout_marginLeft="22dp"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:scrollbars="horizontal"
