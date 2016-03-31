@@ -42,8 +42,8 @@ public class RestClient {
         if (gitApiInterface == null) {
 
             OkHttpClient okClient = new OkHttpClient();
-            okClient.setConnectTimeout(5, TimeUnit.MINUTES);
-            okClient.setReadTimeout(5, TimeUnit.MINUTES);
+            okClient.setConnectTimeout(2, TimeUnit.MINUTES);
+            okClient.setReadTimeout(2, TimeUnit.MINUTES);
             okClient.interceptors().add(new Interceptor() {
                 @Override
                 public Response intercept(Chain chain) throws IOException {

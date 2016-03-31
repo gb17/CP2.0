@@ -83,7 +83,7 @@ public class AlphabetsList {
 
     }
 
-    public View getAlphabestListView(final String TabelName, boolean play_icon, boolean tick_icon, final boolean header) {
+    public View getAlphabestListView(final String TabelName, boolean play_icon, boolean tick_icon, final boolean header, int searchMode) {
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mainView = inflater.inflate(R.layout.mainindextable, null);
@@ -93,7 +93,7 @@ public class AlphabetsList {
         searchView = (EditText) mainView.findViewById(R.id.searchView);
         sidePannel = (LinearLayout) mainView.findViewById(R.id.sideIndex);
         selectedIndex = (TextView) mainView.findViewById(R.id.selectedIndex);
-        setAdapter(0, booksLV, TabelName, play_icon, tick_icon, header, CmsInter.LIST_LANDING);
+        setAdapter(0, booksLV, TabelName, play_icon, tick_icon, header, CmsInter.LIST_LANDING, true);
 
         LinearLayout sideIndex = (LinearLayout) mainView.findViewById(R.id.sideIndex);
         sideIndex.setOnClickListener(onClicked);
@@ -167,33 +167,35 @@ public class AlphabetsList {
             }
         });
 
-        searchView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        if (searchMode == 1) {
+            searchView.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
+                }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-
-                userVector = UserService.getUserList(mContext, TabelName, s.toString());
-
-                Vector<DrList_POJO> subsidiesList = getIndexedBooks(userVector);
-                totalListSize = subsidiesList.size();
-
-                userListAdapter = new UserListAdapter(subsidiesList, mContext, true, false, false, CmsInter.LIST_LANDING);
-                booksLV.setAdapter(userListAdapter);
-                userListAdapter.notifyDataSetChanged();
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
 
 
-            }
+                    userVector = UserService.getUserList(mContext, TabelName, s.toString(), "", true);
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                //  TExtWithCross("dff adsfds dsagfvsdfg adgvads");
-            }
-        });
+                    Vector<DrList_POJO> subsidiesList = getIndexedBooks(userVector);
+                    totalListSize = subsidiesList.size();
+
+                    userListAdapter = new UserListAdapter(subsidiesList, mContext, true, false, false, CmsInter.LIST_LANDING);
+                    booksLV.setAdapter(userListAdapter);
+                    userListAdapter.notifyDataSetChanged();
+
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    //  TExtWithCross("dff adsfds dsagfvsdfg adgvads");
+                }
+            });
+        }
 
 
         return mainView;
@@ -499,9 +501,9 @@ public class AlphabetsList {
         }
     };
 
-    public void setAdapter(int index, ListView booksLV, String tableName, boolean play_icon, boolean tick_icon, boolean header, int indexforList) {
+    public void setAdapter(int index, ListView booksLV, String tableName, boolean play_icon, boolean tick_icon, boolean header, int indexforList, boolean sortOrNot) {
         if (index == 0)
-            userVector = UserService.getUserList(mContext, tableName, "");
+            userVector = UserService.getUserList(mContext, tableName, "", "", sortOrNot);
 
         Vector<DrList_POJO> subsidiesList = getIndexedBooks(userVector);
         totalListSize = subsidiesList.size();

@@ -10,7 +10,7 @@ import inc.gb.cp20.DB.DBHandler;
 
 public class UserService {
 
-    public static Vector<DrList_POJO> getUserList(Context ctx, String TabelName, String Where) {
+    public static Vector<DrList_POJO> getUserList(Context ctx, String TabelName, String Where, String notExistquery, boolean sortOrNot) {
         Vector<DrList_POJO> drListPOJOList = new Vector<DrList_POJO>();
 
         DrList_POJO drListPOJO;
@@ -22,7 +22,10 @@ public class UserService {
         try {
             Cursor cursor = null;
             if (Where.equals("")) {
-                cursor = dbHandler.getAllData(TabelName, null, null, null);
+                String query = "SELECT *  FROM " + TabelName;
+                if (!notExistquery.equals(""))
+                    query = query + " WHERE " + notExistquery;
+                cursor = dbHandler.getCusrsor(query);
             } else {
 
 
@@ -32,10 +35,11 @@ public class UserService {
                     if (i == go.length - 1) temp = temp + "'%" + go[i] + "%'";
                     else temp = temp + "'%" + go[i] + "%'  and COL14 like ";
                 }
-                   System.out.println(temp);
+                System.out.println(temp);
 
-
-                cursor = dbHandler.getCusrsor("SELECT *  FROM TBPARTY WHERE " + temp);
+                if (!notExistquery.equals(""))
+                    temp = temp + " AND " + notExistquery;
+                cursor = dbHandler.getCusrsor("SELECT *  FROM " + TabelName + " WHERE " + temp);
             }
 
             cursor.moveToFirst();
@@ -70,8 +74,8 @@ public class UserService {
             cursor.deactivate();
             cursor.close();
 
-
-            Collections.sort(drListPOJOList);
+            if (sortOrNot)
+                Collections.sort(drListPOJOList);
         } catch (Exception e) {
             e.printStackTrace();
         }

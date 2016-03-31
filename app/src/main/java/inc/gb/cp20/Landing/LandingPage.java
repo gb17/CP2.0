@@ -2,6 +2,7 @@ package inc.gb.cp20.Landing;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -113,7 +114,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
 
         try {
             AlphabetsList alphabetsList = new AlphabetsList(this);
-            lhsLinearLayout.addView(alphabetsList.getAlphabestListView("TBPARTY", false, false, true));
+            lhsLinearLayout.addView(alphabetsList.getAlphabestListView("TBPARTY", false, false, true, 1));
             alphabetsList.setSidepannel(View.VISIBLE);
             alphabetsList.SerachViewVis(View.VISIBLE);
             defaultLayout();
@@ -122,6 +123,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
             new TagDownloading(LandingPage.this);
             e.printStackTrace();
         }
+        checkSharedPreference();
     }
 
     public void CallDownloadContainer(int mode, String CATEGORYTYPE, String CATEGORYCODE) {
@@ -552,5 +554,19 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                     }
                 })
                 .show();
+    }
+
+    private void checkSharedPreference() {
+        SharedPreferences preferences = getSharedPreferences("CP20", MODE_PRIVATE);
+        String value = preferences.getString("unlisted_key", null);
+        if (value == null) {
+            String data[][] = dbHandler.genericSelect("Select VAL FROM TBUPW", 1);
+            String[] upwData = data[0][0].split("\\^");
+            String rnumber = upwData[8];
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("unlisted_key", rnumber);
+            editor.commit();
+        }
     }
 }

@@ -56,7 +56,7 @@ public class Sync {
         String containerData[][] = null;
         if (index == 1) {
             containerData = dbHandler.genericSelect("select a.*, ' ' pcode , ' ' pname , ' ' patch, ' ' spec, ' ' class, ' ' hqcode  from TXN102 a where col11 = 0 and not exists ( select 1 from TBPHTAG B WHERE b.col0 = a.col18 ) union \n" +
-                    "select a.*,  b.col1 pcode, b.col2 pname, b.col3 patch, b.col4 spec, b.col5 class, b.col12 hqcode  from TXN102 a , tbphtag b where  a.col18 = b.col0 AND A.COL11 = 0", 28);
+                    "select a.*,  b.col1 pcode, b.col2 pname, b.col3 patch, b.col4 spec, b.col5 class, b.col6 hqcode  from TXN102 a , tbphtag b where  a.col18 = b.col0 AND A.COL11 = 0", 28);
 
             if (containerData != null)
                 for (int i = 0; i < containerData.length; i++) {

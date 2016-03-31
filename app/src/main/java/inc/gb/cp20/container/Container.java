@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.gesture.Gesture;
 import android.gesture.GestureOverlayView;
@@ -183,7 +184,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             db.execSQL(query);
         }
 
-        userCopyVector = UserService.getUserList(this, "TBPARTY", "");
+        userCopyVector = UserService.getUserList(this, "TBPARTY", "", "", true);
 
         Date date = new Date();
         currentDate = new SimpleDateFormat("dd-MM-yyyy").format(date);
@@ -191,9 +192,6 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         fillPlaystData();
 
         String brandQuery = "SELECT COL0, COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8 FROM TBBRAND b where b.COL0 = '" + thumbnail_category + "' and exists (select 1 from TBDPS s, TBDPG t where s.col5 = t.col0 and s.col9= b.col0 and s.col1 =  b.col3 and t.col7 = '1' )";
-
-//        if (customer_id.equals(""))
-//            brandQuery = "SELECT * FROM TBBRND where col_4 <> '" + category_code + "'";
 
         brandData = handler.genericSelect(brandQuery, 9);
         setContentView(R.layout.container);
@@ -591,11 +589,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 ImageView child = (ImageView) ((RelativeLayout) content3.getChildAt(i)).getChildAt(0);
                 child.setScaleX(1.0f);
                 child.setScaleY(1.0f);
-//                child.setBackgroundResource(android.R.color.transparent);
             }
             imageView.setScaleX(1.4f);
             imageView.setScaleY(1.4f);
-//            imageView.setBackgroundResource(R.drawable.image_bg);
             previousIndex = 0;
             playIndex = 0;
             playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11 from TBDPS a , TBDPG b\n" +
@@ -618,11 +614,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 ImageView child = (ImageView) ((RelativeLayout) content2.getChildAt(i)).getChildAt(0);
                 child.setScaleX(1.0f);
                 child.setScaleY(1.0f);
-//                imageView.setBackgroundResource(android.R.color.transparent);
             }
             imageView.setScaleX(1.4f);
             imageView.setScaleY(1.4f);
-//            imageView.setBackgroundResource(R.drawable.image_bg);
             previousIndex = playIndex;
             playIndex = view.getId();
             displayFocussedBrands(playIndex);
@@ -860,26 +854,16 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     break;
                 case R.id.annot1: //annotation
                     if (imgView.getTag().equals("2")) {
-                        //imgView.setImageResource(R.drawable.anotatnblk);
-                        //imgView.setImageResource(R.drawable.annoticon); //normal
                         if (gesturesView.getVisibility() == View.VISIBLE) {
                             gesturesView.cancelClearAnimation();
                             gesturesView.clear(true);
                             gesturesView.setVisibility(View.GONE);
                         }
-                        //annot2.setVisibility(View.GONE);
                         seek.setVisibility(View.GONE);
                         colorw.setVisibility(View.GONE);
                         view.setTag("1");
                     } else if (imgView.getTag().equals("1")) {
-//                        imgName = "icon77.png";
-//                        filePath = new File(getFilesDir(), imgName).getAbsolutePath();
-//                        bitmap = BitmapFactory.decodeFile(filePath);
-//                        imgView.setImageBitmap(bitmap);
-//                        imgView.setBackgroundResource(R.drawable.bg_circle);
                         gesturesView.setGestureColor(Color.parseColor("#00ff09"));
-                        //imgView.setImageResource(R.drawable.annoticon); //glow
-                        //annot2.setVisibility(View.VISIBLE);
                         gesturesView.setVisibility(View.VISIBLE);
                         colorw.setVisibility(View.VISIBLE);
                         seek.setVisibility(View.VISIBLE);
@@ -892,13 +876,11 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                         filePath = new File(getFilesDir(), imgName).getAbsolutePath();
                         bitmap = BitmapFactory.decodeFile(filePath);
                         imgView.setImageBitmap(bitmap);
-                        //imgView.setImageResource(R.drawable.annoticon); //normal
                         if (gesturesView.getVisibility() == View.VISIBLE) {
                             gesturesView.cancelClearAnimation();
                             gesturesView.clear(true);
                             gesturesView.setVisibility(View.GONE);
                         }
-                        //annot2.setVisibility(View.GONE);
                         seek.setVisibility(View.GONE);
                         colorw.setVisibility(View.GONE);
                         view.setTag("1");
@@ -908,8 +890,6 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                         bitmap = BitmapFactory.decodeFile(filePath);
                         imgView.setImageBitmap(bitmap);
                         gesturesView.setGestureColor(Color.parseColor("#00ff09"));
-                        //imgView.setImageResource(R.drawable.annoticon); //glow
-                        //annot2.setVisibility(View.VISIBLE);
                         gesturesView.setVisibility(View.VISIBLE);
                         colorw.setVisibility(View.VISIBLE);
                         seek.setVisibility(View.VISIBLE);
@@ -1083,8 +1063,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
                     @Override
                     public void run() {
-                        list2.setAdapter(0, rightList, "TBNAME", false, false, false, CmsInter.LIST_TAG_DOC);
-                        list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC);
+                        list2.setAdapter(0, rightList, "TBNAME", false, false, false, CmsInter.LIST_TAG_DOC, false);
+                        list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true);
 
                     }
                 });
@@ -1166,7 +1146,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         if (!customer_id.equals("")) {
-                            String sts[][] = handler.genericSelect("SELECT COL0, COL1, COL2, COL5, COL3, COL12 FROM TBNAME WHERE COL0 = '" + customer_id + "'", 5);
+                            String sts[][] = handler.genericSelect("SELECT COL0, COL1, COL2, COL5, COL3, COL12 FROM TBNAME WHERE COL0 = '" + customer_id + "'", 6);
                             SQLiteDatabase db = handler.getWritableDatabase();
                             if (sts != null) {
                                 ContentValues cv = new ContentValues();
@@ -1215,32 +1195,38 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         LinearLayout first = (LinearLayout) dialog
                 .findViewById(R.id.first);
         list = new AlphabetsList(Container.this);
-        View view1 = list.getAlphabestListView("TBPARTY", false, false, true);
+        View view1 = list.getAlphabestListView("TBPARTY", false, false, true, 0);
         first.addView(view1);
         leftList = (ListView) ((LinearLayout) ((RelativeLayout) view1).getChildAt(1)).getChildAt(0);
 
         EditText searchView = (EditText) ((RelativeLayout) view1).getChildAt(0);
         searchView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                              String notexistQuery = " not exists (SELECT 1 FROM TBNAME where COL0 = TBPARTY.COL0)";
 
-            }
+                                              @Override
+                                              public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                              }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                              @Override
+                                              public void onTextChanged(CharSequence s, int i, int i1, int i2) {
+                                                  Vector<DrList_POJO> userVector = UserService.getUserList(Container.this, "TBPARTY", s.toString(), notexistQuery, true);
+                                                  list.userVector = userVector;
+                                                  list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true);
+                                              }
 
-            }
+                                              @Override
+                                              public void afterTextChanged(Editable editable) {
 
-            @Override
-            public void afterTextChanged(Editable editable) {
+                                              }
+                                          }
 
-            }
-        });
+        );
 
         LinearLayout second = (LinearLayout) dialog
                 .findViewById(R.id.second);
         list2 = new AlphabetsList(Container.this);
-        View view2 = list2.getAlphabestListView("TBNAME", false, false, false);
+
+        View view2 = list2.getAlphabestListView("TBNAME", false, false, false, 0);
         view2.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
         second.addView(view2);
         list2.setSidepannel(View.GONE);
@@ -1254,7 +1240,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
         cgDataDPL = new String[1];
         cgCodeDPL = new String[1];
-        cgDataDPL[0] = "Select Patch";
+        cgDataDPL[0] = "Select Patch*";
         cgCodeDPL[0] = "0";
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDPL);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -1277,40 +1263,45 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         }
 
         hq.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                String[][] strData = handler.genericSelect("SELECT COL0, COL1 FROM TBDPL where COL3 = '" + cgCodeDTG[position] + "' order by COL1 ", 2);
-                if (strData != null) {
-                    cgDataDPL = new String[strData.length + 1];
-                    cgCodeDPL = new String[strData.length + 1];
-                    cgDataDPL[0] = "Select Patch";
-                    cgCodeDPL[0] = "0";
-                    for (int j = 0; j < strData.length; j++) {
-                        cgDataDPL[j + 1] = strData[j][1];
-                        cgCodeDPL[j + 1] = strData[j][0];
-                    }
-                    ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDPL);
-                    spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    patch.setAdapter(spinnerArrayAdapter);
-                } else {
-                    cgDataDPL = new String[1];
-                    cgCodeDPL = new String[1];
-                    cgDataDPL[0] = "Select Patch*";
-                    cgCodeDPL[0] = "0";
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDPL);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    patch.setAdapter(adapter);
-                }
-            }
+                                         @Override
+                                         public void onItemSelected(AdapterView<?> adapterView, View view, int position,
+                                                                    long id) {
+                                             String[][] strData = handler.genericSelect("SELECT COL0, COL1 FROM TBDPL where COL3 = '" + cgCodeDTG[position] + "' order by COL1 ", 2);
+                                             if (strData != null) {
+                                                 cgDataDPL = new String[strData.length + 1];
+                                                 cgCodeDPL = new String[strData.length + 1];
+                                                 cgDataDPL[0] = "Select Patch";
+                                                 cgCodeDPL[0] = "0";
+                                                 for (int j = 0; j < strData.length; j++) {
+                                                     cgDataDPL[j + 1] = strData[j][1];
+                                                     cgCodeDPL[j + 1] = strData[j][0];
+                                                 }
+                                                 ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDPL);
+                                                 spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                                 patch.setAdapter(spinnerArrayAdapter);
+                                             } else {
+                                                 cgDataDPL = new String[1];
+                                                 cgCodeDPL = new String[1];
+                                                 cgDataDPL[0] = "Select Patch*";
+                                                 cgCodeDPL[0] = "0";
+                                                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDPL);
+                                                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                                 patch.setAdapter(adapter);
+                                             }
+                                         }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+                                         @Override
+                                         public void onNothingSelected(AdapterView<?> adapterView) {
 
-            }
-        });
+                                         }
+                                     }
+
+        );
 
         String[][] strData2 = handler.getTagData("TBDSP");
-        if (strData2 != null) {
+        if (strData2 != null)
+
+        {
             cgDataDSP = new String[strData2.length + 1];
             cgCodeDSP = new String[strData2.length + 1];
             cgDataDSP[0] = "Select Speciality*";
@@ -1323,8 +1314,11 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             speciality.setAdapter(spinnerArrayAdapter);
         }
+
         String[][] strData3 = handler.getTagData("TBDDC");
-        if (strData3 != null) {
+        if (strData3 != null)
+
+        {
             cgDataDDC = new String[strData3.length + 1];
             cgCodeDDC = new String[strData3.length + 1];
             cgDataDDC[0] = "Select Class*";
@@ -1337,47 +1331,47 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             clas.setAdapter(spinnerArrayAdapter);
         }
+
         done = (TextView) dialog.findViewById(R.id.done);
         if (!customer_id.equals("")) {
             done.setVisibility(View.VISIBLE);
-            DrList_POJO newPojo;
-            for (int m = 0; m < list.userVector.size(); m++) {
-                newPojo = list.userVector.get(m);
-                if (newPojo.getCOL0().equals(customer_id)) {
-                    list.userVector.remove(m);
-                    list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC);
-                    break;
-                }
-            }
+            String notexistQuery = " not exists (SELECT 1 FROM TBNAME where COL0 = TBPARTY.COL0)";
+            Vector<DrList_POJO> userVector = UserService.getUserList(Container.this, "TBPARTY", "", notexistQuery, true);
+            list.userVector = userVector;
+            list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true);
         }
 
         done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String sts[][] = handler.genericSelect("SELECT COL0, COL1, COL2, COL5, COL3, COL12 FROM TBNAME", 5);
-                SQLiteDatabase db = handler.getWritableDatabase();
-                if (sts != null) {
-                    for (int i = 0; i < sts.length; i++) {
-                        ContentValues cv = new ContentValues();
-                        cv.put("COL0", randomNumber); // A unique code from UPW
-                        cv.put("COL1", sts[i][0]); // pcode
-                        cv.put("COL2", sts[i][1]); //name
-                        cv.put("COL3", sts[i][2]); //patchcode
-                        cv.put("COL4", sts[i][3]); //speccode
-                        cv.put("COL5", sts[i][4]); //classcode
-                        cv.put("COL6", sts[0][5]); //hqcode
-                        db.insert("TBPHTAG", null, cv);
-                    }
-                }
-                dialog.dismiss();
-                SyncData();
-            }
-        });
+                                    @Override
+                                    public void onClick(View view) {
+                                        String sts[][] = handler.genericSelect("SELECT COL0, COL1, COL2, COL5, COL3, COL12 FROM TBNAME", 6);
+                                        SQLiteDatabase db = handler.getWritableDatabase();
+                                        if (sts != null) {
+                                            for (int i = 0; i < sts.length; i++) {
+                                                ContentValues cv = new ContentValues();
+                                                cv.put("COL0", randomNumber); // A unique code from UPW
+                                                cv.put("COL1", sts[i][0]); // pcode
+                                                cv.put("COL2", sts[i][1]); //name
+                                                cv.put("COL3", sts[i][2]); //patchcode
+                                                cv.put("COL4", sts[i][3]); //speccode
+                                                cv.put("COL5", sts[i][4]); //classcode
+                                                cv.put("COL6", sts[i][5]); //hqcode
+                                                db.insert("TBPHTAG", null, cv);
+                                            }
+                                        }
+                                        dialog.dismiss();
+                                        SyncData();
+                                    }
+                                }
+
+        );
         final EditText phy_name = (EditText) dialog.findViewById(R.id.phy_name);
         TextView move = (TextView) dialog.findViewById(R.id.move);
         move.setText(getResources().getString(R.string.reply) + "  ADD TO LIST");
         move.setTypeface(font, Typeface.BOLD);
-        move.setOnClickListener(new View.OnClickListener() {
+        move.setOnClickListener(new View.OnClickListener()
+
+                                {
                                     @Override
                                     public void onClick(View view) {
                                         String str = phy_name.getText().toString();
@@ -1396,9 +1390,12 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
                                             ContentValues cv = new ContentValues();
 
-                                            String data[][] = handler.genericSelect("Select VAL FROM TBUPW", 1);
-                                            String[] upwData = data[0][0].split("\\^");
-                                            String rnumber = upwData[8];
+                                            SharedPreferences preferences = getSharedPreferences("CP20", MODE_PRIVATE);
+                                            String value = preferences.getString("unlisted_key", null);
+                                            SharedPreferences.Editor editor = preferences.edit();
+                                            int newUpdatedNumber = Integer.parseInt(value) - 1;
+                                            editor.putString("unlisted_key", newUpdatedNumber + "");
+                                            editor.commit();
 
                                             String data2[][] = handler.genericSelect("Select COL2 FROM TBCVR", 1);
                                             String[] cvrData = data2[0][0].split("\\^");
@@ -1406,7 +1403,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
                                             SQLiteDatabase db = handler.getWritableDatabase();
 
-                                            cv.put("COL0", rnumber); // A unique code from UPW
+                                            cv.put("COL0", value); // A unique code from UPW
                                             cv.put("COL1", str);
                                             cv.put("COL2", patCodeStr);
                                             cv.put("COL3", clasCodeStr);
@@ -1438,7 +1435,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
                                                         @Override
                                                         public void run() {
-                                                            list2.setAdapter(0, rightList, "TBNAME", false, false, false, CmsInter.LIST_TAG_DOC);
+                                                            list2.setAdapter(0, rightList, "TBNAME", false, false, false, CmsInter.LIST_TAG_DOC, false);
                                                             //rightList.invalidateViews();
                                                             // TODO Auto-generated method stub
 
@@ -1446,6 +1443,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                                     });
                                                 }
                                             }, 400);
+                                            hq.setSelection(0);
                                             patch.setSelection(0);
                                             speciality.setSelection(0);
                                             clas.setSelection(0);
@@ -1454,6 +1452,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                         }
                                     }
                                 }
+
         );
 
         TextView close = (TextView) dialog
@@ -1491,7 +1490,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         sDialog.cancel();
-                        String sts[][] = handler.genericSelect("SELECT COL0, COL1, COL2, COL5, COL3, COL12 FROM TBNAME", 5);
+                        String sts[][] = handler.genericSelect("SELECT COL0, COL1, COL2, COL5, COL3, COL12 FROM TBNAME", 6);
                         SQLiteDatabase db = handler.getWritableDatabase();
                         if (sts != null) {
                             for (int i = 0; i < sts.length; i++) {
