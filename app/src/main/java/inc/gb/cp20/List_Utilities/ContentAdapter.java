@@ -109,6 +109,13 @@ public class ContentAdapter extends BaseAdapter {
             holder.type.setImageResource(R.drawable.html);
         holder.date.setText(pojo.getEFFECT_DATE());
         holder.size.setText(pojo.getFILE_SIZE());
+
+        if (pojo.getSTATUS().equals("Completed")) {
+            holder.status.setTextColor(context.getResources().getColor(R.color.page_count));
+        } else if (pojo.getSTATUS().equals("Completed")) {
+            holder.status.setTextColor(context.getResources().getColor(R.color.status_fail));
+        }
+
         holder.status.setText(pojo.getSTATUS());
         return convertView;
     }

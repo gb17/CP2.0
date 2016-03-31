@@ -1063,8 +1063,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
                     @Override
                     public void run() {
-                        list2.setAdapter(0, rightList, "TBNAME", false, false, false, CmsInter.LIST_TAG_DOC, false);
-                        list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true);
+                        list2.setAdapter(0, rightList, "TBNAME", false, false, false, CmsInter.LIST_TAG_DOC, false, CmsInter.TAG_DOC_RIGHT);
+                        list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true, CmsInter.TAG_DOC_LEFT);
 
                     }
                 });
@@ -1211,7 +1211,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                               public void onTextChanged(CharSequence s, int i, int i1, int i2) {
                                                   Vector<DrList_POJO> userVector = UserService.getUserList(Container.this, "TBPARTY", s.toString(), notexistQuery, true);
                                                   list.userVector = userVector;
-                                                  list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true);
+                                                  list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true, CmsInter.TAG_DOC_LEFT);
                                               }
 
                                               @Override
@@ -1338,7 +1338,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             String notexistQuery = " not exists (SELECT 1 FROM TBNAME where COL0 = TBPARTY.COL0)";
             Vector<DrList_POJO> userVector = UserService.getUserList(Container.this, "TBPARTY", "", notexistQuery, true);
             list.userVector = userVector;
-            list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true);
+            list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true, CmsInter.TAG_DOC_LEFT);
         }
 
         done.setOnClickListener(new View.OnClickListener() {
@@ -1435,7 +1435,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
                                                         @Override
                                                         public void run() {
-                                                            list2.setAdapter(0, rightList, "TBNAME", false, false, false, CmsInter.LIST_TAG_DOC, false);
+                                                            list2.setAdapter(0, rightList, "TBNAME", false, false, false, CmsInter.LIST_TAG_DOC, false, CmsInter.TAG_DOC_RIGHT);
                                                             //rightList.invalidateViews();
                                                             // TODO Auto-generated method stub
 

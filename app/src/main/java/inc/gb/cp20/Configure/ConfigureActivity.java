@@ -42,6 +42,7 @@ import inc.gb.cp20.Models.TablesConfig;
 import inc.gb.cp20.Models.UPW;
 import inc.gb.cp20.R;
 import inc.gb.cp20.Util.CmsInter;
+import inc.gb.cp20.Util.Connectivity;
 import inc.gb.cp20.Util.RestClient;
 import inc.gb.cp20.Util.Utility;
 import inc.gb.cp20.interfaces.DownloadInterface;
@@ -88,8 +89,12 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
         } catch (Exception e) {
 
         }
+        if (Connectivity.isConnected(this))
+            callUpw(UsernameString, PasswordString);
+        else {
+            Utility.showSweetAlertofFnish(this, "No Netwrok", CmsInter.WARNING_TYPE);
+        }
 
-        callUpw(UsernameString, PasswordString);
     }
 
     public void callUpw(String UserName, String Password) {
@@ -124,7 +129,13 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
                         dbHandler.genricDelete(DBHandler.TBUPW);
                         db.insert(DBHandler.TBUPW, null, values);
                         db.close();
-                        CallCVR(false);
+                        if (Connectivity.isConnected(ConfigureActivity.this))
+                            CallCVR(false);
+                        else {
+                            Utility.showSweetAlertofFnish(ConfigureActivity.this, "No Netwrok", CmsInter.WARNING_TYPE);
+                        }
+
+
                     } else {
                         final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(ConfigureActivity.this, CmsInter.ERROR_TYPE);
                         sweetAlertDialog.setTitleText(upw.getMSG())

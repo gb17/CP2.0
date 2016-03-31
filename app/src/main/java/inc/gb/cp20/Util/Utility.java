@@ -238,6 +238,21 @@ public class Utility {
                 .show();
     }
 
+    public static void showSweetAlertofFnish(final Context context, String message, int ALERT_TYPE) {
+
+        final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, ALERT_TYPE);
+        sweetAlertDialog.setTitleText(message)
+                .setConfirmText("Ok")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sweetAlertDialog.dismiss();
+                        ((Activity) context).finish();
+                    }
+                })
+                .show();
+    }
+
 
     /***********************************************************************
      * @ Purpose : These methods are used to Download file and zip files.

@@ -13,5 +13,6 @@
     <color name="dr_name">#010101</color>
     <color name="spcl_name">#424242</color>
     <color name="class_name">#8d8d8d</color>
+    <color name="status_fail">#d72d2d</color>
 
 </resources>

@@ -39,9 +39,10 @@ public class UserListAdapter extends BaseAdapter {
     Context context;
     DBHandler dbHandler;
     int index;
+    int ListType;
 
     public UserListAdapter(Vector<DrList_POJO> items,
-                           Context context, boolean headerview, boolean play_icon, boolean tick_icon, int index) {
+                           Context context, boolean headerview, boolean play_icon, boolean tick_icon, int index, int ListType) {
         Log.i(TAG, TAG);
 
         this.items = items;
@@ -53,6 +54,7 @@ public class UserListAdapter extends BaseAdapter {
                 "fontawesome-webfont.ttf");
         dbHandler = DBHandler.getInstance(context);
         this.index = index;
+        this.ListType = ListType;
     }
 
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -78,6 +80,23 @@ public class UserListAdapter extends BaseAdapter {
                     .findViewById(R.id.headingTV);
             holder.nameLL = (RelativeLayout) convertView
                     .findViewById(R.id.detail_area);
+
+            holder.delete_move = (TextView) convertView
+                    .findViewById(R.id.delete_move);
+            if (ListType == CmsInter.TAG_DOC_LEFT) {
+                holder.menudot.setVisibility(View.GONE);
+                holder.delete_move.setText(context.getResources().getString(R.string.move));
+                holder.delete_move.setVisibility(View.VISIBLE);
+
+            } else if (ListType == CmsInter.TAG_DOC_RIGHT) {
+                holder.menudot.setVisibility(View.GONE);
+                holder.delete_move.setText(context.getResources().getString(R.string.trash));
+                holder.delete_move.setVisibility(View.VISIBLE);
+            } else {
+                holder.delete_move.setVisibility(View.GONE);
+            }
+            holder.delete_move.setTypeface(font);
+
             holder.menudot.setTypeface(font);
 
             holder.noplayImageView = (ImageView) convertView
@@ -123,9 +142,10 @@ public class UserListAdapter extends BaseAdapter {
                 holder.name.setText(drListPOJO.getCOL1());
                 holder.CLassTV.setText(drListPOJO.getCOL11());
                 holder.spcTV.setText(drListPOJO.getCOL10());
-                if (drListPOJO.getCOL15() != null && drListPOJO.getCOL15().equals("0"))
-                    holder.noplayImageView.setVisibility(View.VISIBLE);
-                else {
+                if (drListPOJO.getCOL15() != null && drListPOJO.getCOL15().equals("0")) {
+                    if (ListType != CmsInter.TAG_DOC_LEFT && ListType != CmsInter.TAG_DOC_RIGHT)
+                        holder.noplayImageView.setVisibility(View.VISIBLE);
+                } else {
                     holder.noplayImageView.setVisibility(View.GONE);
                 }
                 View ll = (RelativeLayout) holder.name.getParent();
@@ -160,7 +180,7 @@ public class UserListAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
-        TextView name, headingTV, spcTV, CLassTV, menudot, tick, play;
+        TextView name, headingTV, spcTV, CLassTV, menudot, tick, play, delete_move;
         de.hdodenhof.circleimageview.CircleImageView drimageview;
         LinearLayout headingLL;
         RelativeLayout nameLL;

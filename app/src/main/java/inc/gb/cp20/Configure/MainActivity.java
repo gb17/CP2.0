@@ -301,10 +301,15 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
                                     if (word.getMSG().contains("Success")) {
                                         backupDatabase();
-                                        Intent LandingIntent = new Intent(MainActivity.this, LandingPage.class);
-                                        LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        LandingIntent.putExtra("CALLSYNC", "1");
-                                        startActivity(LandingIntent);
+                                        if (!word.getCOL3().equals("")) {
+                                            callFileDownload();
+                                        } else {
+                                            Intent LandingIntent = new Intent(MainActivity.this, LandingPage.class);
+                                            LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            LandingIntent.putExtra("CALLSYNC", "1");
+                                            startActivity(LandingIntent);
+                                        }
+
                                     } else {
                                         if (word.getMSG().contains("Invalid Instance")) {
 
@@ -528,21 +533,31 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
         call.enqueue(new Callback<ACKTAG>() {
             @Override
             public void onResponse(Response<ACKTAG> response, Retrofit retrofit) {
+                if (CONFIG_FLAG) {
+                    configAlertDialog = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.SUCCESS_TYPE)
+                            .setTitleText("System Configured.")
+                            .setConfirmText("Ok")
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    configAlertDialog.dismiss();
+                                    Intent LandingIntent = new Intent(MainActivity.this, MainActivity.class);
+                                    LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(LandingIntent);
+                                }
+                            });
+                    configAlertDialog.show();
+                    dialog.dismiss();
+                } else {
 
-                configAlertDialog = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("System Configured.")
-                        .setConfirmText("Ok")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                configAlertDialog.dismiss();
-                                Intent LandingIntent = new Intent(MainActivity.this, MainActivity.class);
-                                LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(LandingIntent);
-                            }
-                        });
-                configAlertDialog.show();
-                dialog.dismiss();
+                    dialog.dismiss();
+                    Intent LandingIntent = new Intent(MainActivity.this, MainActivity.class);
+                    LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    LandingIntent.putExtra("CALLSYNC", "1");
+                    startActivity(LandingIntent);
+
+
+                }
             }
 
             @Override

@@ -23,6 +23,10 @@ public interface CmsInter {
     int LIST_LANDING = 1;
     int LIST_TAG_DOC = 2;
 
+    int TAG_DOC_LEFT = 46;
+    int TAG_DOC_RIGHT = 47;
+
+
     String AppVerison = "1.0";
 
     String FLAG = "Y";

@@ -122,6 +122,20 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
+
+        <TextView
+            android:id="@+id/delete_move"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:paddingRight="5dp"
+            android:textColor="#595959"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
         <ImageView
             android:id="@+id/noplaylist"
             android:layout_width="35dp"

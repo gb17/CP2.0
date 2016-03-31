@@ -93,7 +93,11 @@ public class AlphabetsList {
         searchView = (EditText) mainView.findViewById(R.id.searchView);
         sidePannel = (LinearLayout) mainView.findViewById(R.id.sideIndex);
         selectedIndex = (TextView) mainView.findViewById(R.id.selectedIndex);
-        setAdapter(0, booksLV, TabelName, play_icon, tick_icon, header, CmsInter.LIST_LANDING, true);
+        int temp = 11;
+        if (TabelName.equals("TBNAME"))
+            temp = CmsInter.TAG_DOC_RIGHT;
+
+        setAdapter(0, booksLV, TabelName, play_icon, tick_icon, header, CmsInter.LIST_LANDING, true, temp);
 
         LinearLayout sideIndex = (LinearLayout) mainView.findViewById(R.id.sideIndex);
         sideIndex.setOnClickListener(onClicked);
@@ -183,7 +187,7 @@ public class AlphabetsList {
                     Vector<DrList_POJO> subsidiesList = getIndexedBooks(userVector);
                     totalListSize = subsidiesList.size();
 
-                    userListAdapter = new UserListAdapter(subsidiesList, mContext, true, false, false, CmsInter.LIST_LANDING);
+                    userListAdapter = new UserListAdapter(subsidiesList, mContext, true, false, false, CmsInter.LIST_LANDING, 11);
                     booksLV.setAdapter(userListAdapter);
                     userListAdapter.notifyDataSetChanged();
 
@@ -501,14 +505,14 @@ public class AlphabetsList {
         }
     };
 
-    public void setAdapter(int index, ListView booksLV, String tableName, boolean play_icon, boolean tick_icon, boolean header, int indexforList, boolean sortOrNot) {
+    public void setAdapter(int index, ListView booksLV, String tableName, boolean play_icon, boolean tick_icon, boolean header, int indexforList, boolean sortOrNot, int ListType) {
         if (index == 0)
             userVector = UserService.getUserList(mContext, tableName, "", "", sortOrNot);
 
         Vector<DrList_POJO> subsidiesList = getIndexedBooks(userVector);
         totalListSize = subsidiesList.size();
 
-        userListAdapter = new UserListAdapter(subsidiesList, mContext, header, play_icon, tick_icon, indexforList);
+        userListAdapter = new UserListAdapter(subsidiesList, mContext, header, play_icon, tick_icon, indexforList, ListType);
         booksLV.setAdapter(userListAdapter);
         userListAdapter.notifyDataSetChanged();
     }
