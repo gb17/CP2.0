@@ -527,20 +527,23 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
         protected Boolean doInBackground(String... strings) {
             Boolean aBoolean = false;
 
-            Log.d("Mai yaha hu", " doInBackground");
-            String msg = Utility.downloadZipFile(strings[0]);
-            Log.d("Mai yaha hu", msg);
-            if (!msg.startsWith("fail")) {
-                try {
-                    File zipfile = new File(msg);
-                    String directory = ConfigureActivity.this.getFilesDir().getAbsolutePath()
-                            + "/";
-                    Utility.unZipFile(zipfile, directory);
-                    aBoolean = dbHandler.executscript();
-                } catch (Exception e) {
-                    e.printStackTrace();
+            String Urls[] = strings[0].split("\\,");
+
+            for (int i = 0; i < Urls.length; i++) {
+                String msg = Utility.downloadZipFile(Urls[i]);
+                if (!msg.startsWith("fail")) {
+                    try {
+                        File zipfile = new File(msg);
+                        String directory = ConfigureActivity.this.getFilesDir().getAbsolutePath()
+                                + "/";
+                        Utility.unZipFile(zipfile, directory);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+            aBoolean = dbHandler.executscript();
 
             return aBoolean;
         }

@@ -114,7 +114,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
 
         try {
             AlphabetsList alphabetsList = new AlphabetsList(this);
-            lhsLinearLayout.addView(alphabetsList.getAlphabestListView("TBPARTY", false, false, true, 1));
+            lhsLinearLayout.addView(alphabetsList.getAlphabestListView("TBPARTY", false, false, true, 1, "", 11));
             alphabetsList.setSidepannel(View.VISIBLE);
             alphabetsList.SerachViewVis(View.VISIBLE);
             defaultLayout();
@@ -515,7 +515,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                 content_dialog.dismiss();
                 dbHandler.UpdateTBRAND();
                 defaultLayout();
-
+                Utility.showSweetAlert(LandingPage.this, "Content successfully downloaded.", CmsInter.SUCCESS_TYPE);
             }
 
         }

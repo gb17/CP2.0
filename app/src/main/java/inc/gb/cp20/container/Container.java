@@ -812,6 +812,15 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 }
             });
             handler.GenricUpdates("TBDPG", "COL13", "1", "COL0", playstData[playIndex][0]);
+            handler.ExecuteQuery("update TBBRAND \n" +
+                    "set col11 = (\n" +
+                    "select count(1)\n" +
+                    "from TBDPG h , TBDPS l\n" +
+                    "where h.col0 = l.col5\n" +
+                    "and  h.col13 = 0\n" +
+                    "and l.col9 = TBBRAND.col0\n" +
+                    "and l.col3 = TBBRAND.col3\n" +
+                    ")");
         }
     }
 
@@ -1068,8 +1077,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
                     @Override
                     public void run() {
-                        list2.setAdapter(0, rightList, "TBNAME", false, false, false, CmsInter.LIST_TAG_DOC, false, CmsInter.TAG_DOC_RIGHT);
-                        list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true, CmsInter.TAG_DOC_LEFT);
+                        list2.setAdapter(0, rightList, "TBNAME", false, false, false, CmsInter.LIST_TAG_DOC, false, CmsInter.TAG_DOC_RIGHT, customer_id);
+                        list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true, CmsInter.TAG_DOC_LEFT, "");
 
                     }
                 });
@@ -1200,7 +1209,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         LinearLayout first = (LinearLayout) dialog
                 .findViewById(R.id.first);
         list = new AlphabetsList(Container.this);
-        View view1 = list.getAlphabestListView("TBPARTY", false, false, true, 0);
+        View view1 = list.getAlphabestListView("TBPARTY", false, false, true, 0, "", CmsInter.TAG_DOC_LEFT);
         first.addView(view1);
         leftList = (ListView) ((LinearLayout) ((RelativeLayout) view1).getChildAt(1)).getChildAt(0);
 
@@ -1216,7 +1225,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                               public void onTextChanged(CharSequence s, int i, int i1, int i2) {
                                                   Vector<DrList_POJO> userVector = UserService.getUserList(Container.this, "TBPARTY", s.toString(), notexistQuery, true);
                                                   list.userVector = userVector;
-                                                  list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true, CmsInter.TAG_DOC_LEFT);
+                                                  list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true, CmsInter.TAG_DOC_LEFT, "");
                                               }
 
                                               @Override
@@ -1231,7 +1240,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 .findViewById(R.id.second);
         list2 = new AlphabetsList(Container.this);
 
-        View view2 = list2.getAlphabestListView("TBNAME", false, false, false, 0);
+        View view2 = list2.getAlphabestListView("TBNAME", false, false, false, 0, customer_id, CmsInter.TAG_DOC_RIGHT);
         view2.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
         second.addView(view2);
         list2.setSidepannel(View.GONE);
@@ -1275,7 +1284,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                              if (strData != null) {
                                                  cgDataDPL = new String[strData.length + 1];
                                                  cgCodeDPL = new String[strData.length + 1];
-                                                 cgDataDPL[0] = "Select Patch";
+                                                 cgDataDPL[0] = "Select Patch*";
                                                  cgCodeDPL[0] = "0";
                                                  for (int j = 0; j < strData.length; j++) {
                                                      cgDataDPL[j + 1] = strData[j][1];
@@ -1343,7 +1352,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             String notexistQuery = " not exists (SELECT 1 FROM TBNAME where COL0 = TBPARTY.COL0)";
             Vector<DrList_POJO> userVector = UserService.getUserList(Container.this, "TBPARTY", "", notexistQuery, true);
             list.userVector = userVector;
-            list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true, CmsInter.TAG_DOC_LEFT);
+            list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true, CmsInter.TAG_DOC_LEFT, "");
         }
 
         done.setOnClickListener(new View.OnClickListener() {
@@ -1440,7 +1449,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
                                                         @Override
                                                         public void run() {
-                                                            list2.setAdapter(0, rightList, "TBNAME", false, false, false, CmsInter.LIST_TAG_DOC, false, CmsInter.TAG_DOC_RIGHT);
+                                                            list2.setAdapter(0, rightList, "TBNAME", false, false, false, CmsInter.LIST_TAG_DOC, false, CmsInter.TAG_DOC_RIGHT, customer_id);
                                                             //rightList.invalidateViews();
                                                             // TODO Auto-generated method stub
 

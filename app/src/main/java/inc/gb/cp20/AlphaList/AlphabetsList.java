@@ -83,7 +83,7 @@ public class AlphabetsList {
 
     }
 
-    public View getAlphabestListView(final String TabelName, boolean play_icon, boolean tick_icon, final boolean header, int searchMode) {
+    public View getAlphabestListView(final String TabelName, boolean play_icon, boolean tick_icon, final boolean header, int searchMode, String customer_id, int ListType) {
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mainView = inflater.inflate(R.layout.mainindextable, null);
@@ -93,11 +93,12 @@ public class AlphabetsList {
         searchView = (EditText) mainView.findViewById(R.id.searchView);
         sidePannel = (LinearLayout) mainView.findViewById(R.id.sideIndex);
         selectedIndex = (TextView) mainView.findViewById(R.id.selectedIndex);
-        int temp = 11;
-        if (TabelName.equals("TBNAME"))
-            temp = CmsInter.TAG_DOC_RIGHT;
 
-        setAdapter(0, booksLV, TabelName, play_icon, tick_icon, header, CmsInter.LIST_LANDING, true, temp);
+        if (TabelName.equals("TBNAME"))
+            ListType = CmsInter.TAG_DOC_RIGHT;
+
+        setAdapter(0, booksLV, TabelName, play_icon, tick_icon, header, CmsInter.LIST_LANDING, true,
+                ListType, customer_id);
 
         LinearLayout sideIndex = (LinearLayout) mainView.findViewById(R.id.sideIndex);
         sideIndex.setOnClickListener(onClicked);
@@ -187,7 +188,7 @@ public class AlphabetsList {
                     Vector<DrList_POJO> subsidiesList = getIndexedBooks(userVector);
                     totalListSize = subsidiesList.size();
 
-                    userListAdapter = new UserListAdapter(subsidiesList, mContext, true, false, false, CmsInter.LIST_LANDING, 11);
+                    userListAdapter = new UserListAdapter(subsidiesList, mContext, true, false, false, CmsInter.LIST_LANDING, 11, "");
                     booksLV.setAdapter(userListAdapter);
                     userListAdapter.notifyDataSetChanged();
 
@@ -505,14 +506,14 @@ public class AlphabetsList {
         }
     };
 
-    public void setAdapter(int index, ListView booksLV, String tableName, boolean play_icon, boolean tick_icon, boolean header, int indexforList, boolean sortOrNot, int ListType) {
+    public void setAdapter(int index, ListView booksLV, String tableName, boolean play_icon, boolean tick_icon, boolean header, int indexforList, boolean sortOrNot, int ListType, String customer_id) {
         if (index == 0)
             userVector = UserService.getUserList(mContext, tableName, "", "", sortOrNot);
 
         Vector<DrList_POJO> subsidiesList = getIndexedBooks(userVector);
         totalListSize = subsidiesList.size();
 
-        userListAdapter = new UserListAdapter(subsidiesList, mContext, header, play_icon, tick_icon, indexforList, ListType);
+        userListAdapter = new UserListAdapter(subsidiesList, mContext, header, play_icon, tick_icon, indexforList, ListType, customer_id);
         booksLV.setAdapter(userListAdapter);
         userListAdapter.notifyDataSetChanged();
     }

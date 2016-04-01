@@ -32,17 +32,16 @@ public class UserListAdapter extends BaseAdapter {
     boolean tick_icon;
     private ItemFilter mFilter = new ItemFilter();
 
-
     Typeface font;
-
 
     Context context;
     DBHandler dbHandler;
     int index;
     int ListType;
+    String customer_id;
 
     public UserListAdapter(Vector<DrList_POJO> items,
-                           Context context, boolean headerview, boolean play_icon, boolean tick_icon, int index, int ListType) {
+                           Context context, boolean headerview, boolean play_icon, boolean tick_icon, int index, int ListType, String customer_id) {
         Log.i(TAG, TAG);
 
         this.items = items;
@@ -55,6 +54,7 @@ public class UserListAdapter extends BaseAdapter {
         dbHandler = DBHandler.getInstance(context);
         this.index = index;
         this.ListType = ListType;
+        this.customer_id = customer_id;
     }
 
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -90,6 +90,7 @@ public class UserListAdapter extends BaseAdapter {
 
             } else if (ListType == CmsInter.TAG_DOC_RIGHT) {
                 holder.menudot.setVisibility(View.GONE);
+
                 holder.delete_move.setText(context.getResources().getString(R.string.trash));
                 holder.delete_move.setVisibility(View.VISIBLE);
             } else {
@@ -152,6 +153,11 @@ public class UserListAdapter extends BaseAdapter {
                 ll.setFocusable(true);
                 ll.setSelected(true);
 
+            }
+            if (ListType == CmsInter.TAG_DOC_RIGHT && !customer_id.equals("")){
+                if(drListPOJO.getCOL0().equals(customer_id)){
+                    holder.delete_move.setVisibility(View.GONE);
+                }
             }
         }
 
