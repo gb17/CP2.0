@@ -561,20 +561,23 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
     private void fillBrandList() {
         content3.removeAllViews();
-        for (int i = 0; i < brandData.length; i++) {
-            LayoutInflater inflater = (LayoutInflater) Container.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View childView = inflater.inflate(R.layout.subgroups, null);
-            String filePath = new File(getFilesDir() + "/", brandData[i][4] + ".png").getAbsolutePath();
-            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-            ImageView sub_img = (ImageView) childView.findViewById(R.id.sub_img);
-            sub_img.setImageBitmap(bitmap);
+        if (brandData != null)
+            for (int i = 0; i < brandData.length; i++) {
+                LayoutInflater inflater = (LayoutInflater) Container.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View childView = inflater.inflate(R.layout.subgroups, null);
+                String filePath = new File(getFilesDir() + "/", brandData[i][4] + ".png").getAbsolutePath();
+                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                ImageView sub_img = (ImageView) childView.findViewById(R.id.sub_img);
+                sub_img.setImageBitmap(bitmap);
 
-            TextView name = (TextView) childView.findViewById(R.id.namesub);
-            name.setText(brandData[i][2]);
-            childView.setId(Integer.parseInt(brandData[i][3]));
-            childView.setOnClickListener(brandListener);
-            content3.addView(childView);
-        }
+                TextView name = (TextView) childView.findViewById(R.id.namesub);
+                name.setText(brandData[i][2]);
+                childView.setId(Integer.parseInt(brandData[i][3]));
+                childView.setOnClickListener(brandListener);
+                content3.addView(childView);
+            }
+        else
+            Utility.showSweetAlert(Container.this, "No Brands Available", CmsInter.ERROR_TYPE);
     }
 
     View.OnClickListener brandListener = new View.OnClickListener() {
@@ -785,6 +788,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             webView.getSettings().setJavaScriptEnabled(true);
             webView.getSettings().setAllowFileAccess(true);
             webView.setWebViewClient(new WebViewClient());
+
             final String url = "file://" + getFilesDir().getAbsolutePath() + "/" + FilenameUtils.removeExtension(playstData[playIndex][2]) + "/" + playstData[playIndex][2];
 
             if (playstData[playIndex][5].equals("1")) {//Emailable
@@ -807,6 +811,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     webView.loadUrl(url);
                 }
             });
+            handler.GenricUpdates("TBDPG", "COL13", "1", "COL0", playstData[playIndex][0]);
         }
     }
 

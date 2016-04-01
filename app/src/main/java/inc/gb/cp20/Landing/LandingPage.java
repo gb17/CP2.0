@@ -344,18 +344,21 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
     @Override
     public void onItemListClick(DrList_POJO objDrListPOJO, View view) {
         super.onItemListClick(objDrListPOJO, view);
-        Intent intent = new Intent(this, LightContainer.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("customer_id", objDrListPOJO.getCOL0());
-        bundle.putString("customer_name", objDrListPOJO.getCOL1());
-        bundle.putString("category_code", objDrListPOJO.getCOL17());
-        bundle.putString("category_name", objDrListPOJO.getCOL16());
-        bundle.putString("thumbnail_category", "B");
-        bundle.putString("index", "1");
-        bundle.putString("patch", objDrListPOJO.getCOL2());
-        intent.putExtras(bundle);
-        startActivity(intent);
-
+        String brandQuery = "SELECT COL0, COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8 FROM TBBRAND b where b.COL0 = 'B' and exists (select 1 from TBDPS s, TBDPG t where s.col5 = t.col0 and s.col9= b.col0 and s.col1 =  b.col3 and t.col7 = '1' )";
+        String[][] brandData = dbHandler.genericSelect(brandQuery, 9);
+        if (brandData != null) {
+            Intent intent = new Intent(this, LightContainer.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("customer_id", objDrListPOJO.getCOL0());
+            bundle.putString("customer_name", objDrListPOJO.getCOL1());
+            bundle.putString("category_code", objDrListPOJO.getCOL17());
+            bundle.putString("category_name", objDrListPOJO.getCOL16());
+            bundle.putString("thumbnail_category", "B");
+            bundle.putString("index", "1");
+            bundle.putString("patch", objDrListPOJO.getCOL2());
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
 
     }
 
@@ -389,14 +392,19 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
 
     @Override
     public void onItemClick(TBBRAND item, View view, int position) {
-        Intent intent = new Intent(LandingPage.this, LightContainer.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("category_code", item.getCOL3());
-        bundle.putString("category_name", item.getCOL0());
-        bundle.putString("thumbnail_category", "B");
-        bundle.putString("index", "2");
-        intent.putExtras(bundle);
-        startActivity(intent);
+
+        String brandQuery = "SELECT COL0, COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8 FROM TBBRAND b where b.COL0 = 'B' and exists (select 1 from TBDPS s, TBDPG t where s.col5 = t.col0 and s.col9= b.col0 and s.col1 =  b.col3 and t.col7 = '1' )";
+        String[][] brandData = dbHandler.genericSelect(brandQuery, 9);
+        if (brandData != null) {
+            Intent intent = new Intent(LandingPage.this, LightContainer.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("category_code", item.getCOL3());
+            bundle.putString("category_name", item.getCOL0());
+            bundle.putString("thumbnail_category", "B");
+            bundle.putString("index", "2");
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
     }
 
     @Override
