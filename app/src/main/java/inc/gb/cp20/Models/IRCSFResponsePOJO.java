@@ -13,7 +13,7 @@ public class IRCSFResponsePOJO {
     private String CNT_TYPE;
     private String PAGE_NAME;
     private String EFFECT_DATE;
-    private String STATUS = "";
+    private String STATUS = " ";
 
     public IRCSFResponsePOJO(String PATH, String FILE_SIZE, String ENTRYNO, String CNT_CATEGORY, String SUB_CATEGORY, String CNT_TYPE, String PAGE_NAME, String EFFECT_DATE) {
         this.PATH = PATH;

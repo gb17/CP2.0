@@ -92,7 +92,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
         if (Connectivity.isConnected(this))
             callUpw(UsernameString, PasswordString);
         else {
-            Utility.showSweetAlertofFnish(this, "No Netwrok", CmsInter.WARNING_TYPE);
+            Utility.showSweetAlertofFnish(this, "Network Error.", CmsInter.WARNING_TYPE);
         }
 
     }
@@ -132,7 +132,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
                         if (Connectivity.isConnected(ConfigureActivity.this))
                             CallCVR(false);
                         else {
-                            Utility.showSweetAlertofFnish(ConfigureActivity.this, "No Netwrok", CmsInter.WARNING_TYPE);
+                            Utility.showSweetAlertofFnish(ConfigureActivity.this, "Network Error.", CmsInter.WARNING_TYPE);
                         }
 
 
@@ -460,6 +460,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
             public void onResponse(Response<ACKTAG> response, Retrofit retrofit) {
                 numberProgressBar.setProgress(100);
                 progressBar.stopProgress();
+
                 configAlertDialog = new SweetAlertDialog(ConfigureActivity.this, SweetAlertDialog.SUCCESS_TYPE)
                         .setTitleText("System Configured.")
                         .setConfirmText("Ok")

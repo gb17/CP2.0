@@ -92,14 +92,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-//        GPSTracker tracker = new GPSTracker(MainActivity.this);
-//        dbHandler = DBHandler.getInstance(MainActivity.this);
-//        SQLiteDatabase db = dbHandler.getWritableDatabase();
-//        db.delete("TXN102", null, null);
-//        db.delete("TBPHTAG", null, null);
-//        db.delete("TBNAME", null, null);
-//        Sync sync = new Sync(this);
-//        sync.prepareRequest(1);
+
 
         UsereditText = (EditText) findViewById(R.id.userid);
         PasswordeditText = (EditText) findViewById(R.id.password);
@@ -320,6 +313,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                                                         @Override
                                                         public void onClick(SweetAlertDialog sDialog) {
                                                             dbHandler.deletealltable();
+                                                            Utility.recursiveDelete(MainActivity.this.getFilesDir());
                                                             Intent LandingIntent = new Intent(MainActivity.this, MainActivity.class);
                                                             LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                             startActivity(LandingIntent);
@@ -346,22 +340,19 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                                         }
 
                                     }
-                                    dialog.dismiss();
-
-
                                 } else callFileDownload();
                             }
                         }
 
                     } else {
-                        Utility.showSweetAlert(MainActivity.this, "OOps!", CmsInter.ERROR_TYPE);
+                        Utility.showSweetAlert(MainActivity.this, "Network Error.", CmsInter.ERROR_TYPE);
                         dialog.dismiss();
                     }
                 }
 
                 @Override
                 public void onFailure(Throwable t) {
-                    Utility.showSweetAlert(MainActivity.this, "Network Error", CmsInter.ERROR_TYPE);
+                    Utility.showSweetAlert(MainActivity.this, "Network Error.", CmsInter.ERROR_TYPE);
                     dialog.dismiss();
                 }
 
@@ -533,7 +524,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
         call.enqueue(new Callback<ACKTAG>() {
             @Override
             public void onResponse(Response<ACKTAG> response, Retrofit retrofit) {
-                if (CONFIG_FLAG) {
+                if (!CONFIG_FLAG) {
                     configAlertDialog = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.SUCCESS_TYPE)
                             .setTitleText("System Configured.")
                             .setConfirmText("Ok")
@@ -551,7 +542,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                 } else {
 
                     dialog.dismiss();
-                    Intent LandingIntent = new Intent(MainActivity.this, MainActivity.class);
+                    Intent LandingIntent = new Intent(MainActivity.this, LandingPage.class);
                     LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     LandingIntent.putExtra("CALLSYNC", "1");
                     startActivity(LandingIntent);

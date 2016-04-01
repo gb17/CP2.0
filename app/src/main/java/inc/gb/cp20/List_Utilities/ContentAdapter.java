@@ -109,14 +109,20 @@ public class ContentAdapter extends BaseAdapter {
             holder.type.setImageResource(R.drawable.html);
         holder.date.setText(pojo.getEFFECT_DATE());
         holder.size.setText(pojo.getFILE_SIZE());
-
-        if (pojo.getSTATUS().equals("Completed")) {
-            holder.status.setTextColor(context.getResources().getColor(R.color.page_count));
-        } else if (pojo.getSTATUS().equals("Completed")) {
-            holder.status.setTextColor(context.getResources().getColor(R.color.status_fail));
+        holder.status.setText(pojo.getSTATUS());
+        try {
+            if (pojo.getSTATUS().equals("Completed")) {
+                holder.status.setTextColor(context.getResources().getColor(R.color.page_count));
+            } else if (pojo.getSTATUS().equals("Failed")) {
+                holder.status.setTextColor(context.getResources().getColor(R.color.status_fail));
+            } else {
+                holder.status.setTextColor(context.getResources().getColor(R.color.thumbnail_productname_title));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        holder.status.setText(pojo.getSTATUS());
+
         return convertView;
     }
 

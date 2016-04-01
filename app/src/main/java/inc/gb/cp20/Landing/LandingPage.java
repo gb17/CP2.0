@@ -258,7 +258,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         content_dialog.getWindow().setLayout((10 * width) / 12, (5 * height) / 8);
         content_dialog.setContentView(R.layout.list);
         TextView header = (TextView) content_dialog.findViewById(R.id.header);
-        header.setText(getResources().getString(R.string.refresh) + " Content update available (" + list.size() + " update)");
+        header.setText(getResources().getString(R.string.refresh) + " Content update available (" + list.size() + " update(s))");
         header.setTypeface(font);
         listView = (ListView) content_dialog.findViewById(R.id.list);
         listView.setAdapter(new ContentAdapter(LandingPage.this, list));

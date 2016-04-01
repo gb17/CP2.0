@@ -4,13 +4,12 @@ package inc.gb.cp20.Util;
  * Created by GB on 3/10/16.
  */
 public interface CmsInter {
+
+
+
     String AL_INV_CLNT = "Invalid Client ID!!";
-
-
     String AL_IvalidStatus = "Invalid status.Plz contact administrator";
-
     String AL_InvalidVersion = "Invalid Version";
-
     String AL_InvalidInstanceID = "User already configured";
 
     int NORMAL_TYPE = 0;
