@@ -286,6 +286,13 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
             //holder.imageView.setI
         }
 
+        //For New Tag
+        if (tbbrand.getCOL11().equals("0")) {
+            holder.newTag.setVisibility(View.INVISIBLE);
+        } else {
+            holder.newTag.setVisibility(View.VISIBLE);
+        }
+
 
         holder.bind(brandList.get(position), itemListener);
 

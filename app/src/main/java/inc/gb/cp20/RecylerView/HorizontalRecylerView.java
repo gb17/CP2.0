@@ -19,7 +19,6 @@ import inc.gb.cp20.R;
 import inc.gb.cp20.interfaces.RecyclerViewClickListener;
 
 /**
- *
  * Created by GB on 2/23/16.
  */
 public class HorizontalRecylerView {
@@ -106,6 +105,11 @@ public class HorizontalRecylerView {
                 tbbrand.setCOL8(cursor.getString(cursor.getColumnIndex("COL8")));
                 tbbrand.setCOL9(cursor.getString(cursor.getColumnIndex("COL9")));
                 tbbrand.setCOL10(cursor.getString(cursor.getColumnIndex("COL10")));
+                tbbrand.setCOL11(cursor.getString(cursor.getColumnIndex("COL11")));
+                tbbrand.setCOL12(cursor.getString(cursor.getColumnIndex("COL12")));
+                tbbrand.setCOL13(cursor.getString(cursor.getColumnIndex("COL13")));
+                tbbrand.setCOL14(cursor.getString(cursor.getColumnIndex("COL14")));
+
                 thumbnailPOJOList.add(tbbrand);
             } while (cursor.moveToNext());
         }
