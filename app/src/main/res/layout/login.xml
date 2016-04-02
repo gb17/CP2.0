@@ -40,12 +40,23 @@
         <!--android:layout_marginTop="15dp"-->
         <!--android:text="To change your password, privide the following information,\nand the click continue"-->
         <!--android:textSize="16sp" />-->
+        <EditText
+            android:id="@+id/client_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="Client ID *"
+            android:maxLines="1"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:textColor="@color/rhs_header"
+            android:textColorHint="#bbbbbb" />
 
         <EditText
             android:id="@+id/userid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+
             android:hint="Username *"
             android:maxLines="1"
             android:padding="10dp"

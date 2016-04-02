@@ -254,7 +254,8 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         final LinearLayoutManager layoutManagerRef = new LinearLayoutManager(ContentLibrary.this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManagerRef);
         prepareRefrneceData((RelativeLayout) recyclerView.getParent(), item, WhereQuery, mAdapter_ref, thumbnailPOJOList_sub);
-
+        if (totalItemCount == 1)
+            refcount.setText("1-1 of 1 References" + ContentLibrary.this.getResources().getString(R.string.cross));
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

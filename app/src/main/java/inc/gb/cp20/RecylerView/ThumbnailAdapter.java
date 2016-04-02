@@ -136,6 +136,8 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
                 pageFloatingActionButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
+
                         childScrollView.setVisibility(View.VISIBLE);
 
                         fb.setVisibility(View.VISIBLE);
@@ -177,6 +179,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
                                 layout.addView(textView, params);
                             }
                         }
+
                     }
                 });
 

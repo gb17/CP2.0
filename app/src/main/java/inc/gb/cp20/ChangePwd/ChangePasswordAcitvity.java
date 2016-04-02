@@ -136,7 +136,7 @@ public class ChangePasswordAcitvity extends Activity implements View.OnClickList
 
         getprogressDialog("Requesting...");
         ChangePassword changePassword = new ChangePassword();
-        changePassword.setCLIENTID(getResources().getString(R.string.clientid));
+        changePassword.setCLIENTID(ClientID);
         changePassword.setREPCODE(Repcode);
         changePassword.setBU("2");
         changePassword.setNPWD("");
@@ -183,7 +183,7 @@ public class ChangePasswordAcitvity extends Activity implements View.OnClickList
 
         getprogressDialog("Changing Password...");
         ChangePassword changePassword = new ChangePassword();
-        changePassword.setCLIENTID(getResources().getString(R.string.clientid));
+        changePassword.setCLIENTID(ClientID);
         changePassword.setREPCODE(Repcode);
         changePassword.setBU("2");
         changePassword.setNPWD(newpassword);
@@ -288,4 +288,30 @@ public class ChangePasswordAcitvity extends Activity implements View.OnClickList
                 });
         sweetAlertDialog.show();
     }
-}
+
+    private boolean checkConfigOrNot() {
+        boolean mission;
+        dbHandler = DBHandler.getInstance(context);
+
+        String data[][] = dbHandler.genericSelect("*", DBHandler.TBUPW,
+                "", "", "", 6);
+        if (data != null) {
+
+
+            //data[0][2];
+            String datavalues[] = data[0][3].split("\\^");
+//                instaneceId = datavalues[4];
+//                Repcode = datavalues[3];
+//                RoleCode = datavalues[5].substring(0, 1);
+//                Version = data[0][1];
+            ClientID = data[0][4];
+            mission = true;
+        } else {
+
+            mission = false;
+        }
+
+
+        return mission;
+
+    }}

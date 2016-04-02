@@ -60,6 +60,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
     NumberProgressBar numberProgressBar;
     String UsernameString = "";
     String PasswordString = "";
+    String clientidString = "";
     String instaneceId = "";
     String Repcode = "";
     String RoleCode = "";
@@ -85,22 +86,23 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
             if (bundle != null) {
                 UsernameString = bundle.getString("USERNAME");
                 PasswordString = bundle.getString("PASSWORD");
+                clientidString = bundle.getString("CLIENTID");
             }
         } catch (Exception e) {
 
         }
         if (Connectivity.isConnected(this))
-            callUpw(UsernameString, PasswordString);
+            callUpw(UsernameString, PasswordString, clientidString);
         else {
-            Utility.showSweetAlertofFnish(this, "Network Error.", CmsInter.WARNING_TYPE);
+            Utility.showSweetAlertofFnish(this, CmsInter.AL_NETERROR, CmsInter.WARNING_TYPE);
         }
 
     }
 
-    public void callUpw(String UserName, String Password) {
+    public void callUpw(String UserName, String Password, String ClientId) {
 
         UPW upw1 = new UPW();
-        upw1.setCLIENTID(getResources().getString(R.string.clientid));
+        upw1.setCLIENTID(ClientId);
         upw1.setVALUE("");
         upw1.setVERSION(getResources().getString(R.string.version));
         upw1.setCONTROLNO("6");
@@ -132,7 +134,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
                         if (Connectivity.isConnected(ConfigureActivity.this))
                             CallCVR(false);
                         else {
-                            Utility.showSweetAlertofFnish(ConfigureActivity.this, "Network Error.", CmsInter.WARNING_TYPE);
+                            Utility.showSweetAlertofFnish(ConfigureActivity.this, CmsInter.AL_NETERROR, CmsInter.WARNING_TYPE);
                         }
 
 
@@ -151,7 +153,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
 
                 } else {
                     final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(ConfigureActivity.this, CmsInter.ERROR_TYPE);
-                    sweetAlertDialog.setTitleText("Network Error.")
+                    sweetAlertDialog.setTitleText(CmsInter.AL_NETERROR)
                             .setConfirmText("Ok")
                             .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                 @Override
@@ -226,7 +228,10 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
                         }
 
                         if (CvrList.size() != 0) {
-                            if (datavalues[0].equals(CmsInter.Change_PWD)) {
+
+                            TBCVR word = CvrList.get(0);
+                            String[] cvrvalues = word.getCOL2().split("\\^");
+                            if (cvrvalues[0].equals(CmsInter.Change_PWD)) {
                                 AlertDialog.Builder alertbox = new AlertDialog.Builder(ConfigureActivity.this);
                                 alertbox.setMessage(datavalues[1]).setPositiveButton("OK",
                                         new DialogInterface.OnClickListener() {
@@ -242,15 +247,15 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
                                 alertbox.show();
                             } else {
                                 if (configflag) {
-                                    TBCVR word = CvrList.get(0);
-                                    if (word.getMSG().contains("Success")) {
+
+                                    if (cvrvalues[0].equals(CmsInter.SUCESSS)) {
 
                                         Intent LandingIntent = new Intent(ConfigureActivity.this, LandingPage.class);
                                         LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         LandingIntent.putExtra("CALLSYNC", "1");
                                         startActivity(LandingIntent);
                                     } else {
-                                        if (word.getMSG().contains("Invalid Instance")) {
+                                        if (cvrvalues[0].equals(CmsInter.INVALID_INSTANCE)) {
 
                                             final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(ConfigureActivity.this, CmsInter.ERROR_TYPE);
                                             sweetAlertDialog.setTitleText(word.getMSG())
@@ -259,6 +264,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
                                                         @Override
                                                         public void onClick(SweetAlertDialog sDialog) {
                                                             dbHandler.deletealltable();
+                                                            Utility.recursiveDelete(ConfigureActivity.this.getFilesDir());
                                                             Intent LandingIntent = new Intent(ConfigureActivity.this, ConfigureActivity.class);
                                                             LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                             startActivity(LandingIntent);
@@ -304,7 +310,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
             if (cvrsplit[26].equals("J")) {
                 RestClient.GitApiInterface service = RestClient.getClient();
                 TAG tag = new TAG();
-                tag.setClientid(getResources().getString(R.string.clientid));
+                tag.setClientid(ClientID);
                 String url = CVRdata[0][3];//"https://pocworkerrole.blob.core.windows.net/ctdscript/CTDH0001201603111918.cpz";
                 tag.setUrl(url);//  CVRdata[0][3] https://pocworkerrole.blob.core.windows.net/ctdscript/CTDH0001201603111918.cpz
                 tag.setRepcode(Repcode);

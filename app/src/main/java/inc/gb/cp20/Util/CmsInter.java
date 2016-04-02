@@ -6,7 +6,6 @@ package inc.gb.cp20.Util;
 public interface CmsInter {
 
 
-
     String AL_INV_CLNT = "Invalid Client ID!!";
     String AL_IvalidStatus = "Invalid status.Plz contact administrator";
     String AL_InvalidVersion = "Invalid Version";
@@ -31,6 +30,8 @@ public interface CmsInter {
     String FLAG = "Y";
 
     String Change_PWD = "13";
+    String INVALID_INSTANCE = "4";
+    String SUCESSS = "0";
     String AL_TRANSACTION_DELETE = "Do you want to abort this transaction and start over,All previously saved would be deleted";
     String AL_SRESP_NOK = "Server response not ok";
     String AL_CON_ESTB_FAIL = "Could not establish connection ";
@@ -79,6 +80,8 @@ public interface CmsInter {
     String AL_HASHKEY = " Security Violation !!!! Please contact Application Administrator ";
     String AL_Download = "Please download data";
     String AL_InvalidRole = "Role Changed:Plz contact Adminstrator";
+
+    String AL_NETERROR = "No Network.";
 
     String AL_PassWORDPOlicy = "Password Policy not set:Plz contact Adminstrator";
     String AL_ATTACH = "Only one attachment allowed";

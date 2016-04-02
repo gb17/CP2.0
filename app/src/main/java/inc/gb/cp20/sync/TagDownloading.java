@@ -35,7 +35,6 @@ import inc.gb.cp20.Models.TBDTH;
 import inc.gb.cp20.Models.TBPARTY;
 import inc.gb.cp20.Models.TBTBC;
 import inc.gb.cp20.Models.TablesConfig;
-import inc.gb.cp20.R;
 import inc.gb.cp20.Util.CmsInter;
 import inc.gb.cp20.Util.RestClient;
 import inc.gb.cp20.Util.Utility;
@@ -124,7 +123,9 @@ public class TagDownloading implements DownloadInterface {
                         }
 
                         if (CvrList.size() != 0) {
-                            if (datavalues[0].equals(CmsInter.Change_PWD)) {
+                            TBCVR word = CvrList.get(0);
+                            String[] cvrvalues = word.getCOL2().split("\\^");
+                            if (cvrvalues[0].equals(CmsInter.Change_PWD)) {
                                 AlertDialog.Builder alertbox = new AlertDialog.Builder(mContext);
                                 alertbox.setMessage(datavalues[1]).setPositiveButton("OK",
                                         new DialogInterface.OnClickListener() {
@@ -140,8 +141,8 @@ public class TagDownloading implements DownloadInterface {
                                 alertbox.show();
                             } else {
                                 if (configflag) {
-                                    TBCVR word = CvrList.get(0);
-                                    if (word.getMSG().contains("Success")) {
+
+                                    if (cvrvalues[0].equals(CmsInter.SUCESSS)) {
                                         if (!word.getCOL3().equals("")) {
                                             callFileDownload();
                                         } else {
@@ -163,7 +164,7 @@ public class TagDownloading implements DownloadInterface {
 //                                        LandingIntent.putExtra("CALLSYNC", "1");
 //                                        mContext.startActivity(LandingIntent);
                                     } else {
-                                        if (word.getMSG().contains("Invalid Instance")) {
+                                        if (cvrvalues[0].equals(CmsInter.INVALID_INSTANCE)) {
 
                                             final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(mContext, CmsInter.ERROR_TYPE);
                                             sweetAlertDialog.setTitleText(word.getMSG())
@@ -216,7 +217,7 @@ public class TagDownloading implements DownloadInterface {
             if (cvrsplit[26].equals("J")) {
                 RestClient.GitApiInterface service = RestClient.getClient();
                 TAG tag = new TAG();
-                tag.setClientid(mContext.getResources().getString(R.string.clientid));
+                tag.setClientid(ClientID);
                 String url = CVRdata[0][3];
                 tag.setUrl(url);
                 tag.setRepcode(Repcode);
@@ -494,5 +495,32 @@ public class TagDownloading implements DownloadInterface {
             }
             return null;
         }
+    }
+
+    private boolean checkConfigOrNot() {
+        boolean mission;
+        dbHandler = DBHandler.getInstance(mContext);
+
+        String data[][] = dbHandler.genericSelect("*", DBHandler.TBUPW,
+                "", "", "", 6);
+        if (data != null) {
+
+
+            //data[0][2];
+            String datavalues[] = data[0][3].split("\\^");
+//                instaneceId = datavalues[4];
+//                Repcode = datavalues[3];
+//                RoleCode = datavalues[5].substring(0, 1);
+//                Version = data[0][1];
+            ClientID = data[0][4];
+            mission = true;
+        } else {
+
+            mission = false;
+        }
+
+
+        return mission;
+
     }
 }

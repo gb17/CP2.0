@@ -298,7 +298,7 @@ public class Utility {
     public static String downloadZipFile(String stUrl) {
         String str = "fail";
         try {
-            Log.d("Mai yaha hu", "downloadZipFile");
+
             String strUrl = stUrl;
             URL url = new URL(strUrl);
             // HttpURLConnection c = (HttpURLConnection) url.openConnection();

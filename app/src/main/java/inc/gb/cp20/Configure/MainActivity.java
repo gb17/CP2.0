@@ -67,9 +67,12 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
     EditText UsereditText;
     EditText PasswordeditText;
+    EditText ClientideditText;
+
 
     String UsernameString = "";
     String PasswordString = "";
+    String ClientidString = "";
 
     String instaneceId = "";
     String Repcode = "";
@@ -96,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
         UsereditText = (EditText) findViewById(R.id.userid);
         PasswordeditText = (EditText) findViewById(R.id.password);
+        ClientideditText = (EditText) findViewById(R.id.client_id);
         loginButton = (TextView) findViewById(R.id.loginclick);
         forgotpwd = (TextView) findViewById(R.id.forgotpwd);
         displaytext = (TextView) findViewById(R.id.display_text);
@@ -114,7 +118,9 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
         } else if (CONFIG_FLAG) {
             displaytext.setText("To login please enter your password");
             display_text_network.setVisibility(View.GONE);
+            ClientideditText.setVisibility(View.GONE);
             UsereditText.setText(UsernameString);
+            ClientideditText.setText(ClientID);
             UsereditText.setEnabled(false);
             loginButton.setText("LOGIN");
             forgotpwd.setVisibility(View.VISIBLE);
@@ -135,8 +141,8 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
 
                 if (UsereditText.getText().toString().equalsIgnoreCase("")
-                        || PasswordeditText.getText().toString().equals("")) {
-                    Utility.showSweetAlert(MainActivity.this, "Username/Password is mandatory.", CmsInter.ERROR_TYPE);
+                        || PasswordeditText.getText().toString().equals("") || ClientideditText.getText().toString().equals("")) {
+                    Utility.showSweetAlert(MainActivity.this, "Client ID/Username/Password is mandatory.", CmsInter.ERROR_TYPE);
 
                 } else {
                     if (!CONFIG_FLAG) {
@@ -144,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                         LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         LandingIntent.putExtra("USERNAME", UsereditText.getText().toString());
                         LandingIntent.putExtra("PASSWORD", PasswordeditText.getText().toString());
+                        LandingIntent.putExtra("CLIENTID", ClientideditText.getText().toString());
                         startActivity(LandingIntent);
 
                     } else if (CONFIG_FLAG) {
@@ -271,9 +278,12 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                             db.insert(DBHandler.TBCVR, null, values);
                             db.close();
                         }
+                        TBCVR word = CvrList.get(0);
+                        String[] cvrvalues = word.getCOL2().split("\\^");
+
 
                         if (CvrList.size() != 0) {
-                            if (datavalues[0].equals(CmsInter.Change_PWD)) {
+                            if (cvrvalues[0].equals(CmsInter.Change_PWD)) {
                                 AlertDialog.Builder alertbox = new AlertDialog.Builder(MainActivity.this);
                                 alertbox.setMessage(datavalues[1]).setPositiveButton("OK",
                                         new DialogInterface.OnClickListener() {
@@ -289,8 +299,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                                 alertbox.show();
                             } else {
                                 if (configflag) {
-                                    TBCVR word = CvrList.get(0);
-                                    String[] cvrvalues = word.getCOL2().split("\\^");
+
 
                                     if (word.getMSG().contains("Success")) {
                                         backupDatabase();
@@ -304,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                                         }
 
                                     } else {
-                                        if (word.getMSG().contains("Invalid Instance")) {
+                                        if (cvrvalues[0].equals(CmsInter.INVALID_INSTANCE)) {
 
                                             final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(MainActivity.this, CmsInter.ERROR_TYPE);
                                             sweetAlertDialog.setTitleText(word.getMSG())
@@ -371,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
             if (cvrsplit[26].equals("J")) {
                 RestClient.GitApiInterface service = RestClient.getClient();
                 TAG tag = new TAG();
-                tag.setClientid(getResources().getString(R.string.clientid));
+                tag.setClientid(ClientID);
                 String url = CVRdata[0][3];//"https://pocworkerrole.blob.core.windows.net/ctdscript/CTDH0001201603111918.cpz";
                 tag.setUrl(url);//  CVRdata[0][3] https://pocworkerrole.blob.core.windows.net/ctdscript/CTDH0001201603111918.cpz
                 tag.setRepcode(Repcode);
@@ -563,7 +572,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
     public void CallForgotPassword() {
         getprogressDialog("Requesting...");
         ChangePassword changePassword = new ChangePassword();
-        changePassword.setCLIENTID(getResources().getString(R.string.clientid));
+        changePassword.setCLIENTID(ClientID);
         changePassword.setREPCODE(Repcode);
         changePassword.setBU("2");
         changePassword.setNPWD("");

@@ -16,6 +16,7 @@ import inc.gb.cp20.Models.IRCSFResponsePOJO;
 import inc.gb.cp20.Models.OutputPOJO;
 import inc.gb.cp20.Models.SyncDetailingAckPOJO;
 import inc.gb.cp20.R;
+import inc.gb.cp20.Util.CmsInter;
 import inc.gb.cp20.Util.RestClient;
 import inc.gb.cp20.Util.Utility;
 import inc.gb.cp20.interfaces.DownloadInterface;
@@ -32,11 +33,13 @@ public class Sync {
     private Context context;
     String[] upwData = null;
     DBHandler dbHandler;
+    String ClientID = "";
 
 
     public Sync(Context context) {
         this.context = context;
         dbHandler = DBHandler.getInstance(context);
+        checkConfigOrNot();
         final String[][] psdf = dbHandler.genericSelect("SELECT * FROM TBUPW", 6);
         if (psdf != null) {
             upwData = psdf[0][3].split("\\^");
@@ -60,7 +63,7 @@ public class Sync {
 
             if (containerData != null)
                 for (int i = 0; i < containerData.length; i++) {
-                    ContainerPOJO pojo = new ContainerPOJO(context.getResources().getString(R.string.clientid), upwData[3], containerData[i][0], containerData[i][1],
+                    ContainerPOJO pojo = new ContainerPOJO(ClientID, upwData[3], containerData[i][0], containerData[i][1],
                             containerData[i][2], containerData[i][3], containerData[i][4], containerData[i][5], containerData[i][6], containerData[i][7],
                             containerData[i][8], containerData[i][14], containerData[i][13], containerData[i][10], containerData[i][9], containerData[i][16], containerData[i][15] + "^" + containerData[i][20],
                             containerData[i][17], containerData[i][22], "", "", containerData[i][19], containerData[i][21], batchNumber, containerData[i][23], containerData[i][24], containerData[i][25], containerData[i][26], containerData[i][27]);
@@ -71,7 +74,7 @@ public class Sync {
 
             if (containerData != null)
                 for (int i = 0; i < containerData.length; i++) {
-                    ContainerPOJO pojo = new ContainerPOJO(context.getResources().getString(R.string.clientid), upwData[3], upwData[9], upwData[10], null, containerData[i][13], containerData[i][10], "", containerData[i][1], containerData[i][5], containerData[i][2], null, "-1", null, null, null, null, null, containerData[i][15], "", "", containerData[i][14], "", batchNumber, "", "", "", "", "");
+                    ContainerPOJO pojo = new ContainerPOJO(ClientID, upwData[3], upwData[9], upwData[10], null, containerData[i][13], containerData[i][10], "", containerData[i][1], containerData[i][5], containerData[i][2], null, "-1", null, null, null, null, null, containerData[i][15], "", "", containerData[i][14], "", batchNumber, "", "", "", "", "");
                     containerLs.add(pojo);
                 }
         }
@@ -119,35 +122,36 @@ public class Sync {
         if (batchData != null) {
             List<SyncDetailingAckPOJO> containerLs = new ArrayList<>();
             for (int i = 0; i < batchData.length; i++) {
-                SyncDetailingAckPOJO pojo = new SyncDetailingAckPOJO(context.getResources().getString(R.string.clientid), upwData[3], batchData[i][0], "");
+                SyncDetailingAckPOJO pojo = new SyncDetailingAckPOJO(ClientID, upwData[3], batchData[i][0], "");
                 containerLs.add(pojo);
-            }
-            RestClient.GitApiInterface service = RestClient.getClient();
-            Call<List<SyncDetailingAckPOJO>> lCall = service.CallSyncDetailingAcknowledge(containerLs);
 
-            lCall.enqueue(new Callback<List<SyncDetailingAckPOJO>>() {
-                @Override
-                public void onResponse(Response<List<SyncDetailingAckPOJO>> response, Retrofit retrofit) {
-                    if (response.body() != null) {
-                        DBHandler handler = DBHandler.getInstance(context);
-                        SQLiteDatabase db = handler.getWritableDatabase();
-                        List<SyncDetailingAckPOJO> strData = response.body();
-                        for (SyncDetailingAckPOJO pojo : strData) {
-                            if (pojo.getOUT().equals("1")) {
-                                String whereClause = "COL0=?";
-                                String[] whereArgs = new String[]{pojo.getOUT()};
-                                db.delete("TBBNO", whereClause, whereArgs);
+                RestClient.GitApiInterface service = RestClient.getClient();
+                Call<List<SyncDetailingAckPOJO>> lCall = service.CallSyncDetailingAcknowledge(containerLs);
+
+                lCall.enqueue(new Callback<List<SyncDetailingAckPOJO>>() {
+                    @Override
+                    public void onResponse(Response<List<SyncDetailingAckPOJO>> response, Retrofit retrofit) {
+                        if (response.body() != null) {
+                            DBHandler handler = DBHandler.getInstance(context);
+                            SQLiteDatabase db = handler.getWritableDatabase();
+                            List<SyncDetailingAckPOJO> strData = response.body();
+                            for (SyncDetailingAckPOJO pojo : strData) {
+                                if (pojo.getOUT().equals("1")) {
+                                    String whereClause = "COL0=?";
+                                    String[] whereArgs = new String[]{pojo.getOUT()};
+                                    db.delete("TBBNO", whereClause, whereArgs);
+                                }
                             }
                         }
+                        Log.d("Response", response + "");
                     }
-                    Log.d("Response", response + "");
-                }
 
-                @Override
-                public void onFailure(Throwable t) {
-                    Log.d("Response", "error" + t);
-                }
-            });
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Log.d("Response", "error" + t);
+                    }
+                });
+            }
         }
     }
 
@@ -157,9 +161,9 @@ public class Sync {
         RestClient.GitApiInterface service = RestClient.getClient();
         IRCSFPOJO pojo = null;
         if (mode == 1)
-            pojo = new IRCSFPOJO(context.getResources().getString(R.string.clientid), upwData[3], context.getResources().getString(R.string.version), CATEGORYTYPE, CATEGORYCODE);
+            pojo = new IRCSFPOJO(ClientID, upwData[3], context.getResources().getString(R.string.version), CATEGORYTYPE, CATEGORYCODE);
         else if (mode == 2)
-            pojo = new IRCSFPOJO(context.getResources().getString(R.string.clientid), upwData[3], context.getResources().getString(R.string.version), CATEGORYTYPE, CATEGORYCODE);
+            pojo = new IRCSFPOJO(ClientID, upwData[3], context.getResources().getString(R.string.version), CATEGORYTYPE, CATEGORYCODE);
 
 
         Call<List<IRCSFResponsePOJO>> lCall = service.downloadContentUrl(pojo);
@@ -172,13 +176,14 @@ public class Sync {
 
             @Override
             public void onFailure(Throwable t) {
+                Utility.showSweetAlert(context, CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
                 downloadInterface.mainBody(null);
             }
         });
     }
 
     public void contentAcknowledge(String entryNumber) {
-        CNTACKPOJO pojo = new CNTACKPOJO(context.getResources().getString(R.string.clientid), upwData[3], entryNumber);
+        CNTACKPOJO pojo = new CNTACKPOJO(ClientID, upwData[3], entryNumber);
         RestClient.GitApiInterface service = RestClient.getClient();
         Call<String> lCall = service.contentAcknowledge(pojo);
 
@@ -194,4 +199,30 @@ public class Sync {
         });
     }
 
+    private boolean checkConfigOrNot() {
+        boolean mission;
+        dbHandler = DBHandler.getInstance(context);
+
+        String data[][] = dbHandler.genericSelect("*", DBHandler.TBUPW,
+                "", "", "", 6);
+        if (data != null) {
+
+
+            //data[0][2];
+            String datavalues[] = data[0][3].split("\\^");
+//                instaneceId = datavalues[4];
+//                Repcode = datavalues[3];
+//                RoleCode = datavalues[5].substring(0, 1);
+//                Version = data[0][1];
+            ClientID = data[0][4];
+            mission = true;
+        } else {
+
+            mission = false;
+        }
+
+
+        return mission;
+
+    }
 }
