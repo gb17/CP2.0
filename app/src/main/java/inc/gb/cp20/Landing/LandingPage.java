@@ -388,10 +388,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         //registering popup with OnMenuItemClickListener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                String[][] playListData = dbHandler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11, (select count(1) from TBDRG r where r.col0 = b.col0 ) ref from TBDPS2 a , TBDPG b\n" +
-                        "        where a.col5 = b.col0\n" +
-                        "        and a.COL10 = '" + objDrListPOJO.getCOL0() + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 9);
-                if (playListData != null) {
+                if (objDrListPOJO.getCOL15() != null && objDrListPOJO.getCOL15().equals("0")) {
                     Intent intent = new Intent(LandingPage.this, Playlist.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("customer_id", objDrListPOJO.getCOL0());
@@ -402,6 +399,22 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                     bundle.putString("index", "3");
                     intent.putExtras(bundle);
                     startActivity(intent);
+                } else {
+                    String[][] playListData = dbHandler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11, (select count(1) from TBDRG r where r.col0 = b.col0 ) ref from TBDPS2 a , TBDPG b\n" +
+                            "        where a.col5 = b.col0\n" +
+                            "        and a.COL10 = '" + objDrListPOJO.getCOL0() + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 9);
+                    if (playListData != null) {
+                        Intent intent = new Intent(LandingPage.this, Playlist.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("customer_id", objDrListPOJO.getCOL0());
+                        bundle.putString("customer_name", objDrListPOJO.getCOL1());
+                        bundle.putString("category_code", objDrListPOJO.getCOL17());
+                        bundle.putString("category_name", objDrListPOJO.getCOL16());
+                        bundle.putString("thumbnail_category", "B");
+                        bundle.putString("index", "3");
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
                 }
                 return true;
             }
