@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -21,6 +23,7 @@ import java.util.List;
 
 import inc.gb.cp20.Models.SearchData;
 import inc.gb.cp20.R;
+import inc.gb.cp20.container.VideoPlay;
 import inc.gb.cp20.interfaces.RecyclerViewClickListener;
 
 /**
@@ -65,12 +68,38 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent();
-                    intent.putExtra("category_code", brandList.getBrand_code());
-                    intent.putExtra("category_name", brandList.getCat_Type());
-                    intent.putExtra("page_number", Position_ + "");
-                    ((Activity) mContext).setResult(Activity.RESULT_OK, intent);
-                    ((Activity) mContext).finish();
+
+                    if (brandList.getPageNamee().toLowerCase().contains("mp4")) {
+                        Intent intent = new Intent(mContext,
+                                VideoPlay.class);
+                        intent.putExtra("fileName", brandList.getPageNamee());
+                        ((Activity) mContext).startActivityForResult(intent, 1001);
+                    } else if (brandList.getPageNamee().contains("pdf")) {
+                        String path1 = mContext.getFilesDir().getAbsolutePath() + "/"
+                                + brandList.getPageNamee();
+                        File file1 = new File(path1);
+                        if (file1.exists()) {
+                            file1.setReadable(true, false);
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setDataAndType(Uri.fromFile(file1), "application/pdf");
+                            try {
+                                ((Activity) mContext).startActivityForResult(intent, 1001);
+                            } catch (Exception e) {
+                                System.out.println("PDF Exception = = = >" + e.toString());
+                            }
+                        } else {
+                            Toast.makeText(mContext,
+                                    "Please wait PDF being downloaded.....", Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    } else {
+                        Intent intent = new Intent();
+                        intent.putExtra("category_code", brandList.getBrand_code());
+                        intent.putExtra("category_name", brandList.getCat_Type());
+                        intent.putExtra("page_number", Position_ + "");
+                        ((Activity) mContext).setResult(Activity.RESULT_OK, intent);
+                        ((Activity) mContext).finish();
+                    }
                 }
             });
 

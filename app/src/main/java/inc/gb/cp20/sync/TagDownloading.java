@@ -141,7 +141,6 @@ public class TagDownloading implements DownloadInterface {
                                 alertbox.show();
                             } else {
                                 if (configflag) {
-
                                     if (cvrvalues[0].equals(CmsInter.SUCESSS)) {
                                         if (!word.getCOL3().equals("")) {
                                             callFileDownload();

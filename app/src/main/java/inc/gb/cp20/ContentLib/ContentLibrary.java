@@ -521,7 +521,6 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
             ImageView imageViewu = (ImageView) mainRelativeLayout.getChildAt(11);
             for (int i = 0; i < visibleItemCount; i++) {
                 RelativeLayout parent = (RelativeLayout) recyclerView.getChildAt(i);
-                TextView child = (TextView) parent.getChildAt(1);
                 ImageView imageView = (ImageView) parent.getChildAt(11);
                 imageView.setVisibility(View.GONE);
             }
@@ -553,6 +552,9 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
     public void onRetryClick(TBBRAND item, View v, int position) {
         CallDownloadContainer(2, item.getCOL0(), item.getCOL3());
     }
+
+
+
 
     @Override
     public void onBackPressed() {

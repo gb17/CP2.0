@@ -81,7 +81,7 @@ public interface CmsInter {
     String AL_Download = "Please download data";
     String AL_InvalidRole = "Role Changed:Plz contact Adminstrator";
 
-    String AL_NETERROR = "No Network.";
+    String AL_NETERROR = "Please check your internet connection and retry.";
 
     String AL_PassWORDPOlicy = "Password Policy not set:Plz contact Adminstrator";
     String AL_ATTACH = "Only one attachment allowed";

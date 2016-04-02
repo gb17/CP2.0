@@ -35,10 +35,6 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
     static Typeface font;
     static Context mContext;
     FragmentManager fragmentManager;
-    Integer Imagearr[] = {R.drawable.dempi, R.drawable.newace, R.drawable.newcfix1, R.drawable.newcfix3, R.drawable.newjade
-            , R.drawable.newmezzo, R.drawable.newstillsep, R.drawable.solsuna, R.drawable.stelpep, R.drawable.zepine, R.drawable.stelpep, R.drawable.zepine,
-            R.drawable.dempi, R.drawable.newace, R.drawable.newcfix1, R.drawable.newcfix3, R.drawable.newjade
-            , R.drawable.newmezzo, R.drawable.newstillsep, R.drawable.solsuna, R.drawable.stelpep, R.drawable.zepine, R.drawable.stelpep, R.drawable.zepine};
 
     static int index;
 
@@ -50,7 +46,6 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
         this.index = index;
         font = Typeface.createFromAsset(mContext.getAssets(),
                 "fontawesome-webfont.ttf");
-
         dbHandler = DBHandler.getInstance(mContext);
     }
 
@@ -120,8 +115,6 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    //if (masklayRelativeLayout.getVisibility() == View.VISIBLE)
                     listener.onItemClick(brandList, v, getLayoutPosition());
                 }
             });
@@ -134,54 +127,49 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
             });
             if (index == 1) {
                 pageFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                        @Override
+                        public void onClick(View view) {
+                            childScrollView.setVisibility(View.VISIBLE);
+                            fb.setVisibility(View.VISIBLE);
+                            layout.removeAllViews();
+                            String[][] pagename = dbHandler.genericSelect("select b.COL2 from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  '" + brandList.getCOL3() + "' and a.COL9 = '" + brandList.getCOL0() + "'   and a.COL10 = 'IPL'", 1);
+                            if (pagename != null) {
+                                int prevTextViewId = 0;
+                                for (int i = 0; i < pagename.length; i++) {
+                                    final TextView textView = new TextView(mContext);
+
+                                    String temp = "";
+                                    if (i < 10) {
+                                        if (i == 9)
+                                            temp = "0" + (i);
+                                        else
+                                            temp = "0" + (i + 1);
+                                    } else {
+                                        temp = "" + (i + 1);
+                                    }
 
 
-                        childScrollView.setVisibility(View.VISIBLE);
+                                    textView.setText(temp + " " + pagename[i][0]);
+                                    temp = "";
+                                    textView.setTextColor(Color.parseColor("#FFFFFF"));
 
-                        fb.setVisibility(View.VISIBLE);
+                                    int curTextViewId = prevTextViewId + 1;
+                                    textView.setId(curTextViewId);
+                                    final RelativeLayout.LayoutParams params =
+                                            new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
+                                                    RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-                        layout.removeAllViews();
+                                    params.addRule(RelativeLayout.BELOW, prevTextViewId);
+                                    params.setMargins(4, 4, 4, 4);
+                                    textView.setLayoutParams(params);
 
-                        String[][] pagename = dbHandler.genericSelect("select b.COL2 from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  '" + brandList.getCOL3() + "' and a.COL9 = '" + brandList.getCOL0() + "'   and a.COL10 = 'IPL'", 1);
-                        if (pagename != null) {
-                            int prevTextViewId = 0;
-                            for (int i = 0; i < pagename.length; i++) {
-                                final TextView textView = new TextView(mContext);
-
-                                String temp = "";
-                                if (i < 10) {
-                                    if (i == 9)
-                                        temp = "0" + (i);
-                                    else
-                                        temp = "0" + (i + 1);
-                                } else {
-                                    temp = "" + (i + 1);
+                                    prevTextViewId = curTextViewId;
+                                    layout.addView(textView, params);
                                 }
-
-
-                                textView.setText(temp + " " + pagename[i][0]);
-                                temp = "";
-                                textView.setTextColor(Color.parseColor("#FFFFFF"));
-
-                                int curTextViewId = prevTextViewId + 1;
-                                textView.setId(curTextViewId);
-                                final RelativeLayout.LayoutParams params =
-                                        new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
-                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-                                params.addRule(RelativeLayout.BELOW, prevTextViewId);
-                                params.setMargins(4, 4, 4, 4);
-                                textView.setLayoutParams(params);
-
-                                prevTextViewId = curTextViewId;
-                                layout.addView(textView, params);
                             }
-                        }
 
-                    }
-                });
+                        }
+                    });
 
 
                 refFloatingActionButton.setOnClickListener(new View.OnClickListener() {

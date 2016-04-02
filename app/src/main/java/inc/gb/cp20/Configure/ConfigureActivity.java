@@ -169,7 +169,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
             @Override
             public void onFailure(Throwable t) {
                 final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(ConfigureActivity.this, CmsInter.ERROR_TYPE);
-                sweetAlertDialog.setTitleText(t.toString())
+                sweetAlertDialog.setTitleText(CmsInter.AL_NETERROR)
                         .setConfirmText("Ok")
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
@@ -283,14 +283,14 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
                         }
 
                     } else {
-                        Utility.showSweetAlert(ConfigureActivity.this, "OOps!", CmsInter.ERROR_TYPE);
+                        Utility.showSweetAlert(ConfigureActivity.this, CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
 
                     }
                 }
 
                 @Override
                 public void onFailure(Throwable t) {
-                    Utility.showSweetAlert(ConfigureActivity.this, t.toString(), CmsInter.ERROR_TYPE);
+                    Utility.showSweetAlert(ConfigureActivity.this, CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
 
                 }
 
@@ -331,7 +331,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
 
                     @Override
                     public void onFailure(Throwable t) {
-                        Log.d("TAG", t.toString());
+                        Utility.showSweetAlert(ConfigureActivity.this, CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
                     }
                 });
 
