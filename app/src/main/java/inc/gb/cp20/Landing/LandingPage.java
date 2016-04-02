@@ -77,6 +77,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
     ImageView drawerButton;
 
     String CALLSYNC = "";
+    TextView download_now, download_later, cancel, status_bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -278,28 +279,22 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                 if (compoundButton.isChecked()) {
                     compoundButton.setChecked(true);
                     for (int i = 0; i < adapter.getCount(); i++) {
-//                        LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i);
-//                        CheckBox cb = (CheckBox) itemLayout.getChildAt(0);
-//                        cb.setChecked(true);
                         adapter.mCheckedState[i] = compoundButton.isChecked();
                         adapter.notifyDataSetChanged();
                     }
                 } else {
                     compoundButton.setChecked(false);
                     for (int i = 0; i < adapter.getCount(); i++) {
-//                        LinearLayout itemLayout = (LinearLayout) listView.getChildAt(i);
-//                        CheckBox cb = (CheckBox) itemLayout.getChildAt(0);
-//                        cb.setChecked(false);
                         adapter.mCheckedState[i] = compoundButton.isChecked();
                         adapter.notifyDataSetChanged();
                     }
                 }
             }
         });
-        final TextView download_now = (TextView) content_dialog.findViewById(R.id.download_now);
-        final TextView download_later = (TextView) content_dialog.findViewById(R.id.download_later);
-        final TextView cancel = (TextView) content_dialog.findViewById(R.id.cancel);
-        final TextView Status_bar = (TextView) content_dialog.findViewById(R.id.status_tag);
+        download_now = (TextView) content_dialog.findViewById(R.id.download_now);
+        download_later = (TextView) content_dialog.findViewById(R.id.download_later);
+        cancel = (TextView) content_dialog.findViewById(R.id.cancel);
+        status_bar = (TextView) content_dialog.findViewById(R.id.status_tag);
 
         total = (TextView) content_dialog.findViewById(R.id.total);
         files = (TextView) content_dialog.findViewById(R.id.files);
@@ -308,29 +303,32 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         download_now.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                ContentAdapter adapter = (ContentAdapter) listView.getAdapter();
-                totalSize = 0;
-                ArrayList<String[]> urlString = new ArrayList<>();
-                for (int i = 0; i < list.size(); i++) {
-                    if (adapter.mCheckedState[i]) {
-                        IRCSFResponsePOJO pojo = list.get(i);
-                        urlString.add(new String[]{pojo.getENTRYNO(), pojo.getPATH(), pojo.getFILE_SIZE(), i + ""});
-                        totalSize = totalSize + Integer.parseInt(pojo.getFILE_SIZE());
+                if (Connectivity.isConnected(LandingPage.this)) {
+                    ContentAdapter adapter = (ContentAdapter) listView.getAdapter();
+                    totalSize = 0;
+                    ArrayList<String[]> urlString = new ArrayList<>();
+                    for (int i = 0; i < list.size(); i++) {
+                        if (adapter.mCheckedState[i] && !adapter.mEnableState[i]) {
+                            IRCSFResponsePOJO pojo = list.get(i);
+                            urlString.add(new String[]{pojo.getENTRYNO(), pojo.getPATH(), pojo.getFILE_SIZE(), i + ""});
+                            totalSize = totalSize + Integer.parseInt(pojo.getFILE_SIZE());
+                        }
                     }
-                }
-                if (urlString.size() > 0) {
-                    total.setVisibility(View.VISIBLE);
-                    files.setVisibility(View.VISIBLE);
-                    progress.setVisibility(View.VISIBLE);
-                    download_now.setVisibility(View.GONE);
-                    download_later.setVisibility(View.GONE);
-                    cancel.setVisibility(View.VISIBLE);
-                    Status_bar.setVisibility(View.VISIBLE);
-                    downloadAsync = new DownloadContentAsync(urlString);
-                    downloadAsync.execute();
+                    if (urlString.size() > 0) {
+                        total.setVisibility(View.VISIBLE);
+                        files.setVisibility(View.VISIBLE);
+                        progress.setVisibility(View.VISIBLE);
+                        download_now.setVisibility(View.GONE);
+                        download_later.setVisibility(View.GONE);
+                        cancel.setVisibility(View.VISIBLE);
+                        status_bar.setVisibility(View.VISIBLE);
+                        downloadAsync = new DownloadContentAsync(urlString);
+                        downloadAsync.execute();
+                    } else {
+                        Utility.showSweetAlert(LandingPage.this, "Please select at least one content.", CmsInter.NORMAL_TYPE);
+                    }
                 } else {
-                    Utility.showSweetAlert(LandingPage.this, "Please select at least one content.", CmsInter.NORMAL_TYPE);
+                    Utility.showSweetAlert(LandingPage.this, CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
                 }
             }
         });
@@ -357,7 +355,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         String brandQuery = "SELECT COL0, COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8 FROM TBBRAND b where b.COL0 = 'B' and exists (select 1 from TBDPS s, TBDPG t where s.col5 = t.col0 and s.col9= b.col0 and s.col1 =  b.col3 and t.col7 = '1' )";
         String[][] brandData = dbHandler.genericSelect(brandQuery, 9);
 
-        String[][] countData = dbHandler.genericSelect("Select count(1) from TBDPS2 where col10 = '" + objDrListPOJO.getCOL0() + "'", 1);
+        String[][] countData = dbHandler.genericSelect("select count(1)  from TBDPS A , TBDPG B WHERE A.COL3 = '" + objDrListPOJO.getCOL17() + "' and A.COL9 = '" + objDrListPOJO.getCOL16() + "' and B.COL7 = '1' and A.COL5 = B.COL0", 1);
 
         String[][] playstData = dbHandler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL12 from TBDPS2 a , TBDPG b\n" +
                 "        where a.col5 = b.col0\n" +
@@ -376,7 +374,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
             intent.putExtras(bundle);
             startActivity(intent);
         } else
-            Utility.showSweetAlert(LandingPage.this, "No pages available.", CmsInter.ERROR_TYPE);
+            Utility.showSweetAlert(LandingPage.this, "No pages available.", CmsInter.WARNING_TYPE);
 
     }
 
@@ -390,16 +388,21 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         //registering popup with OnMenuItemClickListener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(LandingPage.this, Playlist.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("customer_id", objDrListPOJO.getCOL0());
-                bundle.putString("customer_name", objDrListPOJO.getCOL1());
-                bundle.putString("category_code", objDrListPOJO.getCOL17());
-                bundle.putString("category_name", objDrListPOJO.getCOL16());
-                bundle.putString("thumbnail_category", "B");
-                bundle.putString("index", "3");
-                intent.putExtras(bundle);
-                startActivity(intent);
+                String[][] playListData = dbHandler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11, (select count(1) from TBDRG r where r.col0 = b.col0 ) ref from TBDPS2 a , TBDPG b\n" +
+                        "        where a.col5 = b.col0\n" +
+                        "        and a.COL10 = '" + objDrListPOJO.getCOL0() + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 9);
+                if (playListData != null) {
+                    Intent intent = new Intent(LandingPage.this, Playlist.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("customer_id", objDrListPOJO.getCOL0());
+                    bundle.putString("customer_name", objDrListPOJO.getCOL1());
+                    bundle.putString("category_code", objDrListPOJO.getCOL17());
+                    bundle.putString("category_name", objDrListPOJO.getCOL16());
+                    bundle.putString("thumbnail_category", "B");
+                    bundle.putString("index", "3");
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
                 return true;
             }
         });
@@ -428,7 +431,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
             intent.putExtras(bundle);
             startActivity(intent);
         } else
-            Utility.showSweetAlert(LandingPage.this, "No pages available.", CmsInter.ERROR_TYPE);
+            Utility.showSweetAlert(LandingPage.this, "No pages available.", CmsInter.WARNING_TYPE);
     }
 
     @Override
@@ -499,11 +502,19 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                             }
                         }
                     } else {
+                        pojo.setSTATUS(" ");
                         downloadAsync.cancel(true);
-                        content_dialog.dismiss();
+                        //content_dialog.dismiss();
                         LandingPage.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                total.setVisibility(View.GONE);
+                                files.setVisibility(View.GONE);
+                                progress.setVisibility(View.GONE);
+                                download_now.setVisibility(View.VISIBLE);
+                                download_later.setVisibility(View.VISIBLE);
+                                cancel.setVisibility(View.GONE);
+                                status_bar.setVisibility(View.GONE);
                                 Utility.showSweetAlert(LandingPage.this, CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
                             }
                         });
@@ -516,6 +527,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                     LandingPage.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            ((ContentAdapter) listView.getAdapter()).mEnableState[pos] = true;
                             ((ContentAdapter) listView.getAdapter()).notifyDataSetChanged();
                         }
                     });

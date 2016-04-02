@@ -23,6 +23,7 @@ import inc.gb.cp20.R;
 public class ContentAdapter extends BaseAdapter {
     List<IRCSFResponsePOJO> listData;
     public boolean[] mCheckedState;
+    public boolean[] mEnableState;
     Context context;
     private Typeface font;
 
@@ -30,6 +31,7 @@ public class ContentAdapter extends BaseAdapter {
         this.context = context;
         this.listData = listData;
         mCheckedState = new boolean[listData.size()];
+        mEnableState = new boolean[listData.size()];
         font = Typeface.createFromAsset(context.getAssets(), "fontawesome-webfont.ttf");
     }
 
