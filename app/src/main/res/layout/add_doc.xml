@@ -31,17 +31,10 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/tag"
-        android:background="#5C5C5C" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/view"
+        android:layout_below="@id/tag"
         android:background="#ece9e9"
         android:orientation="horizontal"
         android:paddingBottom="10dp">
@@ -54,11 +47,6 @@
             android:layout_weight="1"
             android:background="#c9c5c5"
             android:orientation="vertical">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="#616161" />
         </LinearLayout>
 
         <RelativeLayout
@@ -87,10 +75,6 @@
                     android:textSize="19sp"
                     android:textStyle="bold" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="#000000" />
             </LinearLayout>
 
             <TextView
@@ -127,11 +111,6 @@
                 android:textColor="#151414"
                 android:textSize="19sp"
                 android:textStyle="bold" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="#000000" />
 
 
             <EditText

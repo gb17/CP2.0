@@ -43,6 +43,7 @@ import inc.gb.cp20.Models.TBBRAND;
 import inc.gb.cp20.R;
 import inc.gb.cp20.RecylerView.HorizontalRecylerView;
 import inc.gb.cp20.Util.CmsInter;
+import inc.gb.cp20.Util.Connectivity;
 import inc.gb.cp20.Util.Utility;
 import inc.gb.cp20.container.LightContainer;
 import inc.gb.cp20.interfaces.DownloadInterface;
@@ -157,41 +158,44 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         int prevTextViewId = 0;
 
         String[][] menudata = dbHandler.genericSelect("Select * From TBDMENU where COL4='0'", 3);
-        for (int i = 0; i < menudata.length; i++) {
-            final TextView textView = new TextView(this);
 
-            textView.setTextColor(Color.parseColor("#FFFFFF"));
-            textView.setPadding(10, 17, 0, 0);
-            textView.setTextSize(20);
-            textView.setId(Integer.parseInt(menudata[i][1]));
-            textView.setTypeface(font);
-            switch (Integer.parseInt(menudata[i][1])) {
-                case 142://Change Password
-                    textView.setText(LandingPage.this.getResources().getString(R.string.icon_pen) + "  " + menudata[i][2]);
-                    break;
-                case 4://Synchronize
-                    textView.setText(LandingPage.this.getResources().getString(R.string.refresh) + "  " + menudata[i][2]);
-                    break;
-                case 197://LogOut
-                    textView.setText(LandingPage.this.getResources().getString(R.string.icon_power) + "  " + menudata[i][2]);
-                    break;
-                case 198://Download Container
-                    textView.setText(LandingPage.this.getResources().getString(R.string.icon_download) + "  " + menudata[i][2]);
-                    break;
+        if (menudata != null) {
+            for (int i = 0; i < menudata.length; i++) {
+                final TextView textView = new TextView(this);
+
+                textView.setTextColor(Color.parseColor("#FFFFFF"));
+                textView.setPadding(10, 17, 0, 0);
+                textView.setTextSize(20);
+                textView.setId(Integer.parseInt(menudata[i][1]));
+                textView.setTypeface(font);
+                switch (Integer.parseInt(menudata[i][1])) {
+                    case 142://Change Password
+                        textView.setText(LandingPage.this.getResources().getString(R.string.icon_pen) + "  " + menudata[i][2]);
+                        break;
+                    case 4://Synchronize
+                        textView.setText(LandingPage.this.getResources().getString(R.string.refresh) + "  " + menudata[i][2]);
+                        break;
+                    case 197://LogOut
+                        textView.setText(LandingPage.this.getResources().getString(R.string.icon_power) + "  " + menudata[i][2]);
+                        break;
+                    case 198://Download Container
+                        textView.setText(LandingPage.this.getResources().getString(R.string.icon_download) + "  " + menudata[i][2]);
+                        break;
+                }
+                textView.setOnClickListener(DrawerListner);
+                int curTextViewId = prevTextViewId + 1;
+                // textView.setId(curTextViewId);
+                final RelativeLayout.LayoutParams params =
+                        new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                                RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                params.addRule(RelativeLayout.BELOW, prevTextViewId);
+                //    params.setMargins(10, 80, 10, 10);
+                textView.setLayoutParams(params);
+
+                prevTextViewId = curTextViewId;
+                drawerLinearLayout.addView(textView);
             }
-            textView.setOnClickListener(DrawerListner);
-            int curTextViewId = prevTextViewId + 1;
-            // textView.setId(curTextViewId);
-            final RelativeLayout.LayoutParams params =
-                    new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                            RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-            params.addRule(RelativeLayout.BELOW, prevTextViewId);
-            //    params.setMargins(10, 80, 10, 10);
-            textView.setLayoutParams(params);
-
-            prevTextViewId = curTextViewId;
-            drawerLinearLayout.addView(textView);
         }
     }
 
@@ -218,7 +222,10 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                     break;
                 case 198://Download Container
                     drawerLinearLayout.setVisibility(View.GONE);
-                    CallDownloadIRCSF(1);
+                    if (Connectivity.isConnected(LandingPage.this))
+                        CallDownloadIRCSF(1);
+                    else
+                        Utility.showSweetAlert(LandingPage.this, CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
                     break;
             }
         }
@@ -303,6 +310,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
             public void onClick(View view) {
 
                 ContentAdapter adapter = (ContentAdapter) listView.getAdapter();
+                totalSize = 0;
                 ArrayList<String[]> urlString = new ArrayList<>();
                 for (int i = 0; i < list.size(); i++) {
                     if (adapter.mCheckedState[i]) {
@@ -321,6 +329,8 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                     Status_bar.setVisibility(View.VISIBLE);
                     downloadAsync = new DownloadContentAsync(urlString);
                     downloadAsync.execute();
+                } else {
+                    Utility.showSweetAlert(LandingPage.this, "Please select at least one content.", CmsInter.NORMAL_TYPE);
                 }
             }
         });
@@ -346,7 +356,14 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         super.onItemListClick(objDrListPOJO, view);
         String brandQuery = "SELECT COL0, COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8 FROM TBBRAND b where b.COL0 = 'B' and exists (select 1 from TBDPS s, TBDPG t where s.col5 = t.col0 and s.col9= b.col0 and s.col1 =  b.col3 and t.col7 = '1' )";
         String[][] brandData = dbHandler.genericSelect(brandQuery, 9);
-        if (brandData != null) {
+
+        String[][] countData = dbHandler.genericSelect("Select count(1) from TBDPS2 where col10 = '" + objDrListPOJO.getCOL0() + "'", 1);
+
+        String[][] playstData = dbHandler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL12 from TBDPS2 a , TBDPG b\n" +
+                "        where a.col5 = b.col0\n" +
+                "        and a.COL10 = '" + objDrListPOJO.getCOL0() + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
+
+        if (brandData != null && (!countData[0][0].equals("0") || playstData != null)) {
             Intent intent = new Intent(this, LightContainer.class);
             Bundle bundle = new Bundle();
             bundle.putString("customer_id", objDrListPOJO.getCOL0());
@@ -358,7 +375,8 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
             bundle.putString("patch", objDrListPOJO.getCOL2());
             intent.putExtras(bundle);
             startActivity(intent);
-        }
+        } else
+            Utility.showSweetAlert(LandingPage.this, "No pages available.", CmsInter.ERROR_TYPE);
 
     }
 
@@ -395,7 +413,12 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
 
         String brandQuery = "SELECT COL0, COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8 FROM TBBRAND b where b.COL0 = 'B' and exists (select 1 from TBDPS s, TBDPG t where s.col5 = t.col0 and s.col9= b.col0 and s.col1 =  b.col3 and t.col7 = '1' )";
         String[][] brandData = dbHandler.genericSelect(brandQuery, 9);
-        if (brandData != null) {
+
+        String[][] playstData = dbHandler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11 from TBDPS a , TBDPG b\n" +
+                "        where a.col5 = b.col0\n" +
+                "        and a.COL3 = '" + item.getCOL3() + "' and a.COL9 = '" + item.getCOL0() + "' and a.COL10 = 'IPL' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
+
+        if (brandData != null && playstData != null) {
             Intent intent = new Intent(LandingPage.this, LightContainer.class);
             Bundle bundle = new Bundle();
             bundle.putString("category_code", item.getCOL3());
@@ -404,7 +427,8 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
             bundle.putString("index", "2");
             intent.putExtras(bundle);
             startActivity(intent);
-        }
+        } else
+            Utility.showSweetAlert(LandingPage.this, "No pages available.", CmsInter.ERROR_TYPE);
     }
 
     @Override
@@ -454,26 +478,37 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                             ((ContentAdapter) listView.getAdapter()).notifyDataSetChanged();
                         }
                     });
-                    String msg = Utility.downloadZipFile(urls[1]);
-                    if (isCancelled()) break;
-                    if (!msg.startsWith("fail")) {
-                        try {
-                            File zipfile = new File(msg);
-                            String directory = LandingPage.this.getFilesDir().getAbsolutePath()
-                                    + "/";
-                            String str = Utility.unZipFile(zipfile, directory);
-                            if (isCancelled()) break;
-                            if (str.equalsIgnoreCase("success")) {
-                                sync.contentAcknowledge(urls[0]);
-                                db.execSQL("UPDATE TBDPG SET COL7 = '1' where COL0 = '" + urls[0] + "'");
-                                flag = true;
-                                downloadedSize = downloadedSize + Integer.parseInt(urls[2]);
+                    if (Connectivity.isConnected(LandingPage.this)) {
+                        String msg = Utility.downloadZipFile(urls[1]);
+                        if (isCancelled()) break;
+                        if (!msg.startsWith("fail")) {
+                            try {
+                                File zipfile = new File(msg);
+                                String directory = LandingPage.this.getFilesDir().getAbsolutePath()
+                                        + "/";
+                                String str = Utility.unZipFile(zipfile, directory);
+                                if (isCancelled()) break;
+                                if (str.equalsIgnoreCase("success")) {
+                                    sync.contentAcknowledge(urls[0]);
+                                    db.execSQL("UPDATE TBDPG SET COL7 = '1' where COL0 = '" + urls[0] + "'");
+                                    flag = true;
+                                    downloadedSize = downloadedSize + Integer.parseInt(urls[2]);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
+                    } else {
+                        downloadAsync.cancel(true);
+                        content_dialog.dismiss();
+                        LandingPage.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utility.showSweetAlert(LandingPage.this, CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
+                            }
+                        });
+                        break;
                     }
-
                     if (!flag)
                         pojo.setSTATUS("Failed");
                     else

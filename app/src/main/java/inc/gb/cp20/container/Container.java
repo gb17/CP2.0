@@ -140,6 +140,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     private String patch = "";
 
     private GPSTracker tracker;
+    EditText searchView;
+    String[] cvrData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,7 +175,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         BU = upwData[9];
 
         String data2[][] = handler.genericSelect("Select COL2 FROM TBCVR", 1);
-        String[] cvrData = data2[0][0].split("\\^");
+        cvrData = data2[0][0].split("\\^");
         TERRITORY = cvrData[11];
 
         SQLiteDatabase db = handler.getWritableDatabase();
@@ -678,6 +680,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
     private void hideDrawer() {
         if (mylinear.getVisibility() == View.VISIBLE) {
+            open.setVisibility(View.INVISIBLE);
             if (gesturesView.getVisibility() == View.VISIBLE) {
                 gesturesView.cancelClearAnimation();
                 gesturesView.clear(true);
@@ -688,7 +691,6 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             seek.setVisibility(View.GONE);
             colorw.setVisibility(View.GONE);
             gesturesView2.setVisibility(View.GONE);
-            open.setVisibility(View.INVISIBLE);
             // webView.setClickable(true);
             Animation animation = AnimationUtils.loadAnimation(
                     Container.this, R.anim.top_to_bottom);
@@ -773,6 +775,10 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             webView.getSettings().setJavaScriptEnabled(true);
             webView.getSettings().setAllowFileAccess(true);
             webView.setWebViewClient(new WebViewClient());
+            int SDK_INT = android.os.Build.VERSION.SDK_INT;
+            if (SDK_INT > 16) {
+                webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+            }
 
             iconsBar.getChildAt(0).setVisibility(View.GONE);
             iconsBar.getChildAt(1).setVisibility(View.GONE);
@@ -788,6 +794,10 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             webView.getSettings().setJavaScriptEnabled(true);
             webView.getSettings().setAllowFileAccess(true);
             webView.setWebViewClient(new WebViewClient());
+            int SDK_INT = android.os.Build.VERSION.SDK_INT;
+            if (SDK_INT > 16) {
+                webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+            }
 
             final String url = "file://" + getFilesDir().getAbsolutePath() + "/" + FilenameUtils.removeExtension(playstData[playIndex][2]) + "/" + playstData[playIndex][2];
 
@@ -1039,26 +1049,31 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 if (objDrListPOJO.getCOL0().startsWith("-")) {
                     db.delete("TBNAME", whereClause, whereArgs);
                 } else {
-                    String[][] tbData = handler.genericSelect("SELECT * FROM TBNAME where COL0 > '0' order by COL14 ", 16);
-                    int count = 0;
-                    for (int j = 0; j < tbData.length; j++) {
-                        if (tbData[j][0].equals(objDrListPOJO.getCOL0())) {
-                            count = j;
-                            break;
-                        }
-                    }
-                    DrList_POJO newPojo;
-                    int newCount = 0;
-                    for (int m = 0; m < userCopyVector.size(); m++) {
-                        newPojo = userCopyVector.get(m);
-                        if (newPojo.getCOL0().equals(objDrListPOJO.getCOL0())) {
-                            newCount = m;
-                        }
-                    }
-                    int position = newCount - count;
-                    list.userVector.add(position, objDrListPOJO);
+//                    String[][] tbData = handler.genericSelect("SELECT * FROM TBNAME where COL0 > '0' order by COL14 ", 16);
+//                    int count = 0;
+//                    for (int j = 0; j < tbData.length; j++) {
+//                        if (tbData[j][0].equals(objDrListPOJO.getCOL0())) {
+//                            count = j;
+//                            break;
+//                        }
+//                    }
+//                    DrList_POJO newPojo;
+//                    int newCount = 0;
+//                    for (int m = 0; m < userCopyVector.size(); m++) {
+//                        newPojo = userCopyVector.get(m);
+//                        if (newPojo.getCOL0().equals(objDrListPOJO.getCOL0())) {
+//                            newCount = m;
+//                        }
+//                    }
+//                    int position = newCount - count;
+
+                    //list.userVector.add(position, objDrListPOJO);
                     db = handler.getWritableDatabase();
                     db.delete("TBNAME", whereClause, whereArgs);
+                    String notexistQuery = " not exists (SELECT 1 FROM TBNAME where COL0 = TBPARTY.COL0)";
+                    Vector<DrList_POJO> userVector = UserService.getUserList(Container.this, "TBPARTY", searchView.getText().toString().trim(), notexistQuery, true);
+                    list.userVector = userVector;
+
                 }
             }
         }
@@ -1213,7 +1228,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         first.addView(view1);
         leftList = (ListView) ((LinearLayout) ((RelativeLayout) view1).getChildAt(1)).getChildAt(0);
 
-        EditText searchView = (EditText) ((RelativeLayout) view1).getChildAt(0);
+        searchView = (EditText) ((RelativeLayout) view1).getChildAt(0);
         searchView.addTextChangedListener(new TextWatcher() {
                                               String notexistQuery = " not exists (SELECT 1 FROM TBNAME where COL0 = TBPARTY.COL0)";
 
@@ -1411,8 +1426,6 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                             editor.putString("unlisted_key", newUpdatedNumber + "");
                                             editor.commit();
 
-                                            String data2[][] = handler.genericSelect("Select COL2 FROM TBCVR", 1);
-                                            String[] cvrData = data2[0][0].split("\\^");
                                             String territory_code = cvrData[11];
 
                                             SQLiteDatabase db = handler.getWritableDatabase();
@@ -1552,81 +1565,86 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     }
 
     private void saveData(int dataIndex) {
-        int flag = 0;
-        endTime = System.currentTimeMillis();
-        if (dataIndex == PLAYLISTINDEX) {//backpress//displayfocussedbrand
-            duration = endTime - startTime;
-        } else if (dataIndex == REFERENCEINDEX) {//onactivityresult
-            duration = endTime - startTimeForReference;
-            if (position == refEmailPos)
-                flag = 1;
-        }
-        SQLiteDatabase db = handler.getWritableDatabase();
+//        if (cvrData[28].equals("1")) {
+            int flag = 0;
+            endTime = System.currentTimeMillis();
+            if (dataIndex == PLAYLISTINDEX) {//backpress//displayfocussedbrand
+                duration = endTime - startTime;
+            } else if (dataIndex == REFERENCEINDEX) {//onactivityresult
+                duration = endTime - startTimeForReference;
+                if (position == refEmailPos)
+                    flag = 1;
+            }
+            SQLiteDatabase db = handler.getWritableDatabase();
 
-        double latitude = tracker.getLatitude();
-        double longitude = tracker.getLongitude();
+            double latitude = tracker.getLatitude();
+            double longitude = tracker.getLongitude();
 
-        ContentValues values = new ContentValues();
-        values.put("COL0", BU); //BU
-        values.put("COL1", TERRITORY); //Territory
-        values.put("COL2", patch); //Patch
-        values.put("COL3", currentDate); //Date
-        values.put("COL4", category_code);
-        values.put("COL5", category_name);
-        values.put("COL6", brandcode); //brandcode
+            ContentValues values = new ContentValues();
+            values.put("COL0", BU); //BU
+            values.put("COL1", TERRITORY); //Territory
+            values.put("COL2", patch); //Patch
+            values.put("COL3", currentDate); //Date
+            values.put("COL4", category_code);
+            values.put("COL5", category_name);
+            values.put("COL6", brandcode); //brandcode
 
-        if (dataIndex == PLAYLISTINDEX) {
-            values.put("COL7", playstData[previousIndex][0]); //pagecode
-        } else if (dataIndex == REFERENCEINDEX) {
-            values.put("COL7", refData[position][3]); //referenceid
-        }
+            if (dataIndex == PLAYLISTINDEX) {
+                values.put("COL7", playstData[previousIndex][0]); //pagecode
+            } else if (dataIndex == REFERENCEINDEX) {
+                values.put("COL7", refData[position][3]); //referenceid
+            }
 
-        values.put("COL8", duration); //duration
-        values.put("COL9", latitude); //latitude
-        values.put("COL10", longitude); //longitude
-        values.put("COL11", "0"); //Syncflag
-        values.put("COL12", "1"); //hardcode
+            values.put("COL8", duration); //duration
+            values.put("COL9", latitude); //latitude
+            values.put("COL10", longitude); //longitude
+            values.put("COL11", "0"); //Syncflag
+            values.put("COL12", "1"); //hardcode
 
-        if (dataIndex == PLAYLISTINDEX) {
-            values.put("COL13", emailFlag); //Email
-            values.put("COL14", startTimeString); //start time
-        } else if (dataIndex == REFERENCEINDEX) {
-            values.put("COL13", flag); //Email
-            values.put("COL14", startTimeStringForRef); //start time
-        }
+            if (dataIndex == PLAYLISTINDEX) {
+                values.put("COL13", emailFlag); //Email
+                values.put("COL14", startTimeString); //start time
+            } else if (dataIndex == REFERENCEINDEX) {
+                values.put("COL13", flag); //Email
+                values.put("COL14", startTimeStringForRef); //start time
+            }
 
-        if (index.equals("1"))
-            values.put("COL15", "D"); //Doctor
-        else if (index.equals("2"))
-            values.put("COL15", "R"); //RightSide
-        else if (index.equals("3"))
-            values.put("COL15", "P"); //playList
-        else if (index.equals("4"))
-            values.put("COL15", "L"); //Library
+            if (index.equals("1"))
+                values.put("COL15", "D"); //Doctor
+            else if (index.equals("2"))
+                values.put("COL15", "R"); //RightSide
+            else if (index.equals("3"))
+                values.put("COL15", "P"); //playList
+            else if (index.equals("4"))
+                values.put("COL15", "L"); //Library
 
-        if (dataIndex == PLAYLISTINDEX) {
-            values.put("COL16", likedislikeFlag); //like/dislike
-            values.put("COL17", ""); //reference pageid
-        } else if (dataIndex == REFERENCEINDEX) {
-            values.put("COL16", ""); //like/dislike
-            values.put("COL17", playstData[previousIndex][0]); //reference pageid
-        }
+            if (dataIndex == PLAYLISTINDEX) {
+                values.put("COL16", likedislikeFlag); //like/dislike
+                values.put("COL17", ""); //reference pageid
+            } else if (dataIndex == REFERENCEINDEX) {
+                values.put("COL16", ""); //like/dislike
+                values.put("COL17", playstData[previousIndex][0]); //reference pageid
+            }
 
-        values.put("COL18", randomNumber); //randrom number
-        values.put("COL19", Utility.getUniqueNo());
-        values.put("COL20", "0");
+            values.put("COL18", randomNumber); //randrom number
+            values.put("COL19", Utility.getUniqueNo());
+            values.put("COL20", "0");
 
-        if (dataIndex == PLAYLISTINDEX) {
-            values.put("COL21", playstData[previousIndex][7]); //playlistid
-        } else if (dataIndex == REFERENCEINDEX) {
-            values.put("COL21", ""); //playlistid
-        }
+            if (dataIndex == PLAYLISTINDEX) {
+                values.put("COL21", playstData[previousIndex][7]); //playlistid
+            } else if (dataIndex == REFERENCEINDEX) {
+                values.put("COL21", ""); //playlistid
+            }
 
-        db.insert("TXN102", null, values);
-        db.close();
+            db.insert("TXN102", null, values);
+            db.close();
+ //       }
     }
 
     private void SyncData() {
+//        Intent intent = new Intent(Container.this, LandingPage.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(intent);
         Sync sync = new Sync(Container.this);
         sync.prepareRequest(1);
         final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(Container.this, CmsInter.SUCCESS_TYPE);
