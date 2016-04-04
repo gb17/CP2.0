@@ -55,7 +55,7 @@
 
         <ImageView
             android:id="@+id/dr_btn"
-            android:layout_width="35dp"
+            android:layout_width="45dp"
             android:layout_height="100dp"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="-8.5dp"

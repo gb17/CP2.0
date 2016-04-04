@@ -84,12 +84,12 @@ public class Playlist extends Activity {
             db.execSQL(" insert into TBDPS2 select A.COL0, A.COL1, A.COL2, A.COL3, A.COL4, A.COL5, A.COL6, A.COL7, A.COL8, A.COL9, '" + customer_id + "', '0', A.COL11 from TBDPS A WHERE COL3 = '" + category_code + "' and COL9 = '" + category_name + "'");
         }
         //initialize playlist
-        playListData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11, (select count(1) from TBDRG r where r.col0 = b.col0 ) ref from TBDPS2 a , TBDPG b\n" +
+        playListData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11, (select count(1) from TBDRG r where r.col0 = b.col0 ) ref , b.COL13 from TBDPS2 a , TBDPG b\n" +
                 "        where a.col5 = b.col0\n" +
-                "        and a.COL10 = '" + customer_id + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 9);
+                "        and a.COL10 = '" + customer_id + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 10);
 
         if (playListData != null)
-            recyclerData = twoDArrayToList(playListData);
+            recyclerData = twoDArrayToListREC(playListData);
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -136,11 +136,13 @@ public class Playlist extends Activity {
         searchClick = (TextView) findViewById(R.id.searchClick);
         searchClick.setText(getResources().getString(R.string.search) + " Search");
         searchClick.setTypeface(font);
+        searchClick.setTextSize(20);
         searchClick.setOnClickListener(searchListener);
 
         edit = (TextView) findViewById(R.id.edit);
         edit.setText(getResources().getString(R.string.icon_pen) + " Edit");
         edit.setTypeface(font);
+        edit.setTextSize(20);
         edit.setOnClickListener(editListener);
 
         preview = (TextView) findViewById(R.id.preview);
@@ -184,6 +186,13 @@ public class Playlist extends Activity {
         ArrayList<String[]> list = new ArrayList<String[]>();
         for (int i = 0; i < twoDArray.length; i++)
             list.add(new String[]{twoDArray[i][0], twoDArray[i][1], twoDArray[i][2], twoDArray[i][3], twoDArray[i][4], twoDArray[i][5], twoDArray[i][6], twoDArray[i][7], twoDArray[i][8]});
+        return list;
+    }
+
+    public ArrayList<String[]> twoDArrayToListREC(String[][] twoDArray) {
+        ArrayList<String[]> list = new ArrayList<String[]>();
+        for (int i = 0; i < twoDArray.length; i++)
+            list.add(new String[]{twoDArray[i][0], twoDArray[i][1], twoDArray[i][2], twoDArray[i][3], twoDArray[i][4], twoDArray[i][5], twoDArray[i][6], twoDArray[i][7], twoDArray[i][8],twoDArray[i][9]});
         return list;
     }
 

@@ -35,8 +35,8 @@ public class RestClient {
 
     private static GitApiInterface gitApiInterface;
 
-     public static String baseUrl = "http://10.0.0.34:83";
-//    public static String baseUrl = "http://cirriusapi.cirrius.in";
+//     public static String baseUrl = "http://10.0.0.34:83";
+    public static String baseUrl = "http://cirriusapi.cirrius.in";
 
     public static GitApiInterface getClient() {
         if (gitApiInterface == null) {
@@ -62,7 +62,7 @@ public class RestClient {
         return gitApiInterface;
     }
 
-    public interface GitApiInterface {
+    public interface GitApiInterface1 {
         @POST("/CirriusConfigAPI/UPW")
         Call<UPW> CallUPW(@Body UPW order);
 
@@ -96,7 +96,7 @@ public class RestClient {
 
     }
 
-    public interface GitApiInterface1 {
+    public interface GitApiInterface {
         @POST("/Config/UPW")
         Call<UPW> CallUPW(@Body UPW order);
 

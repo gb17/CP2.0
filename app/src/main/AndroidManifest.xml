@@ -14,15 +14,20 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".Configure.MainActivity"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden">
+
+        </activity>
 
 
         <activity
             android:name=".Landing.SplashScreen"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -35,17 +40,40 @@
 
         <activity
             android:name=".Landing.LandingPage"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden">
 
-        <activity android:name=".container.LightContainer" />
-        <activity android:name=".container.Container" />
-        <activity android:name=".ContentLib.ContentLibrary" />
-        <activity android:name=".container.VideoPlay" />
-        <activity android:name=".playlist.Playlist" />
-        <activity android:name=".Configure.ConfigureActivity" />
+        </activity>
+        <activity
+            android:name=".AlphaList.AlphaListActivity"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="stateHidden">
+
+        </activity>
+        <activity
+            android:name=".container.LightContainer"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".container.Container"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".container.VideoPlay"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".playlist.Playlist"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Configure.ConfigureActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ContentLib.ContentLibrary"
+            android:screenOrientation="landscape">
+
+        </activity>
         <activity
             android:name=".ChangePwd.ChangePasswordAcitvity"
+            android:screenOrientation="landscape"
             android:windowSoftInputMode="stateHidden"></activity>
 
     </application>

@@ -170,6 +170,14 @@ public class ThumbnailAdapterForContentLibrary extends RecyclerView.Adapter<Thum
             holder.refCount.setText(tbbrand.getCOL9());
             holder.refFloatingActionButton.setVisibility(View.VISIBLE);
         }
+
+
+        //For New Tag
+        if (tbbrand.getCOL11().equals("0")) {
+            holder.newTag.setVisibility(View.INVISIBLE);
+        } else {
+            holder.newTag.setVisibility(View.VISIBLE);
+        }
         try {
             String filePath = new File(mContext.getFilesDir() + "/", tbbrand.getCOL4() + ".png").getAbsolutePath();
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);

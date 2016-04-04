@@ -238,7 +238,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         gbRelativeLayout.setVisibility(View.VISIBLE);
         scrollforref = 0;
         final TextView refHeader = (TextView) gbRelativeLayout.getChildAt(0);
-        refHeader.setText(ContentLibrary.this.getResources().getString(R.string.icon_page) + " References");
+        refHeader.setText(ContentLibrary.this.getResources().getString(R.string.paperclip) + " References");
         refHeader.setTypeface(font);
         final TextView refcount = (TextView) gbRelativeLayout.getChildAt(1);
         refcount.setTypeface(font);
@@ -382,7 +382,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
 
     private void preparePageData(RelativeLayout relativeLayout, TBBRAND itme, String whereQuery, ThumbnailAdapterForPages mAdapter, List<ContentPage> thumbnailPOJOList) {
 
-        String Query = "select  b.col1 imagepath, a.COL2, b.COL2 ,b.COl0,a.COL9 , a.COL1\n" +
+        String Query = "select  b.col1 imagepath, a.COL2, b.COL2 ,b.COl0,a.COL9 , a.COL1 ,b.COL13 newtag\n" +
                 "        from  TBDPS a, TBDPG b\n" +
                 "        where a.col5 = b.col0\n" +
                 "        and a.col9 = '" + itme.getCOL0() + "'\n" +
@@ -403,6 +403,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
                 contentPage.setCategory_code(cursor.getString(cursor.getColumnIndex("COL1")));
                 contentPage.setCategory_name(cursor.getString(cursor.getColumnIndex("COL9")));
                 contentPage.setImagepath(cursor.getString(cursor.getColumnIndex("imagepath")));
+                contentPage.setNewtag(cursor.getString(cursor.getColumnIndex("newtag")));
                 thumbnailPOJOList.add(contentPage);
             } while (cursor.moveToNext());
         } else {
@@ -441,6 +442,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
                 tbbrand.setCOL8(cursor.getString(cursor.getColumnIndex("COL8")));
                 tbbrand.setCOL9(cursor.getString(cursor.getColumnIndex("COL9")));
                 tbbrand.setCOL10(cursor.getString(cursor.getColumnIndex("COL10")));
+                tbbrand.setCOL11(cursor.getString(cursor.getColumnIndex("COL11")));
                 thumbnailPOJOList.add(tbbrand);
             } while (cursor.moveToNext());
         }
@@ -524,8 +526,6 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
                 ImageView imageView = (ImageView) parent.getChildAt(11);
                 imageView.setVisibility(View.GONE);
             }
-
-
             imageViewu.setVisibility(View.VISIBLE);
 
 
@@ -552,8 +552,6 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
     public void onRetryClick(TBBRAND item, View v, int position) {
         CallDownloadContainer(2, item.getCOL0(), item.getCOL3());
     }
-
-
 
 
     @Override

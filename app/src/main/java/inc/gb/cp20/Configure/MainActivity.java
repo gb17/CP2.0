@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
     SweetAlertDialog configAlertDialog = null;
     TextView forgotpwd;
     TextView loginButton;
+    String msg = "";
     TextView displaytext, display_text_network;
 
 
@@ -142,7 +143,10 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
                 if (UsereditText.getText().toString().equalsIgnoreCase("")
                         || PasswordeditText.getText().toString().equals("") || ClientideditText.getText().toString().equals("")) {
-                    Utility.showSweetAlert(MainActivity.this, "Client ID/Username/Password is mandatory.", CmsInter.ERROR_TYPE);
+                    if (CONFIG_FLAG)
+                        Utility.showSweetAlert(MainActivity.this, "Password is mandatory.", CmsInter.ERROR_TYPE);
+                    else
+                        Utility.showSweetAlert(MainActivity.this, "Client ID/Username/Password is mandatory.", CmsInter.ERROR_TYPE);
 
                 } else {
                     if (!CONFIG_FLAG) {

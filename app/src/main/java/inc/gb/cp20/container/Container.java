@@ -770,25 +770,27 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         }
 
         if (playIndex == playstData.length) {
-            final String url = "file://" + getFilesDir().getAbsolutePath() + "/thank/thank.htm";
-            webView.getSettings().setPluginState(WebSettings.PluginState.ON);
-            webView.getSettings().setJavaScriptEnabled(true);
-            webView.getSettings().setAllowFileAccess(true);
-            webView.setWebViewClient(new WebViewClient());
-            int SDK_INT = android.os.Build.VERSION.SDK_INT;
-            if (SDK_INT > 16) {
-                webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
-            }
-
-            iconsBar.getChildAt(0).setVisibility(View.GONE);
-            iconsBar.getChildAt(1).setVisibility(View.GONE);
-            reference.setVisibility(View.GONE);
-            webView.post(new Runnable() {
-                @Override
-                public void run() {
-                    webView.loadUrl(url);
+            if (backtoplaylist.getVisibility() != View.VISIBLE) {
+                final String url = "file://" + getFilesDir().getAbsolutePath() + "/thank/thank.htm";
+                webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+                webView.getSettings().setJavaScriptEnabled(true);
+                webView.getSettings().setAllowFileAccess(true);
+                webView.setWebViewClient(new WebViewClient());
+                int SDK_INT = android.os.Build.VERSION.SDK_INT;
+                if (SDK_INT > 16) {
+                    webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
                 }
-            });
+
+                iconsBar.getChildAt(0).setVisibility(View.GONE);
+                iconsBar.getChildAt(1).setVisibility(View.GONE);
+                reference.setVisibility(View.GONE);
+                webView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        webView.loadUrl(url);
+                    }
+                });
+            }
         } else {
             webView.getSettings().setPluginState(WebSettings.PluginState.ON);
             webView.getSettings().setJavaScriptEnabled(true);
@@ -1168,8 +1170,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     private void showAddDocDialog() {
         SweetAlertDialog dialog = new SweetAlertDialog(Container.this, SweetAlertDialog.WARNING_TYPE);
         dialog.setTitleText("Do you want to add more doctors?")
-                .setCancelText("No!")
-                .setConfirmText("Yes!")
+                .setCancelText("No !")
+                .setConfirmText("Yes !")
                 .showCancelButton(true)
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
@@ -1503,9 +1505,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     private void showAlertForTagDoc() {
         SweetAlertDialog sDialog = new SweetAlertDialog(Container.this, SweetAlertDialog.WARNING_TYPE);
         sDialog.setTitleText("Save Data?")
-                .setCancelText("No!")
-                .setConfirmText("Yes!")
-                .setNeutralText("Discard!")
+                .setCancelText("Cancel !")
+                .setConfirmText("Yes !")
+                .setNeutralText("Discard !")
                 .showCancelButton(true)
                 .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
@@ -1566,79 +1568,79 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
     private void saveData(int dataIndex) {
 //        if (cvrData[28].equals("1")) {
-            int flag = 0;
-            endTime = System.currentTimeMillis();
-            if (dataIndex == PLAYLISTINDEX) {//backpress//displayfocussedbrand
-                duration = endTime - startTime;
-            } else if (dataIndex == REFERENCEINDEX) {//onactivityresult
-                duration = endTime - startTimeForReference;
-                if (position == refEmailPos)
-                    flag = 1;
-            }
-            SQLiteDatabase db = handler.getWritableDatabase();
+        int flag = 0;
+        endTime = System.currentTimeMillis();
+        if (dataIndex == PLAYLISTINDEX) {//backpress//displayfocussedbrand
+            duration = endTime - startTime;
+        } else if (dataIndex == REFERENCEINDEX) {//onactivityresult
+            duration = endTime - startTimeForReference;
+            if (position == refEmailPos)
+                flag = 1;
+        }
+        SQLiteDatabase db = handler.getWritableDatabase();
 
-            double latitude = tracker.getLatitude();
-            double longitude = tracker.getLongitude();
+        double latitude = tracker.getLatitude();
+        double longitude = tracker.getLongitude();
 
-            ContentValues values = new ContentValues();
-            values.put("COL0", BU); //BU
-            values.put("COL1", TERRITORY); //Territory
-            values.put("COL2", patch); //Patch
-            values.put("COL3", currentDate); //Date
-            values.put("COL4", category_code);
-            values.put("COL5", category_name);
-            values.put("COL6", brandcode); //brandcode
+        ContentValues values = new ContentValues();
+        values.put("COL0", BU); //BU
+        values.put("COL1", TERRITORY); //Territory
+        values.put("COL2", patch); //Patch
+        values.put("COL3", currentDate); //Date
+        values.put("COL4", category_code);
+        values.put("COL5", category_name);
+        values.put("COL6", brandcode); //brandcode
 
-            if (dataIndex == PLAYLISTINDEX) {
-                values.put("COL7", playstData[previousIndex][0]); //pagecode
-            } else if (dataIndex == REFERENCEINDEX) {
-                values.put("COL7", refData[position][3]); //referenceid
-            }
+        if (dataIndex == PLAYLISTINDEX) {
+            values.put("COL7", playstData[previousIndex][0]); //pagecode
+        } else if (dataIndex == REFERENCEINDEX) {
+            values.put("COL7", refData[position][3]); //referenceid
+        }
 
-            values.put("COL8", duration); //duration
-            values.put("COL9", latitude); //latitude
-            values.put("COL10", longitude); //longitude
-            values.put("COL11", "0"); //Syncflag
-            values.put("COL12", "1"); //hardcode
+        values.put("COL8", duration); //duration
+        values.put("COL9", latitude); //latitude
+        values.put("COL10", longitude); //longitude
+        values.put("COL11", "0"); //Syncflag
+        values.put("COL12", "1"); //hardcode
 
-            if (dataIndex == PLAYLISTINDEX) {
-                values.put("COL13", emailFlag); //Email
-                values.put("COL14", startTimeString); //start time
-            } else if (dataIndex == REFERENCEINDEX) {
-                values.put("COL13", flag); //Email
-                values.put("COL14", startTimeStringForRef); //start time
-            }
+        if (dataIndex == PLAYLISTINDEX) {
+            values.put("COL13", emailFlag); //Email
+            values.put("COL14", startTimeString); //start time
+        } else if (dataIndex == REFERENCEINDEX) {
+            values.put("COL13", flag); //Email
+            values.put("COL14", startTimeStringForRef); //start time
+        }
 
-            if (index.equals("1"))
-                values.put("COL15", "D"); //Doctor
-            else if (index.equals("2"))
-                values.put("COL15", "R"); //RightSide
-            else if (index.equals("3"))
-                values.put("COL15", "P"); //playList
-            else if (index.equals("4"))
-                values.put("COL15", "L"); //Library
+        if (index.equals("1"))
+            values.put("COL15", "D"); //Doctor
+        else if (index.equals("2"))
+            values.put("COL15", "R"); //RightSide
+        else if (index.equals("3"))
+            values.put("COL15", "P"); //playList
+        else if (index.equals("4"))
+            values.put("COL15", "L"); //Library
 
-            if (dataIndex == PLAYLISTINDEX) {
-                values.put("COL16", likedislikeFlag); //like/dislike
-                values.put("COL17", ""); //reference pageid
-            } else if (dataIndex == REFERENCEINDEX) {
-                values.put("COL16", ""); //like/dislike
-                values.put("COL17", playstData[previousIndex][0]); //reference pageid
-            }
+        if (dataIndex == PLAYLISTINDEX) {
+            values.put("COL16", likedislikeFlag); //like/dislike
+            values.put("COL17", ""); //reference pageid
+        } else if (dataIndex == REFERENCEINDEX) {
+            values.put("COL16", ""); //like/dislike
+            values.put("COL17", playstData[previousIndex][0]); //reference pageid
+        }
 
-            values.put("COL18", randomNumber); //randrom number
-            values.put("COL19", Utility.getUniqueNo());
-            values.put("COL20", "0");
+        values.put("COL18", randomNumber); //randrom number
+        values.put("COL19", Utility.getUniqueNo());
+        values.put("COL20", "0");
 
-            if (dataIndex == PLAYLISTINDEX) {
-                values.put("COL21", playstData[previousIndex][7]); //playlistid
-            } else if (dataIndex == REFERENCEINDEX) {
-                values.put("COL21", ""); //playlistid
-            }
+        if (dataIndex == PLAYLISTINDEX) {
+            values.put("COL21", playstData[previousIndex][7]); //playlistid
+        } else if (dataIndex == REFERENCEINDEX) {
+            values.put("COL21", ""); //playlistid
+        }
 
-            db.insert("TXN102", null, values);
-            db.close();
- //       }
+        db.insert("TXN102", null, values);
+        db.close();
+        //       }
     }
 
     private void SyncData() {

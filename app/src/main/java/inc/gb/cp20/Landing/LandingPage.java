@@ -79,6 +79,9 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
     String CALLSYNC = "";
     TextView download_now, download_later, cancel, status_bar;
 
+    int fail_download_count = 0;
+    int sucess_dowload_count = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -381,10 +384,17 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
     @Override
     public void onItemListMenuClick(final DrList_POJO objDrListPOJO, View view) {
         super.onItemListMenuClick(objDrListPOJO, view);
-
+        String[][] menudata = dbHandler.genericSelect("Select * From TBDMENU where COL4='1'", 3);
         PopupMenu popup = new PopupMenu(LandingPage.this, view);
+        if (menudata != null) {
+            popup.getMenu().add(1, 1, 1, menudata[0][2]);
+        } else {
+            popup.getMenuInflater().inflate(R.menu.menu_main, popup.getMenu());
+        }
+
+        //  popup.getMenu().add(1, 1, 1, menudata[0][0]);
         //Inflating the Popup using xml file
-        popup.getMenuInflater().inflate(R.menu.menu_main, popup.getMenu());
+
         //registering popup with OnMenuItemClickListener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
@@ -400,10 +410,22 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                     intent.putExtras(bundle);
                     startActivity(intent);
                 } else {
-                    String[][] playListData = dbHandler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11, (select count(1) from TBDRG r where r.col0 = b.col0 ) ref from TBDPS2 a , TBDPG b\n" +
+//                    String[][] playListData = dbHandler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11, (select count(1) from TBDRG r where r.col0 = b.col0 ) ref from TBDPS2 a , TBDPG b\n" +
+//                            "        where a.col5 = b.col0\n" +
+//                            "        and a.COL10 = '" + objDrListPOJO.getCOL0() + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 9);
+//
+//                    String Playlist2[][] = dbHandler.genericSelect("select A.COL0, A.COL1, A.COL2, A.COL3, A.COL4, A.COL5, A.COL6, A.COL7, A.COL8, A.COL9, '" + objDrListPOJO.getCOL0() + "', '0' from TBDPS A WHERE COL3 = '" + objDrListPOJO.getCOL0() + "' and COL9 = '" + objDrListPOJO.getCOL16() + "'", 10);
+
+                    String brandQuery = "SELECT COL0, COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8 FROM TBBRAND b where b.COL0 = 'B' and exists (select 1 from TBDPS s, TBDPG t where s.col5 = t.col0 and s.col9= b.col0 and s.col1 =  b.col3 and t.col7 = '1' )";
+                    String[][] brandData = dbHandler.genericSelect(brandQuery, 9);
+
+                    String[][] countData = dbHandler.genericSelect("select count(1)  from TBDPS A , TBDPG B WHERE A.COL3 = '" + objDrListPOJO.getCOL17() + "' and A.COL9 = '" + objDrListPOJO.getCOL16() + "' and B.COL7 = '1' and A.COL5 = B.COL0", 1);
+
+                    String[][] playstData = dbHandler.genericSelect("select count(1) from TBDPS2 a , TBDPG b\n" +
                             "        where a.col5 = b.col0\n" +
-                            "        and a.COL10 = '" + objDrListPOJO.getCOL0() + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 9);
-                    if (playListData != null) {
+                            "        and a.COL10 = '" + objDrListPOJO.getCOL0() + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 1);
+
+                    if (brandData != null && (!countData[0][0].equals("0") || !playstData[0][0].equals("0"))) {
                         Intent intent = new Intent(LandingPage.this, Playlist.class);
                         Bundle bundle = new Bundle();
                         bundle.putString("customer_id", objDrListPOJO.getCOL0());
@@ -451,6 +473,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
     public void onRetryClick(TBBRAND item, View v, int position) {
         CallDownloadContainer(2, item.getCOL0(), item.getCOL3());
     }
+
 
     @Override
     public void mainBody(List<IRCSFResponsePOJO> list) {
@@ -533,10 +556,13 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                         });
                         break;
                     }
-                    if (!flag)
+                    if (!flag) {
                         pojo.setSTATUS("Failed");
-                    else
+                        fail_download_count++;
+                    } else {
                         pojo.setSTATUS("Completed");
+                        sucess_dowload_count++;
+                    }
                     LandingPage.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -575,7 +601,13 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                 content_dialog.dismiss();
                 dbHandler.UpdateTBRAND();
                 defaultLayout();
-                Utility.showSweetAlert(LandingPage.this, "Content successfully downloaded.", CmsInter.SUCCESS_TYPE);
+                if (fail_download_count != 0) {
+                    Utility.showSweetAlert(LandingPage.this, "Content downloading failed.", CmsInter.WARNING_TYPE);
+                    fail_download_count = 0;
+                } else {
+                    sucess_dowload_count = 0;
+                    Utility.showSweetAlert(LandingPage.this, "Content successfully downloaded.", CmsInter.SUCCESS_TYPE);
+                }
             }
 
         }

@@ -59,7 +59,7 @@ public class HorizontalRecylerView {
         second = mRecylerView.findViewById(R.id.secondrec);
 
         TextView HeaderTextView = (TextView) mRecylerView.findViewById(R.id.header);
-        HeaderTextView.setText(mContext.getResources().getString(R.string.threebar) + " " + Header);
+        HeaderTextView.setText(mContext.getResources().getString(R.string.threebar) + " " + Header );
         HeaderTextView.setTypeface(font);
 
         LinearLayoutManager layoutManager

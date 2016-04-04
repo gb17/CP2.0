@@ -16,6 +16,15 @@ public class ContentPage {
     String pageName;
     String category_code;
     String category_name;
+    String newtag;
+
+    public String getNewtag() {
+        return newtag;
+    }
+
+    public void setNewtag(String newtag) {
+        this.newtag = newtag;
+    }
 
     public String getImagepath() {
         return imagepath;

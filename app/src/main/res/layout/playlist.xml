@@ -36,9 +36,9 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
-                android:src="@drawable/hugh"
-                app:civ_border_color="#FF000000"
-                app:civ_border_width="2dp" />
+                android:src="@drawable/profile_img"
+                app:civ_border_color="#7b7979"
+                app:civ_border_width="1dp" />
 
             <TextView
                 android:id="@+id/data1"
@@ -118,6 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:padding="3dp"
                 android:text=""
                 android:textColor="#767272"
                 android:textSize="17sp"
@@ -129,9 +130,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="15dp"
                 android:layout_toLeftOf="@id/edit"
+                android:padding="3dp"
                 android:text=""
                 android:textColor="#2d2b2b"
-                android:textSize="17sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -141,9 +143,10 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="15dp"
                 android:layout_toLeftOf="@id/preview"
+                android:padding="3dp"
                 android:text=""
                 android:textColor="#2d2b2b"
-                android:textSize="17sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -152,9 +155,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="15dp"
                 android:layout_toLeftOf="@id/cancel"
+                android:padding="3dp"
                 android:text=""
                 android:textColor="#767272"
-                android:textSize="17sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -163,9 +167,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="15dp"
                 android:layout_toLeftOf="@id/reset"
+                android:padding="3dp"
                 android:text=""
                 android:textColor="#767272"
-                android:textSize="17sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <android.support.v7.widget.RecyclerView
@@ -194,21 +199,22 @@
             <TextView
                 android:id="@+id/searchClick"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:layout_alignParentRight="true"
                 android:layout_below="@id/recycler_view"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/bg_roundedgray_edit"
-                android:paddingBottom="4dp"
+                android:gravity="center"
+                android:paddingBottom="2dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:paddingTop="4dp"
-                android:text=""
+                android:paddingTop="2dp"
+                android:text="Search"
+                android:visibility="invisible"
                 android:textColor="#2d2c2c"
                 android:textSize="17sp"
-                android:textStyle="bold"
-                android:visibility="invisible" />
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/search"
@@ -219,6 +225,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_toLeftOf="@id/searchClick"
                 android:ems="10"
+                android:singleLine="true"
                 android:visibility="invisible" />
 
             <android.support.v7.widget.RecyclerView

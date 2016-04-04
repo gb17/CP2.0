@@ -36,10 +36,6 @@ public class ThumbnailAdapterForPages extends RecyclerView.Adapter<ThumbnailAdap
     static Typeface font;
     static Context mContext;
     FragmentManager fragmentManager;
-    Integer Imagearr[] = {R.drawable.dempi, R.drawable.newace, R.drawable.newcfix1, R.drawable.newcfix3, R.drawable.newjade
-            , R.drawable.newmezzo, R.drawable.newstillsep, R.drawable.solsuna, R.drawable.stelpep, R.drawable.zepine, R.drawable.stelpep, R.drawable.zepine,
-            R.drawable.dempi, R.drawable.newace, R.drawable.newcfix1, R.drawable.newcfix3, R.drawable.newjade
-            , R.drawable.newmezzo, R.drawable.newstillsep, R.drawable.solsuna, R.drawable.stelpep, R.drawable.zepine, R.drawable.stelpep, R.drawable.zepine};
 
     public ThumbnailAdapterForPages(List<ContentPage> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener) {
         this.brandList = brandList;
@@ -53,7 +49,7 @@ public class ThumbnailAdapterForPages extends RecyclerView.Adapter<ThumbnailAdap
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title;
+        public TextView title, newtag;
 
         ImageView imageView;
 
@@ -61,6 +57,7 @@ public class ThumbnailAdapterForPages extends RecyclerView.Adapter<ThumbnailAdap
         public MyViewHolder(View view) {
             super(view);
             title = (TextView) view.findViewById(R.id.title);
+            newtag = (TextView) view.findViewById(R.id.newtag);
             imageView = (ImageView) view.findViewById(R.id.bandimage);
         }
 
@@ -95,13 +92,15 @@ public class ThumbnailAdapterForPages extends RecyclerView.Adapter<ThumbnailAdap
     public void onBindViewHolder(MyViewHolder holder, int position) {
         ContentPage tbbrand = brandList.get(position);
         holder.title.setText(tbbrand.getPageName());
-
+        if (!tbbrand.getNewtag().equals("0")) {
+            holder.newtag.setVisibility(View.INVISIBLE);
+        } else {
+            holder.newtag.setVisibility(View.VISIBLE);
+        }
 
         String filePath = new File(mContext.getFilesDir() + "/" + FilenameUtils.removeExtension(tbbrand.getImagepath()) + "/", FilenameUtils.removeExtension(tbbrand.getImagepath()) + ".png").getAbsolutePath();
         bitmap = BitmapFactory.decodeFile(filePath);
         holder.imageView.setImageBitmap(bitmap);
-        holder.bind(brandList.get(position), position);
-
         holder.bind(brandList.get(position), position);
 
 

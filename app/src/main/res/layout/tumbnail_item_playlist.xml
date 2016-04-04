@@ -85,9 +85,9 @@
         android:layout_above="@+id/refcount"
         android:layout_marginRight="10dp"
         android:layout_toLeftOf="@+id/ref"
-        android:visibility="gone"
+        android:scaleType="fitXY"
         android:src="@drawable/custom"
-        android:scaleType="fitXY"/>
+        android:visibility="gone" />
 
 
     <RelativeLayout
@@ -133,7 +133,8 @@
         android:text="NEW"
         android:textColor="@android:color/white"
         android:textSize="10dp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/close"
