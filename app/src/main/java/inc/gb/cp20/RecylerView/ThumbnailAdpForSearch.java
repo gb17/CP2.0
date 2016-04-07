@@ -21,6 +21,7 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.File;
 import java.util.List;
 
+import inc.gb.cp20.DB.DBHandler;
 import inc.gb.cp20.Models.SearchData;
 import inc.gb.cp20.R;
 import inc.gb.cp20.container.VideoPlay;
@@ -36,7 +37,7 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
     static Typeface font;
     static Context mContext;
     FragmentManager fragmentManager;
-
+    static DBHandler dbHandler;
     Bitmap bitmap;
 
     public ThumbnailAdpForSearch(List<SearchData> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener) {
@@ -46,6 +47,7 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
         this.itemListener = itemListener;
         font = Typeface.createFromAsset(mContext.getAssets(),
                 "fontawesome-webfont.ttf");
+        dbHandler = DBHandler.getInstance(mContext);
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -93,10 +95,25 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
                                     .show();
                         }
                     } else {
+
+                        String pos = "0";
+                        String[][] playstData = dbHandler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11 from TBDPS a , TBDPG b\n" +
+                                "        where a.col5 = b.col0\n" +
+                                "        and a.COL3 = '" + brandList.getBrand_code() + "' and a.COL9 = '" + brandList.getCat_Type() + "' and a.COL10 = 'IPL' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
+                        if (playstData != null)
+                            for (int i = 0; i < playstData.length; ++i) {
+                                for (int j = 0; j < playstData[i].length; ++j) {
+                                    if (brandList.getPageCode().equals(playstData[i][0])) {
+                                        pos = i + "";
+                                        break;
+                                    }
+                                }
+                            }
                         Intent intent = new Intent();
                         intent.putExtra("category_code", brandList.getBrand_code());
                         intent.putExtra("category_name", brandList.getCat_Type());
-                        intent.putExtra("page_number", Position_ + "");
+                        intent.putExtra("page_number", pos);
+                        intent.putExtra("index_lib", "4");
                         ((Activity) mContext).setResult(Activity.RESULT_OK, intent);
                         ((Activity) mContext).finish();
                     }

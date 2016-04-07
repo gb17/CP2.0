@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=yes">
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <link rel="stylesheet" href="./Common/Scripts/animate.css" type="text/css" media="screen">
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="author" content="stilearning">
+    <meta name="MobileOptimized" content="width" />
+    <meta name="HandheldFriendly" content="true" />
+    <link href="http://fonts.googleapis.com/css?family=Aclonica:regular" rel="stylesheet" type="text/css" />
+    <link href="./Common/Scripts/bootstrap.css" rel="stylesheet">
+    <link href="./Common/Scripts/bootstrap-responsive.css" rel="stylesheet">
+    <link id="style-base" href="./Common/Scripts/stilearn.css" rel="stylesheet">
+    <link id="style-responsive" href="./Common/Scripts/stilearn-responsive.css" rel="stylesheet">
+    <link id="style-helper" href="./Common/Scripts/stilearn-helper.css" rel="stylesheet">
+    <link href="./Common/Scripts/stilearn-icon.css" rel="stylesheet">
+    <link href="./Common/Scripts/font-awesome.css" rel="stylesheet">
+    <link href="./Common/Scripts/animate.css" rel="stylesheet">
+    <link href="./Common/Scripts/uniform.default.css" rel="stylesheet">
+    <script src=./Common/Scripts/jquery-1.10.1.min.js></script>
+    <script src=./Common/Scripts/jquery-ui.js></script>
+    <style type="text/css">
+        html, body {
+        background-size: cover;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: contain;
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+        }
+
+        img, div {
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        }
+
+        #panel, #mainpage {
+        text-align: center; /*background-color:#e5eecc;border:solid 1px #c3c3c3;*/
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        z-index: 1;
+        background-size: contain;
+        }
+
+        #mainpage {
+        z-index: 10;
+        background-color: #ffffff;
+        background-size: contain;
+        }
+
+        .leftslide {
+        -webkit-animation: slideleft 1.5s 1.0s 1 ease forwards;
+        -moz-animation: slideleft 1.5s 1.0s 1 ease forwards;
+        }
+
+        .topslide {
+        -webkit-animation: slideDown 1.5s 0.0s 1 ease forwards;
+        -moz-animation: slideDown 1.5s 0.0s 1 ease forwards;
+        }
+
+        .leftslidemain {
+        -webkit-animation: slideleft1 1.0s 0.0s 1 ease forwards;
+        -moz-animation: slideleft1 1.0s 0.0s 1 ease forwards;
+        }
+
+        @-webkit-keyframes slideleft {
+        0% {
+        -webkit-transform: translateX( -105%);
+        }
+
+        100% {
+        -webkit-transform: translateX(70%);
+        }
+        }
+
+        @-webkit-keyframes slideleft1 {
+        0% {
+        -webkit-transform: translateX( 0%);
+        }
+
+        100% {
+        -webkit-transform: translateX(-105%);
+        }
+        }
+
+        @-webkit-keyframes slideDown {
+        0% {
+        -webkit-transform: translateY( -75%);
+        }
+
+        100% {
+        -webkit-transform: translateY(184.5%);
+        }
+        }
+    </style>
+    <script>
+        function SendCLID(id) {
+
+            cpjs.sendToAndroid(id);
+        }
+        function OnHSPClick(ID, redirPage) {
+            //window.location.href = "../" + ID + "/" + redirPage;
+            var IDPREF = ID;
+            if (ID != 'NextBrand')
+                SendCLID(IDPREF);
+            if (redirPage != '')
+                window.location.href = redirPage;
+            else
+                javaObj.playNextFocussedBrand();
+        }
+    </script>
+</head>
+<body>
+
+<div id="panel">
+    <img src=./Common/Resources/bg.png class="img-responsive" style="height:100%; width:100%;" />
+
+
+
+    <div id=div161609 onclick="OnHSPClick('Hiora9', 'Hiora9.htm');"></div>
+    <!--<script>function clickhandlerdiv161609() { if (navigator.userAgent.match(/msie/i) || navigator.userAgent.match(/trident/i)) { window.external.notify('Hiora9/Hiora9.html'); } else if (navigator.userAgent.indexOf("Chrome") != -1) { cpjs.sendToAndroid("Hiora9"); } else { window.location.href = 'Hiora9/Hiora9.html'; } }</script>-->
+
+    <style>
+        #div161609 {
+        opacity: 0.0;
+        position: absolute;
+        z-index: 5;
+        class: img-responsive;
+        background-image: url(./Common/Resources/1.png );
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: center;
+        top: 30.0000004334882%;
+        left: 5.99999983744189%;
+        height: 15.3750000325116%;
+        width: 44.4531241448767%;
+        z-index: 0;
+        }
+    </style>
+
+
+    <div id=div161608 onclick="OnHSPClick('Hiora30', 'Hiora30.htm');"></div>
+    <!--<script>function clickhandlerdiv161608() { if (navigator.userAgent.match(/msie/i) || navigator.userAgent.match(/trident/i)) { window.external.notify('Hiora30/Hiora30.html'); } else if (navigator.userAgent.indexOf("Chrome") != -1) { cpjs.sendToAndroid("Hiora30"); } else { window.location.href = 'Hiora30/Hiora30.html'; } }</script>-->
+
+    <style>
+        #div161608 {
+        opacity: 0.0;
+        position: absolute;
+        z-index: 5;
+        class: img-responsive;
+        background-image: url(./Common/Resources/2.png );
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: center;
+        top: 50%;
+        left: 5.99999983744189%;
+        height: 16.0000000866976%;
+        width: 39.2968754487282%;
+        z-index: 0;
+        }
+    </style>
+
+
+    <div id=div161611 onclick="OnHSPClick('Hiora48', 'Hiora48.htm');"></div>
+    <!--<script>function clickhandlerdiv161611() { if (navigator.userAgent.match(/msie/i) || navigator.userAgent.match(/trident/i)) { window.external.notify('Hiora48/Hiora48.html'); } else if (navigator.userAgent.indexOf("Chrome") != -1) { cpjs.sendToAndroid("Hiora48"); } else { window.location.href = 'Hiora48/Hiora48.html'; } }</script>-->
+
+    <style>
+        #div161611 {
+        opacity: 0.0;
+        position: absolute;
+        z-index: 5;
+        class: img-responsive;
+        background-image: url(./Common/Resources/3.png );
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: center;
+        top: 72.9999959252108%;
+        left: 5.99999983744189%;
+        height: 17.9999998266047%;
+        width: 29.8437496782705%;
+        z-index: 0;
+        }
+    </style>
+
+
+    <div id=div161502 onclick="OnHSPClick('Hiora20', 'Hiora20.htm');"></div>
+    <!--<script>function clickhandlerdiv161502() { if (navigator.userAgent.match(/msie/i) || navigator.userAgent.match(/trident/i)) { window.external.notify('Hiora20/Hiora20.html'); } else if (navigator.userAgent.indexOf("Chrome") != -1) { cpjs.sendToAndroid("Hiora20"); } else { window.location.href = 'Hiora20/Hiora20.html'; } }</script>-->
+
+    <style>
+        #div161502 {
+        opacity: 0.0;
+        position: absolute;
+        z-index: 5;
+        class: img-responsive;
+        background-image: url(./Common/Resources/4.png );
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: center;
+        top: 26.9999997399071%;
+        left: 55.999998482791%;
+        height: 17.2500001950697%;
+        width: 34.5312512022528%;
+        z-index: 0;
+        }
+    </style>
+
+
+    <div id=div161616 onclick="OnHSPClick('Hiora54', 'Hiora54.htm');"></div>
+    <!--<script>function clickhandlerdiv161616() { if (navigator.userAgent.match(/msie/i) || navigator.userAgent.match(/trident/i)) { window.external.notify('Hiora54/Hiora54.html'); } else if (navigator.userAgent.indexOf("Chrome") != -1) { cpjs.sendToAndroid("Hiora54"); } else { window.location.href = 'Hiora54/Hiora54.html'; } }</script>-->
+
+    <style>
+        #div161616 {
+        opacity: 0.0;
+        position: absolute;
+        z-index: 5;
+        class: img-responsive;
+        background-image: url(./Common/Resources/6.png );
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: center;
+        top: 72.9999959252108%;
+        left: 57.999999783256%;
+        height: 13.750000108372%;
+        width: 35.0781238062139%;
+        z-index: 0;
+        }
+    </style>
+
+
+    <div id=div161614 onclick="OnHSPClick('Hiora39', 'Hiora39.htm');"></div>
+    <!--<script>function clickhandlerdiv161614() { if (navigator.userAgent.match(/msie/i) || navigator.userAgent.match(/trident/i)) { window.external.notify('Hiora39/Hiora39.html'); } else if (navigator.userAgent.indexOf("Chrome") != -1) { cpjs.sendToAndroid("Hiora39"); } else { window.location.href = 'Hiora39/Hiora39.html'; } }</script>-->
+
+    <style>
+        #div161614 {
+        opacity: 0.0;
+        position: absolute;
+        z-index: 5;
+        class: img-responsive;
+        background-image: url(./Common/Resources/5.png );
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: center;
+        top: 50%;
+        left: 57.999999783256%;
+        height: 15.8750005093486%;
+        width: 25.1562508635901%;
+        z-index: 0;
+        }
+    </style>
+
+    <script>function myAudFunction() { } $(document).ready(function () { var popupfadetime = 0; myAudFunction(); $("#div161609").delay(500).animate({ "opacity": "1", "animation-duration": "s" }, 1, function () { $("#div161609").attr({ "class": "animated zoomIn" }) }); $("#div161608").delay(500).animate({ "opacity": "1", "animation-duration": "s" }, 1, function () { $("#div161608").attr({ "class": "animated zoomIn" }) }); $("#div161611").delay(500).animate({ "opacity": "1", "animation-duration": "s" }, 1, function () { $("#div161611").attr({ "class": "animated zoomIn" }) }); $("#div161502").delay(500).animate({ "opacity": "1", "animation-duration": "s" }, 1, function () { $("#div161502").attr({ "class": "animated zoomIn" }) }); $("#div161616").delay(500).animate({ "opacity": "1", "animation-duration": "s" }, 1, function () { $("#div161616").attr({ "class": "animated zoomIn" }) }); $("#div161614").delay(500).animate({ "opacity": "1", "animation-duration": "s" }, 1, function () { $("#div161614").attr({ "class": "animated zoomIn" }) }) });</script>
+</div>
+</body>
+</html>

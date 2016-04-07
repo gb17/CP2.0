@@ -88,7 +88,7 @@ public class TagDownloading implements DownloadInterface {
             final String datavalues[] = psdf[0][3].split("\\^");
             instaneceId = datavalues[4];
             Repcode = datavalues[3];
-            RoleCode = datavalues[5].substring(0, 1);
+            RoleCode = datavalues[6];
             Version = psdf[0][1];
             ClientID = psdf[0][4];
             //valueArr[5];
@@ -190,14 +190,14 @@ public class TagDownloading implements DownloadInterface {
                         }
 
                     } else {
-                        Utility.showSweetAlert(mContext, "OOps!", CmsInter.ERROR_TYPE);
+                        Utility.showSweetAlert(mContext,CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
                         dialog.dismiss();
                     }
                 }
 
                 @Override
                 public void onFailure(Throwable t) {
-                    Utility.showSweetAlert(mContext, t.toString(), CmsInter.ERROR_TYPE);
+                    Utility.showSweetAlert(mContext, CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
                     dialog.dismiss();
                 }
 
@@ -388,7 +388,7 @@ public class TagDownloading implements DownloadInterface {
 
             @Override
             public void onFailure(Throwable t) {
-                Utility.showSweetAlert(mContext, t.toString(), CmsInter.ERROR_TYPE);
+                Utility.showSweetAlert(mContext, CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
                 dialog.dismiss();
             }
         });

@@ -6,14 +6,13 @@
 
     <TextView
         android:id="@+id/close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="8dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="8dp"
         android:text="@string/icon_cross"
+        android:gravity="center|top"
+        android:layout_marginBottom="5dp"
         android:textColor="#6B6B6B"
         android:textSize="30sp" />
 
@@ -46,8 +45,7 @@
             android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:background="#c9c5c5"
-            android:orientation="vertical">
-        </LinearLayout>
+            android:orientation="vertical"></LinearLayout>
 
         <RelativeLayout
             android:layout_width="0dp"

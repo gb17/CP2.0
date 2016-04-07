@@ -322,7 +322,7 @@ public class DBHandler extends SQLiteOpenHelper {
                     e.printStackTrace();
                     cnt = 0;
                 }
-                if (cnt > 0) {
+                if (cnt >= 0) {
                     String newTable = TABLE.substring(2, TABLE.length());
                     String countQuery1 = "SELECT REC_COUNT FROM TBTBC Where TAG='"
                             + newTable + "'";

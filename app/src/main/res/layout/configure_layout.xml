@@ -41,7 +41,7 @@
         app:progress_reached_bar_height="10dp"
         app:progress_text_size="10sp"
         app:progress_unreached_bar_height="10dp"
-        custom:progress_text_color="#FFFFFF" />
+        custom:progress_text_color="#414762" />
 
     <TextView
         android:layout_width="wrap_content"

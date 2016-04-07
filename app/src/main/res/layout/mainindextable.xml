@@ -5,25 +5,46 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/searchView"
+    <FrameLayout
+        android:id="@+id/frame"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_toLeftOf="@+id/sideIndex"
-        android:layout_weight="1"
-        android:background="@color/search_bg"
-        android:hint="Select Doctor"
-        android:paddingLeft="5dp"
-        android:singleLine="true"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#b3b0b0" />
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/sideIndex">
+
+        <EditText
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/frame"
+            android:layout_toLeftOf="@+id/sideIndex"
+            android:layout_weight="1"
+            android:background="@color/search_bg"
+            android:hint="Select Doctor"
+            android:paddingLeft="5dp"
+            android:singleLine="true"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#b3b0b0" />
+
+        <TextView
+            android:id="@+id/clr_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="10dp"
+            android:padding="4dp"
+            android:text="@string/cross"
+            android:textColor="#b3b0b0"
+            android:textSize="22sp"
+           />
+
+    </FrameLayout>
 
 
     <LinearLayout
         android:id="@+id/layouts"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/searchView"
+        android:layout_below="@+id/frame"
         android:layout_toLeftOf="@+id/sideIndex"
 
         android:orientation="horizontal">

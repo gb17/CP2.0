@@ -1,5 +1,6 @@
 package inc.gb.cp20.container;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -29,11 +30,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -69,8 +70,12 @@ import inc.gb.cp20.widget.ColorPickerDialog;
 /**
  * Created by Shubham on 2/8/16.
  */
+
+@SuppressLint("SetJavaScriptEnabled")
 public class Container extends AlphaListActivity implements View.OnClickListener {
 
+
+    int stepcount = 1;
     private LinearLayout iconsBar;
     Button open = null;
     ImageView annot1, annot2, prevBrand, nextBrand, reference, close, backtoplaylist;
@@ -96,7 +101,13 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     private long startTimeForReference = 0;
     private String startTimeStringForRef = "";
     //, {"103", "Annotation", "icon7.png", "3"}
-    String[][] iconsData = {{"101", "Back to playlist", "icon1.png", "1"}, {"102", "email", "icon6.png", "2"}, {"103", "Annotation", "icon7.png", "3"}, {"104", "Like", "icon8.png", "3"}, {"105", "Dislike", "icon9.png", "3"}, {"106", "Search", "icon10.png", "4"}, {"107", "Close", "icon11.png", "4"}};
+    String[][] iconsData = {{"101", "Back to playlist", "icon1.png", "1"},
+            {"102", "email", "icon6.png", "2"},
+            {"103", "Annotation", "icon7.png", "3"},
+            {"104", "Like", "icon8.png", "3"},
+            {"105", "Dislike", "icon9.png", "3"},
+            {"106", "Search", "icon10.png", "4"},
+            {"107", "Close", "icon11.png", "4"}};
     int groupId = 0;
     private Typeface font;
     int playIndex = 0;
@@ -143,6 +154,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     EditText searchView;
     String[] cvrData;
 
+    int mycountcount = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,6 +171,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         thumbnail_category = extras.getString("thumbnail_category");
         index = extras.getString("index");
         patch = extras.getString("patch");
+
 
         if (customer_id == null)
             customer_id = "";
@@ -288,8 +302,27 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
         mylinear = (LinearLayout) findViewById(R.id.mainid);
         webView = (WebView) findViewById(R.id.webView);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setPluginState(WebSettings.PluginState.ON_DEMAND);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setAllowFileAccess(true);
+        int SDK_INT = android.os.Build.VERSION.SDK_INT;
+        if (SDK_INT > 16) {
+            webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+        }
+
+        // webView.addJavascriptInterface(this, "cpjs");
+
+        webView.addJavascriptInterface(new JavaScriptInterface(this),
+                "cpjs");
+
+
         gesturesView = (GestureOverlayView) findViewById(R.id.gestures);
         gesturesView2 = (GestureOverlayView) findViewById(R.id.gestures2);
+
+        gesturesView.setVisibility(View.GONE);
+        gesturesView2.setVisibility(View.GONE);
+
         gesturesView.addOnGesturePerformedListener(listener);
         gesturesView2.setOnClickListener(new View.OnClickListener() {
 
@@ -485,6 +518,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         fillBrandList();
     }
 
+
     public void disMiss(int pos) {
         refEmailPos = pos;
         refDialog.dismiss();
@@ -531,34 +565,42 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
     }
 
-    private void fillPlayList(int index) {
-        Bitmap bitmap = null;
-        content2.removeAllViews();
-        if (playstData != null) {
-            for (int i = 0; i < playstData.length; i++) {
-                LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View view = inflater.inflate(R.layout.playlist_groups, null);
-                view.setId(i);
-                String filePath = new File(getFilesDir() + "/" + FilenameUtils.removeExtension(playstData[i][2]) + "/", FilenameUtils.removeExtension(playstData[i][2]) + ".png").getAbsolutePath();
-                bitmap = BitmapFactory.decodeFile(filePath);
-                ImageView img = (ImageView) view.findViewById(R.id.img);
-                img.setImageBitmap(bitmap);
 
-                TextView name = (TextView) view.findViewById(R.id.name);
-                name.setText(playstData[i][3]);
-                view.setOnClickListener(pagesListener);
-                if (index == 0 && i == 0) {
-                    img.setScaleX(1.4f);
-                    img.setScaleY(1.4f);
-                    displayFocussedBrands(0);
-                } else if (index == 1 && i == playIndex) {
-                    img.setScaleX(1.4f);
-                    img.setScaleY(1.4f);
-                    displayFocussedBrands(playIndex);
+    private void fillPlayList(final int index) {
+
+        Container.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (playstData != null) {
+                    Bitmap bitmap = null;
+                    content2.removeAllViews();
+                    for (int i = 0; i < playstData.length; i++) {
+                        LayoutInflater inflater = (LayoutInflater) Container.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        View view = inflater.inflate(R.layout.playlist_groups, null);
+                        view.setId(i);
+                        String filePath = new File(getFilesDir() + "/" + FilenameUtils.removeExtension(playstData[i][2]) + "/", FilenameUtils.removeExtension(playstData[i][2]) + ".png").getAbsolutePath();
+                        bitmap = BitmapFactory.decodeFile(filePath);
+                        ImageView img = (ImageView) view.findViewById(R.id.img);
+                        img.setImageBitmap(bitmap);
+
+                        TextView name = (TextView) view.findViewById(R.id.name);
+                        name.setText(playstData[i][3]);
+                        view.setOnClickListener(pagesListener);
+                        if (index == 0 && i == 0) {
+                            img.setScaleX(1.4f);
+                            img.setScaleY(1.4f);
+                            displayFocussedBrands(0);
+                        } else if (index == 1 && i == playIndex) {
+                            img.setScaleX(1.4f);
+                            img.setScaleY(1.4f);
+                            displayFocussedBrands(playIndex);
+                        }
+                        content2.addView(view);
+                    }
                 }
-                content2.addView(view);
             }
-        }
+        });
+
     }
 
     private void fillBrandList() {
@@ -597,8 +639,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             }
             imageView.setScaleX(1.4f);
             imageView.setScaleY(1.4f);
-            previousIndex = 0;
+            previousIndex = playIndex;
             playIndex = 0;
+
             playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11 from TBDPS a , TBDPG b\n" +
                     "        where a.col5 = b.col0\n" +
                     "        and a.COL3 = '" + brandcode + "' and a.COL9 = '" + thumbnail_category + "' and a.COL10 = 'IPL' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
@@ -636,6 +679,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             gesturesView.cancelClearAnimation();
             gesturesView.clear(true);
             gesturesView.setVisibility(View.GONE);
+            seek.setVisibility(View.GONE);
+            colorw.setVisibility(View.GONE);
             ImageView image = (ImageView) findViewById(R.id.annot1);
             image.setTag("1");
             previousIndex = playIndex;
@@ -746,36 +791,44 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             Date date = new Date();
             DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
             startTimeString = formatter.format(date);
+            Container.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    emailFlag = "0";
+                    likedislikeFlag = "0";
+                    String filePath = "";
+                    Bitmap bitmap = null;
+                    filePath = new File(getFilesDir(), "icon6.png").getAbsolutePath();
+                    bitmap = BitmapFactory.decodeFile(filePath);
+                    iconsBar.getChildAt(0).setTag("1");
+                    ((ImageView) iconsBar.getChildAt(0)).setImageBitmap(bitmap);
 
-            emailFlag = "0";
-            likedislikeFlag = "0";
-            String filePath = "";
-            Bitmap bitmap = null;
-            filePath = new File(getFilesDir(), "icon6.png").getAbsolutePath();
-            bitmap = BitmapFactory.decodeFile(filePath);
-            iconsBar.getChildAt(0).setTag("1");
-            ((ImageView) iconsBar.getChildAt(0)).setImageBitmap(bitmap);
+                    filePath = new File(getFilesDir(), "icon7.png").getAbsolutePath();
+                    bitmap = BitmapFactory.decodeFile(filePath);
+                    iconsBar.getChildAt(2).setTag("1");
+                    ((ImageView) iconsBar.getChildAt(2)).setImageBitmap(bitmap);
 
-            filePath = new File(getFilesDir(), "icon8.png").getAbsolutePath();
-            bitmap = BitmapFactory.decodeFile(filePath);
-            iconsBar.getChildAt(3).setTag("1");
-            ((ImageView) iconsBar.getChildAt(3)).setImageBitmap(bitmap);
+                    filePath = new File(getFilesDir(), "icon8.png").getAbsolutePath();
+                    bitmap = BitmapFactory.decodeFile(filePath);
+                    iconsBar.getChildAt(3).setTag("1");
+                    ((ImageView) iconsBar.getChildAt(3)).setImageBitmap(bitmap);
 
-            filePath = new File(getFilesDir(), "icon9.png").getAbsolutePath();
-            bitmap = BitmapFactory.decodeFile(filePath);
-            iconsBar.getChildAt(4).setTag("1");
-            ((ImageView) iconsBar.getChildAt(4)).setImageBitmap(bitmap);
+                    filePath = new File(getFilesDir(), "icon9.png").getAbsolutePath();
+                    bitmap = BitmapFactory.decodeFile(filePath);
+                    iconsBar.getChildAt(4).setTag("1");
+                    ((ImageView) iconsBar.getChildAt(4)).setImageBitmap(bitmap);
+                    bitmap = null;
+                }
+            });
 
-            bitmap = null;
+
         }
 
         if (playIndex == playstData.length) {
             if (backtoplaylist.getVisibility() != View.VISIBLE) {
                 final String url = "file://" + getFilesDir().getAbsolutePath() + "/thank/thank.htm";
-                webView.getSettings().setPluginState(WebSettings.PluginState.ON);
-                webView.getSettings().setJavaScriptEnabled(true);
-                webView.getSettings().setAllowFileAccess(true);
-                webView.setWebViewClient(new WebViewClient());
+
+
                 int SDK_INT = android.os.Build.VERSION.SDK_INT;
                 if (SDK_INT > 16) {
                     webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
@@ -792,14 +845,6 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 });
             }
         } else {
-            webView.getSettings().setPluginState(WebSettings.PluginState.ON);
-            webView.getSettings().setJavaScriptEnabled(true);
-            webView.getSettings().setAllowFileAccess(true);
-            webView.setWebViewClient(new WebViewClient());
-            int SDK_INT = android.os.Build.VERSION.SDK_INT;
-            if (SDK_INT > 16) {
-                webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
-            }
 
             final String url = "file://" + getFilesDir().getAbsolutePath() + "/" + FilenameUtils.removeExtension(playstData[playIndex][2]) + "/" + playstData[playIndex][2];
 
@@ -811,11 +856,14 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 iconsBar.getChildAt(1).setVisibility(View.GONE);
             }
             String refCount[][] = handler.genericSelect("Select count (1) from TBDRG where COL0 = '" + playstData[playIndex][0] + "'", 1);
-            if (Integer.parseInt(refCount[0][0]) > 0) {//Reference
+
+            if (refCount != null && Integer.parseInt(refCount[0][0]) > 0) {//Reference
                 reference.setVisibility(View.VISIBLE);
                 reference.setTag(playstData[playIndex][0]);
             } else
                 reference.setVisibility(View.GONE);
+
+
             // startTime = System.currentTimeMillis();
             webView.post(new Runnable() {
                 @Override
@@ -851,7 +899,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
             switch (id) {
                 case R.id.backtoplaylist: // Back to Playlist
+                    previousIndex = playIndex;
                     playIndex = actualPlayIndex;
+
                     count = 0;
                     for (int i = 0; i < content3.getChildCount(); i++) {
                         content3.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
@@ -859,8 +909,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     fillPlaystData();
                     fillPlayList(1);
                     RelativeLayout rlView = (RelativeLayout) content2.getChildAt(playIndex);
-                    int x = rlView.getRight();
-                    int y = rlView.getTop();
+//                    int x = rlView.getRight();
+//                    int y = rlView.getTop();
                     backtoplaylist.setVisibility(View.GONE);
                     flagForPlaylist = false;
                     break;
@@ -962,8 +1012,16 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     likedislikeFlag = "2";
                     break;
                 case 106: //library
+
+//                    if (!customer_id.equals("") || category_name.equalsIgnoreCase("S")) {
+//                        backtoplaylist.setVisibility(View.VISIBLE);
+//                        flagForPlaylist = true;
+//                    }
                     if (actualPlayIndex == 0)
                         actualPlayIndex = playIndex;
+                    if (count == 0)
+                        actualPlayIndex = playIndex;
+                    count++;
                     hideDrawer();
                     Intent intent1 = new Intent(this, ContentLibrary.class);
                     startActivityForResult(intent1, 1212);
@@ -1002,6 +1060,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             String category_code = data.getStringExtra("category_code");
             String category_name = data.getStringExtra("category_name");
             String page_number = data.getStringExtra("page_number");
+            index = data.getStringExtra("index_lib");
+            previousIndex = playIndex;
+            //
             playIndex = Integer.parseInt(page_number);
             playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11 from TBDPS a , TBDPG b\n" +
                     "        where a.col5 = b.col0\n" +
@@ -1213,6 +1274,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         dialog.getWindow();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.add_doc);
+        dialog.setCancelable(false);
         dialog.getWindow().setBackgroundDrawable(
                 new ColorDrawable(
                         Color.TRANSPARENT));
@@ -1229,8 +1291,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         View view1 = list.getAlphabestListView("TBPARTY", false, false, true, 0, "", CmsInter.TAG_DOC_LEFT);
         first.addView(view1);
         leftList = (ListView) ((LinearLayout) ((RelativeLayout) view1).getChildAt(1)).getChildAt(0);
-
-        searchView = (EditText) ((RelativeLayout) view1).getChildAt(0);
+        FrameLayout frameLayout = (FrameLayout) ((RelativeLayout) view1).getChildAt(0);
+        searchView = (EditText) (frameLayout.getChildAt(0));
         searchView.addTextChangedListener(new TextWatcher() {
                                               String notexistQuery = " not exists (SELECT 1 FROM TBNAME where COL0 = TBPARTY.COL0)";
 
@@ -1477,7 +1539,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                             speciality.setSelection(0);
                                             clas.setSelection(0);
                                         } else {
-                                            Utility.showSweetAlert(Container.this, "Please select some values.", CmsInter.ERROR_TYPE);
+                                            Utility.showSweetAlert(Container.this, CmsInter.AL_BLANK, CmsInter.ERROR_TYPE);
                                         }
                                     }
                                 }
@@ -1554,10 +1616,13 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
     @Override
     public void onBackPressed() {
+
+
         if (index.equals("3")) {
             previousIndex = playIndex;
             if (previousIndex != playstData.length)
                 saveData(PLAYLISTINDEX);
+
             super.onBackPressed();
         } else if (playstData != null) {
             showAlertForDetailing();
@@ -1567,7 +1632,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     }
 
     private void saveData(int dataIndex) {
-//        if (cvrData[28].equals("1")) {
+
+        stepcount++;
         int flag = 0;
         endTime = System.currentTimeMillis();
         if (dataIndex == PLAYLISTINDEX) {//backpress//displayfocussedbrand
@@ -1590,13 +1656,15 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         values.put("COL4", category_code);
         values.put("COL5", category_name);
         values.put("COL6", brandcode); //brandcode
-
-        if (dataIndex == PLAYLISTINDEX) {
-            values.put("COL7", playstData[previousIndex][0]); //pagecode
-        } else if (dataIndex == REFERENCEINDEX) {
-            values.put("COL7", refData[position][3]); //referenceid
+        try {
+            if (dataIndex == PLAYLISTINDEX) {
+                values.put("COL7", playstData[previousIndex][0]); //pagecode
+            } else if (dataIndex == REFERENCEINDEX) {
+                values.put("COL7", refData[position][3]); //referenceid
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
         values.put("COL8", duration); //duration
         values.put("COL9", latitude); //latitude
         values.put("COL10", longitude); //longitude
@@ -1625,7 +1693,12 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             values.put("COL17", ""); //reference pageid
         } else if (dataIndex == REFERENCEINDEX) {
             values.put("COL16", ""); //like/dislike
-            values.put("COL17", playstData[previousIndex][0]); //reference pageid
+            try {
+                values.put("COL17", playstData[previousIndex][0]); //reference pageid
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
 
         values.put("COL18", randomNumber); //randrom number
@@ -1633,11 +1706,14 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         values.put("COL20", "0");
 
         if (dataIndex == PLAYLISTINDEX) {
-            values.put("COL21", playstData[previousIndex][7]); //playlistid
+            try {
+                values.put("COL21", playstData[previousIndex][7]);
+            } catch (Exception e) {
+
+            }//playlistid
         } else if (dataIndex == REFERENCEINDEX) {
             values.put("COL21", ""); //playlistid
         }
-
         db.insert("TXN102", null, values);
         db.close();
         //       }
@@ -1663,5 +1739,63 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 })
                 .show();
     }
+
+    public class JavaScriptInterface {
+        Context mContext;
+
+        JavaScriptInterface(Context c) {
+            mContext = c;
+        }
+
+        @android.webkit.JavascriptInterface
+        public void sendToAndroid(String str) {
+//            Toast.makeText(Container.this, "Hot Spot Called-->" + str, Toast.LENGTH_LONG).show();
+            previousIndex = playIndex;
+            String[][] Query = handler.genericSelect("select COL10,COL15 ,COL1 from TBDPG where Col1='" + str + ".htm'", 3);
+            playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11 from TBDPS a , TBDPG b\n" +
+                    "        where a.col5 = b.col0\n" +
+                    "        and a.COL3 = '" + Query[0][1] + "' and a.COL9 = '" + Query[0][0] + "' and a.COL10 = 'IPL' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
+
+
+            String temp = str + ".htm";
+
+
+            for (int i = 0; i < playstData.length; ++i) {
+                for (int j = 0; j < playstData[i].length; ++j) {
+                    if (temp.equals(playstData[i][j])) {
+//                        ImageView imageView = (ImageView) ((RelativeLayout) content2.getChildAt(i)).getChildAt(0);
+//                        for (int k = 0; k < content2.getChildCount(); k++) {
+//                            ImageView child = (ImageView) ((RelativeLayout) content2.getChildAt(k)).getChildAt(0);
+//                            child.setScaleX(1.0f);
+//                            child.setScaleY(1.0f);
+//                        }
+//                        imageView.setScaleX(1.4f);
+//                        imageView.setScaleY(1.4f);
+
+                        if (count == 0)
+                            actualPlayIndex = playIndex;
+                        count++;
+                        //  if (!index.equals("4"))
+                        playIndex = i;
+                        Container.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!customer_id.equals("") || category_name.equalsIgnoreCase("S")) {
+                                    backtoplaylist.setVisibility(View.VISIBLE);
+                                    flagForPlaylist = true;
+                                }
+                            }
+                        });
+
+                        fillPlayList(1);
+                        break;
+                    }
+                }
+            }
+
+        }
+
+    }
+
 
 }

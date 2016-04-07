@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
         CONFIG_FLAG = checkConfigOrNot();
         if (!CONFIG_FLAG) {
-            displaytext.setText("Please enter the username and password given to\nyou to configure the system");
+            displaytext.setText("Please enter the client id,username and password given to\nyou to configure the system.");
             display_text_network.setVisibility(View.VISIBLE);
             loginButton.setText("CONFIGURE");
             forgotpwd.setVisibility(View.GONE);
@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                 String datavalues[] = data[0][3].split("\\^");
                 instaneceId = datavalues[4];
                 Repcode = datavalues[3];
-                RoleCode = datavalues[5].substring(0, 1);
+                RoleCode = datavalues[6];
                 Version = data[0][1];
                 ClientID = data[0][4];
                 mission = true;
@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
             final String datavalues[] = psdf[0][3].split("\\^");
             instaneceId = datavalues[4];
             Repcode = datavalues[3];
-            RoleCode = datavalues[5].substring(0, 1);
+            RoleCode = datavalues[6];
             Version = psdf[0][1];
             ClientID = psdf[0][4];
             //valueArr[5];
@@ -358,14 +358,22 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                         }
 
                     } else {
-                        Utility.showSweetAlert(MainActivity.this, "Network Error.", CmsInter.ERROR_TYPE);
+                        Utility.showSweetAlert(MainActivity.this, CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
+                        Intent LandingIntent = new Intent(MainActivity.this, LandingPage.class);
+                        LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        LandingIntent.putExtra("CALLSYNC", "1");
+                        startActivity(LandingIntent);
                         dialog.dismiss();
                     }
                 }
 
                 @Override
                 public void onFailure(Throwable t) {
-                    Utility.showSweetAlert(MainActivity.this, "Network Error.", CmsInter.ERROR_TYPE);
+                    Intent LandingIntent = new Intent(MainActivity.this, LandingPage.class);
+                    LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    LandingIntent.putExtra("CALLSYNC", "1");
+                    startActivity(LandingIntent);
+                    Utility.showSweetAlert(MainActivity.this,CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
                     dialog.dismiss();
                 }
 
@@ -405,7 +413,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
                     @Override
                     public void onFailure(Throwable t) {
-                        Utility.showSweetAlert(MainActivity.this, "Network Error", CmsInter.ERROR_TYPE);
+                        Utility.showSweetAlert(MainActivity.this, CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
                     }
                 });
 
@@ -566,7 +574,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
             @Override
             public void onFailure(Throwable t) {
-                Utility.showSweetAlert(MainActivity.this, t.toString(), CmsInter.ERROR_TYPE);
+                Utility.showSweetAlert(MainActivity.this, CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
                 dialog.dismiss();
             }
         });
@@ -608,14 +616,14 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
                     }
                 } else {
                     dialog.dismiss();
-                    Utility.showSweetAlert(MainActivity.this, "Network Error", CmsInter.ERROR_TYPE);
+                    Utility.showSweetAlert(MainActivity.this,CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
                 }
             }
 
             @Override
             public void onFailure(Throwable t) {
                 dialog.dismiss();
-                Utility.showSweetAlert(MainActivity.this, "Network Error", CmsInter.ERROR_TYPE);
+                Utility.showSweetAlert(MainActivity.this,CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
             }
         });
 

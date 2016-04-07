@@ -40,18 +40,21 @@
     <ImageView
         android:id="@+id/previousbrand"
         android:layout_width="80dp"
-        android:layout_height="300dp"
+        android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="150dp" />
 
     <ImageView
         android:id="@+id/nextbrand"
         android:layout_width="80dp"
-        android:layout_height="300dp"
+        android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="20dp"
+
+        android:layout_marginTop="150dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -63,8 +66,8 @@
             android:id="@+id/handle"
             android:layout_width="90dp"
             android:layout_height="40dp"
-            android:layout_marginBottom="-2dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="-2dp"
             android:background="@drawable/downdrawer" />
 
         <LinearLayout
@@ -85,7 +88,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="126dp"
+                android:layout_height="165dp"
                 android:background="#BF000000">
 
                 <RelativeLayout
@@ -118,7 +121,7 @@
         <RelativeLayout
             android:id="@+id/scroll2"
             android:layout_width="match_parent"
-            android:layout_height="126dp"
+            android:layout_height="165dp"
             android:background="#BF000000"
             android:visibility="gone">
 
@@ -160,7 +163,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="-50dp"
+        android:layout_marginRight="70dp"
         android:layout_marginTop="230dp"
         android:background="#4D000000"
         android:max="20"

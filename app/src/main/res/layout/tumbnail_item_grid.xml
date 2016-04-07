@@ -77,6 +77,9 @@
             android:layout_alignParentLeft="true"
             android:includeFontPadding="false"
             android:text="Fade pill"
+            android:ellipsize="end"
+            android:maxLines="1"
+        
             android:textColor="#1e1e1e"
             android:textSize="14sp" />
 

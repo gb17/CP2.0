@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="10dp"
-            android:text="PLAYLIST"
+            android:text="VIEW/EDIT PLAYLIST"
             android:textColor="#2E2E2E"
             android:textSize="18sp" />
 
@@ -211,10 +211,10 @@
                 android:paddingRight="10dp"
                 android:paddingTop="2dp"
                 android:text="Search"
-                android:visibility="invisible"
                 android:textColor="#2d2c2c"
                 android:textSize="17sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="invisible" />
 
             <EditText
                 android:id="@+id/search"

@@ -34,12 +34,10 @@ public class ThumbnailAdapterForContentLibrary extends RecyclerView.Adapter<Thum
     static Typeface font;
     static Context mContext;
     FragmentManager fragmentManager;
-    Integer Imagearr[] = {R.drawable.dempi, R.drawable.newace, R.drawable.newcfix1, R.drawable.newcfix3, R.drawable.newjade
-            , R.drawable.newmezzo, R.drawable.newstillsep, R.drawable.solsuna, R.drawable.stelpep, R.drawable.zepine, R.drawable.stelpep, R.drawable.zepine,
-            R.drawable.dempi, R.drawable.newace, R.drawable.newcfix1, R.drawable.newcfix3, R.drawable.newjade
-            , R.drawable.newmezzo, R.drawable.newstillsep, R.drawable.solsuna, R.drawable.stelpep, R.drawable.zepine, R.drawable.stelpep, R.drawable.zepine};
-
     static int index;
+    public static int postionStack = -1;
+    static int all_postion = 0;
+
 
     public ThumbnailAdapterForContentLibrary(List<TBBRAND> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener, int index) {
         this.brandList = brandList;
@@ -56,7 +54,7 @@ public class ThumbnailAdapterForContentLibrary extends RecyclerView.Adapter<Thum
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, fb, pageCount, refCount, newTag, downloadTextView;
 
-        ImageView imageView, pageFloatingActionButton, refFloatingActionButton;
+        ImageView imageView, pageFloatingActionButton, refFloatingActionButton, greendropdown;
         RelativeLayout layout, pageCountLayout, refCountLayout;
         ScrollView childScrollView;
         RelativeLayout masklayRelativeLayout;
@@ -82,6 +80,8 @@ public class ThumbnailAdapterForContentLibrary extends RecyclerView.Adapter<Thum
 
             pageCountLayout = (RelativeLayout) view.findViewById(R.id.pagelayout);
             refCountLayout = (RelativeLayout) view.findViewById(R.id.reflayout);
+
+            greendropdown = (ImageView) view.findViewById(R.id.greendropdown);
 
 
             //For Download Content
@@ -118,7 +118,10 @@ public class ThumbnailAdapterForContentLibrary extends RecyclerView.Adapter<Thum
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    postionStack = getLayoutPosition();
                     listener.onItemClick(brandList, v, getLayoutPosition());
+
+
                 }
             });
 
@@ -187,6 +190,12 @@ public class ThumbnailAdapterForContentLibrary extends RecyclerView.Adapter<Thum
 
         }
         holder.bind(brandList.get(position), itemListener);
+        if (postionStack == position) {
+            holder.greendropdown.setVisibility(View.VISIBLE);
+        } else {
+            holder.greendropdown.setVisibility(View.GONE);
+        }
+
     }
 
     @Override

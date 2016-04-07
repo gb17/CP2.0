@@ -54,6 +54,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:gravity="right"
+            android:padding="5dp"
             android:text="@string/cross"
             android:textColor="#757575"
             android:textSize="20sp"
@@ -92,6 +93,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:gravity="right"
+            android:padding="5dp"
             android:textColor="#757575"
             android:textSize="20sp"
             android:textStyle="bold" />

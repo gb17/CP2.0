@@ -168,7 +168,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                 final TextView textView = new TextView(this);
 
                 textView.setTextColor(Color.parseColor("#FFFFFF"));
-                textView.setPadding(10, 17, 0, 0);
+                textView.setPadding(10, 17, 0, 10);
                 textView.setTextSize(20);
                 textView.setId(Integer.parseInt(menudata[i][1]));
                 textView.setTypeface(font);
@@ -344,8 +344,28 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                downloadAsync.cancel(true);
-                content_dialog.dismiss();
+                SweetAlertDialog sDialog = new SweetAlertDialog(LandingPage.this, SweetAlertDialog.WARNING_TYPE);
+                sDialog.setTitleText("Are you sure you want to cancel the ongoing download ?")
+                        .setCancelText("No!")
+                        .setConfirmText("Yes!")
+                        .showCancelButton(true)
+                        .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.cancel();
+                            }
+                        })
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.cancel();
+                                downloadAsync.cancel(true);
+                                content_dialog.dismiss();
+                            }
+                        })
+                        .show();
+
+
             }
         });
         content_dialog.show();

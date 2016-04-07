@@ -57,6 +57,10 @@ public class Sync {
 
         List<ContainerPOJO> containerLs = new ArrayList<>();
         String containerData[][] = null;
+
+        try {
+
+
         if (index == 1) {
             containerData = dbHandler.genericSelect("select a.*, ' ' pcode , ' ' pname , ' ' patch, ' ' spec, ' ' class, ' ' hqcode  from TXN102 a where col11 = 0 and not exists ( select 1 from TBPHTAG B WHERE b.col0 = a.col18 ) union \n" +
                     "select a.*,  b.col1 pcode, b.col2 pname, b.col3 patch, b.col4 spec, b.col5 class, b.col6 hqcode  from TXN102 a , tbphtag b where  a.col18 = b.col0 AND A.COL11 = 0", 28);
@@ -77,6 +81,10 @@ public class Sync {
                     ContainerPOJO pojo = new ContainerPOJO(ClientID, upwData[3], upwData[9], upwData[10], null, containerData[i][13], containerData[i][10], "", containerData[i][1], containerData[i][5], containerData[i][2], null, "-1", null, null, null, null, null, containerData[i][15], "", "", containerData[i][14], "", batchNumber, "", "", "", "", "");
                     containerLs.add(pojo);
                 }
+        }
+
+        } catch (Exception e) {
+
         }
         if (containerData != null) {
             RestClient.GitApiInterface service = RestClient.getClient();
@@ -171,7 +179,12 @@ public class Sync {
         lCall.enqueue(new Callback<List<IRCSFResponsePOJO>>() {
             @Override
             public void onResponse(Response<List<IRCSFResponsePOJO>> response, Retrofit retrofit) {
-                downloadInterface.mainBody(response.body());
+                if (response.body().size() != 0)
+                    downloadInterface.mainBody(response.body());
+                else {
+                    downloadInterface.mainBody(null);
+                    Utility.showSweetAlert(context, "No content to download", CmsInter.NORMAL_TYPE);
+                }
             }
 
             @Override

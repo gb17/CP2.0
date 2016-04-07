@@ -192,7 +192,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
             final String datavalues[] = psdf[0][3].split("\\^");
             instaneceId = datavalues[4];
             Repcode = datavalues[3];
-            RoleCode = datavalues[5].substring(0, 1);
+            RoleCode = datavalues[6];
             Version = psdf[0][1];
             ClientID = psdf[0][4];
             //valueArr[5];
@@ -278,7 +278,15 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
                                     }
 
 
-                                } else callFileDownload();
+                                } else {
+                                    if (cvrvalues[0].equals(CmsInter.SUCESSS)) {
+                                        callFileDownload();
+                                    } else {
+                                        Utility.showSweetAlert(ConfigureActivity.this, word.getMSG(), CmsInter.ERROR_TYPE);
+
+                                    }
+
+                                }
                             }
                         }
 

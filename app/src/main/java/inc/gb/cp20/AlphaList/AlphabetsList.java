@@ -2,6 +2,7 @@ package inc.gb.cp20.AlphaList;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Display;
@@ -72,6 +73,8 @@ public class AlphabetsList {
     private ListView booksLV;
     EditText searchView;
     LinearLayout sidePannel;
+    TextView clr_text;
+    Typeface font;
 
     private UserListAdapter userListAdapter;
 
@@ -88,11 +91,20 @@ public class AlphabetsList {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mainView = inflater.inflate(R.layout.mainindextable, null);
         booksLV = (ListView) mainView.findViewById(R.id.booksLV);
-
-
+        font = Typeface.createFromAsset(mContext.getAssets(),
+                "fontawesome-webfont.ttf");
+        clr_text = (TextView) mainView.findViewById(R.id.clr_text);
         searchView = (EditText) mainView.findViewById(R.id.searchView);
         sidePannel = (LinearLayout) mainView.findViewById(R.id.sideIndex);
         selectedIndex = (TextView) mainView.findViewById(R.id.selectedIndex);
+        clr_text.setTypeface(font);
+
+        clr_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchView.setText("");
+            }
+        });
 
         if (TabelName.equals("TBNAME"))
             ListType = CmsInter.TAG_DOC_RIGHT;
@@ -154,10 +166,12 @@ public class AlphabetsList {
                             // mIsScrollingUp = false;
                             //   searchView.startAnimation(animate);
                             searchView.setVisibility(View.VISIBLE);
+                            clr_text.setVisibility(View.VISIBLE);
                         } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
                             //  mIsScrollingUp = true;
                             //  searchView.startAnimation(animate);
                             searchView.setVisibility(View.GONE);
+                            clr_text.setVisibility(View.GONE);
                         }
                         mLastFirstVisibleItem = currentFirstVisibleItem;
                     }
@@ -181,7 +195,11 @@ public class AlphabetsList {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                    if (s.toString().length() == 0) {
+                        clr_text.setVisibility(View.GONE);
+                    } else {
+                        clr_text.setVisibility(View.VISIBLE);
+                    }
 
                     userVector = UserService.getUserList(mContext, TabelName, s.toString(), "", true);
 
@@ -525,7 +543,9 @@ public class AlphabetsList {
 
     public void SerachViewVis(int mode) {
         searchView.setVisibility(mode);
+        clr_text.setVisibility(mode);
     }
+
 
 
 }

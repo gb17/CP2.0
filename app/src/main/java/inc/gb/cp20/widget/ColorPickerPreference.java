@@ -16,6 +16,7 @@ public class ColorPickerPreference extends DialogPreference {
 
 	private int selectedColor;
 	private ColorPicker colorPickerView;
+	final int idd=1;
 
 	public ColorPickerPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -30,7 +31,7 @@ public class ColorPickerPreference extends DialogPreference {
 		layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 
 		colorPickerView = new ColorPicker(getContext());
-		colorPickerView.setId(1);
+		colorPickerView.setId(idd);
 
 		relativeLayout.addView(colorPickerView, layoutParams);
 

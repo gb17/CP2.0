@@ -35,8 +35,9 @@ public class RestClient {
 
     private static GitApiInterface gitApiInterface;
 
-//     public static String baseUrl = "http://10.0.0.34:83";
+    //     public static String baseUrl = "http://10.0.0.34:83";
     public static String baseUrl = "http://cirriusapi.cirrius.in";
+    //public static String baseUrl = "http://t1.cirrius.in";
 
     public static GitApiInterface getClient() {
         if (gitApiInterface == null) {
@@ -62,39 +63,6 @@ public class RestClient {
         return gitApiInterface;
     }
 
-    public interface GitApiInterface1 {
-        @POST("/CirriusConfigAPI/UPW")
-        Call<UPW> CallUPW(@Body UPW order);
-
-        @POST("/CirriusReqResAPI/CVR")
-        Call<CVR> CallCVR(@Body ReqCVR reqCVR);
-
-        @POST("/CirriusConfigAPI/AckTags")
-        Call<ACKTAG> CallACK(@Body ACKTAG acktag);
-
-        @POST("/CirriusSecurityAPI/CHANGEPWD")
-        Call<ChangePassword> CallChangePassword(@Body ChangePassword changePassword);
-
-        @POST("/CirriusConfigAPI/ReadScript")
-        Call<TablesConfig> CallTagDownload(@Body TAG tag);
-
-        @POST("/CirriusDetailingAPI/UDDET")
-        Call<List<OutputPOJO>> uploadContainerData(@Body List<ContainerPOJO> req);
-
-        @POST("/CirriusReqResAPI/IRCSF")
-        Call<List<IRCSFResponsePOJO>> downloadContentUrl(@Body IRCSFPOJO req);
-
-        @POST("/CirriusConfigAPI/CONTENTACK")
-        Call<String> contentAcknowledge(@Body CNTACKPOJO req);
-
-        @POST("/CirriusSecurityAPI/FORGOTPWD")
-        Call<ChangePassword> CallForgotPassword(@Body ChangePassword changePassword);
-
-        @POST("/CirriusDetailingAPI/SYNCDETAILING")
-        Call<List<SyncDetailingAckPOJO>> CallSyncDetailingAcknowledge(@Body List<SyncDetailingAckPOJO> req);
-
-
-    }
 
     public interface GitApiInterface {
         @POST("/Config/UPW")
@@ -129,6 +97,52 @@ public class RestClient {
 
 
     }
+
+    public interface GitApiInterface1 {
+        @POST("/CommonAPI/Config/UPW")
+        Call<UPW> CallUPW(@Body UPW order);
+
+        @POST("/CommonAPI/ReqRes/CVR")
+        Call<CVR> CallCVR(@Body ReqCVR reqCVR);
+
+        @POST("/CommonAPI/Config/AckTags")
+        Call<ACKTAG> CallACK(@Body ACKTAG acktag);
+
+        @POST("/CommonAPI/Security/CHANGEPWD")
+        Call<ChangePassword> CallChangePassword(@Body ChangePassword changePassword);
+
+        @POST("/CommonAPI/Config/ReadScript")
+        Call<TablesConfig> CallTagDownload(@Body TAG tag);
+
+        @POST("/CommonAPI/Detailing/UDDET")
+        Call<List<OutputPOJO>> uploadContainerData(@Body List<ContainerPOJO> req);
+
+        @POST("/CommonAPI/ReqRes/IRCSF")
+        Call<List<IRCSFResponsePOJO>> downloadContentUrl(@Body IRCSFPOJO req);
+
+        @POST("/CommonAPI/Config/CONTENTACK")
+        Call<String> contentAcknowledge(@Body CNTACKPOJO req);
+
+        @POST("/CommonAPI/Security/FORGOTPWD")
+        Call<ChangePassword> CallForgotPassword(@Body ChangePassword changePassword);
+
+        @POST("/CommonAPI/Detailing/SYNCDETAILING")
+        Call<List<SyncDetailingAckPOJO>> CallSyncDetailingAcknowledge(@Body List<SyncDetailingAckPOJO> req);
+
+
+    }
+
+    //http://t1.cirrius.in/CommonAPI/Config/UPW
+//    http://t1.cirrius.in/CommonAPI/ReqRes/CVR
+//    http://t1.cirrius.in/CommonAPI/Security/CHANGEPWD
+//    http://t1.cirrius.in/CommonAPI/Security/FORGOTPWD
+//    http://t1.cirrius.in/CommonAPI/Config/CONTENTACK
+//    http://t1.cirrius.in/CommonAPI/Config/AckTags
+//    http://t1.cirrius.in/CommonAPI/Config/ReadScript
+//    http://t1.cirrius.in/CommonAPI/Detailing/UDDET
+//    http://t1.cirrius.in/CommonAPI/Detailing/SYNCDETAILING
+//    http://t1.cirrius.in/CommonAPI/ReqRes/IRCSF
+
 //    http://cirriusapi.cirrius.in/Config/UPW
 //    http://cirriusapi.cirrius.in/ReqRes/CVR
 //    http://cirriusapi.cirrius.in/Security/CHANGEPWD
@@ -139,5 +153,6 @@ public class RestClient {
 //    http://cirriusapi.cirrius.in/Detailing/UDDET
 //    http://cirriusapi.cirrius.in/Detailing/SYNCDETAILING
 //    http://cirriusapi.cirrius.in/ReqRes/IRCSF
+
 
 }

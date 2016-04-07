@@ -526,7 +526,21 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
                 ImageView imageView = (ImageView) parent.getChildAt(11);
                 imageView.setVisibility(View.GONE);
             }
+
             imageViewu.setVisibility(View.VISIBLE);
+
+
+//            ImageView imageViewu = (ImageView) mainRelativeLayout.getChildAt(11);
+//            for (int i = 0; i < totalItemCount; i++) {
+//                RelativeLayout parent = (RelativeLayout) recyclerView.getChildAt(i);
+//                ImageView imageView = (ImageView) parent.getChildAt(11);
+//
+//                if (position == i) {
+//                    imageView.setVisibility(View.VISIBLE);
+//                } else {
+//                    imageView.setVisibility(View.GONE);
+//                }
+//            }
 
 
             RelativeLayout RelativeLayoutsd_Page = (RelativeLayout) relativeLayout.getChildAt(2);
@@ -557,6 +571,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
     @Override
     public void onBackPressed() {
         setResult(RESULT_CANCELED);
+        ThumbnailAdapterForContentLibrary.postionStack = -1;
         finish();
     }
 
@@ -678,8 +693,26 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                downloadAsync.cancel(true);
-                content_dialog.dismiss();
+                SweetAlertDialog sDialog = new SweetAlertDialog(ContentLibrary.this, SweetAlertDialog.WARNING_TYPE);
+                sDialog.setTitleText("Are you sure you want to cancel the ongoing download ?")
+                        .setCancelText("No!")
+                        .setConfirmText("Yes!")
+                        .showCancelButton(true)
+                        .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.cancel();
+                            }
+                        })
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.cancel();
+                                downloadAsync.cancel(true);
+                                content_dialog.dismiss();
+                            }
+                        })
+                        .show();
             }
         });
         content_dialog.show();

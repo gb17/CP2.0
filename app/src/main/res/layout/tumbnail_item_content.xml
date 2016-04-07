@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="213dp"
     android:layout_height="200dp"
-  >
+    android:background="@drawable/recycler_row">
 
 
     <ImageView
@@ -19,12 +19,15 @@
         android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/bandimage"
+        android:layout_toLeftOf="@+id/refcount"
+        android:background="@drawable/recycler_row"
+        android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:includeFontPadding="false"
+        android:maxLines="1"
         android:paddingLeft="10dp"
-        android:text="Fade pill"
-        android:background="@drawable/recycler_row"
+        android:text="Fade pillfgfgfdgsdgsdgsdgsdgsdg"
         android:textColor="@color/thumbnail_productname_title"
         android:textSize="16sp" />
 
@@ -64,6 +67,7 @@
         android:layout_toLeftOf="@+id/ref"
         android:background="@drawable/bg_circle"
         android:padding="8dp"
+
         android:src="@drawable/attach" />
 
     <TextView
@@ -176,6 +180,7 @@
         android:visibility="gone" />
 
     <ImageView
+        android:id="@+id/greendropdown"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

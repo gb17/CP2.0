@@ -220,6 +220,7 @@ public class ChangePasswordAcitvity extends Activity implements View.OnClickList
             @Override
             public void onFailure(Throwable t) {
                 dialog.dismiss();
+                Utility.showSweetAlert(context, CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
             }
         });
 
@@ -314,4 +315,5 @@ public class ChangePasswordAcitvity extends Activity implements View.OnClickList
 
         return mission;
 
-    }}
+    }
+}

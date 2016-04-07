@@ -48,11 +48,12 @@
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
+            android:layout_toLeftOf="@+id/threedot_menu"
             android:layout_toRightOf="@+id/image_layout"
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
             android:maxLines="2"
-            android:text="Dr Name"
+            android:text="Dr Namefhgdfhzdfhdsfhb adfhdfshahjasdzfhasdfhas"
             android:textColor="@color/dr_name"
             android:textSize="20sp" />
 
