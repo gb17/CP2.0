@@ -161,7 +161,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         }
         int prevTextViewId = 0;
 
-        String[][] menudata = dbHandler.genericSelect("Select * From TBDMENU where COL4='0'", 3);
+        String[][] menudata = dbHandler.genericSelect("Select * From TBDMENU where COL4='0'  order by  CAST (COL3 AS INTEGER) ASC", 3);
 
         if (menudata != null) {
             for (int i = 0; i < menudata.length; i++) {

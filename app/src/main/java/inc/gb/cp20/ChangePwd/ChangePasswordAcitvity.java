@@ -167,7 +167,7 @@ public class ChangePasswordAcitvity extends Activity implements View.OnClickList
                         Utility.showSweetAlert(context, chg.getMSG(), CmsInter.ERROR_TYPE);
                     }
                 } else {
-                    Utility.showSweetAlert(context, "Network Error", CmsInter.ERROR_TYPE);
+                    Utility.showSweetAlert(context,CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
                 }
             }
 
@@ -180,12 +180,14 @@ public class ChangePasswordAcitvity extends Activity implements View.OnClickList
     }
 
     public void ChangePassword(String newpassword) {
-
+        String data[][] = dbHandler.genericSelect("Select VAL FROM TBUPW", 1);
+        String[] upwData = data[0][0].split("\\^");
+        String BU = upwData[9];
         getprogressDialog("Changing Password...");
         ChangePassword changePassword = new ChangePassword();
         changePassword.setCLIENTID(ClientID);
         changePassword.setREPCODE(Repcode);
-        changePassword.setBU("2");
+        changePassword.setBU(BU);
         changePassword.setNPWD(newpassword);
         changePassword.setOPWD(PasswordString);
 

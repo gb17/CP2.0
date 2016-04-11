@@ -190,7 +190,7 @@ public class DBHandler extends SQLiteOpenHelper {
             db.execSQL("CREATE TABLE IF NOT EXISTS TBDPS3 (COL0 text, COL1 text, COL2 text, COL3 text, COL4 text, COL5 text,COL6 text, COL7 text, COL8 text, COL9 text, COL10 text, COL11 text, COL12 text, COL13 text, COL14 text, COL15 text)");
             db.execSQL("CREATE TABLE IF NOT EXISTS TBBNO ( COL0 TEXT,COL1 TEXT)");
         } catch (Exception exp) {
-            System.out.println("Error in table creation " + exp);
+
             exp.printStackTrace();
         } finally {
             // db.close();
@@ -264,7 +264,8 @@ public class DBHandler extends SQLiteOpenHelper {
                 }
             }
         } catch (Exception e) {
-            System.out.println("In getallData block------->" + e);
+            e.printStackTrace();
+
         } finally {
             if (cur != null && !cur.isClosed())
                 cur.close();
@@ -418,7 +419,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 }
             }
         } catch (Exception e) {
-            System.out.println("In getallData block------->" + e);
+          e.printStackTrace();
         } finally {
             if (cur != null && !cur.isClosed())
                 cur.close();
@@ -442,7 +443,7 @@ public class DBHandler extends SQLiteOpenHelper {
             }
             cur.moveToFirst();
         } catch (Exception e) {
-            System.out.println("In getallData block------->" + e);
+            e.printStackTrace();
         } finally {
             // if (cur != null && !cur.isClosed())
             // cur.close();

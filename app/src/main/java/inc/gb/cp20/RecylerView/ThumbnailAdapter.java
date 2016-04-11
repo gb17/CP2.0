@@ -295,13 +295,13 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
         }
 
         //For PAGE Layout
-//        if (pageflag == position) {
-//            holder.childScrollView.setVisibility(View.VISIBLE);
-//            holder.fb.setVisibility(View.VISIBLE);
-//        } else {
-//            holder.childScrollView.setVisibility(View.GONE);
-//            holder.fb.setVisibility(View.GONE);
-//        }
+        if (pageflag == position) {
+            holder.childScrollView.setVisibility(View.VISIBLE);
+            holder.fb.setVisibility(View.VISIBLE);
+        } else {
+            holder.childScrollView.setVisibility(View.GONE);
+            holder.fb.setVisibility(View.GONE);
+        }
         holder.bind(brandList.get(position), itemListener);
         holder.bind(brandList.get(position), getItemCount());
 

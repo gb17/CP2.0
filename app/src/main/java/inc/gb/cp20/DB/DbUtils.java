@@ -144,7 +144,7 @@ public class DbUtils {
         Cursor cursor = db.query(tablename, null, null, null, null, null, null);
         try {
             String dump = DatabaseUtils.dumpCursorToString(cursor);
-            Log.e("error", dump);
+
         } finally {
             cursor.close();
         }

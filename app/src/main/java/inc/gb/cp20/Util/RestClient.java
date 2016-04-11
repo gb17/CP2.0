@@ -28,7 +28,7 @@ import retrofit.http.Body;
 import retrofit.http.POST;
 
 /**
- * Created by GB on 3/11/16.
+ *
  */
 public class RestClient {
 
@@ -36,8 +36,8 @@ public class RestClient {
     private static GitApiInterface gitApiInterface;
 
     //     public static String baseUrl = "http://10.0.0.34:83";
-    public static String baseUrl = "http://cirriusapi.cirrius.in";
-    //public static String baseUrl = "http://t1.cirrius.in";
+    //  public static String baseUrl = "http://cirriusapi.cirrius.in";
+    public static String baseUrl = "http://t1.cirrius.in";
 
     public static GitApiInterface getClient() {
         if (gitApiInterface == null) {
@@ -64,7 +64,7 @@ public class RestClient {
     }
 
 
-    public interface GitApiInterface {
+    public interface GitApiInterface1 {
         @POST("/Config/UPW")
         Call<UPW> CallUPW(@Body UPW order);
 
@@ -98,7 +98,7 @@ public class RestClient {
 
     }
 
-    public interface GitApiInterface1 {
+    public interface GitApiInterface {
         @POST("/CommonAPI/Config/UPW")
         Call<UPW> CallUPW(@Body UPW order);
 

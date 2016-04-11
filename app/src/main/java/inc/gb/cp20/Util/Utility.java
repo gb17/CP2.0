@@ -317,7 +317,7 @@ public class Utility {
             // InputStream is = c.getInputStream();
 
             int lenghtOfFile = conexion.getContentLength();
-            Log.d("ANDRO_ASYNC", "Lenght of file: " + lenghtOfFile);
+          //  Log.d("ANDRO_ASYNC", "Lenght of file: " + lenghtOfFile);
 
             InputStream input = new BufferedInputStream(url.openStream());
             OutputStream output = new FileOutputStream(outputFile);
@@ -383,7 +383,7 @@ public class Utility {
             }
 
         } catch (IOException e) {
-            Log.d("Exception in downloadZipFile---", "Error: " + e);
+           // Log.d("Exception in downloadZipFile---", "Error: " + e);
             file = "";
         }
         return file;

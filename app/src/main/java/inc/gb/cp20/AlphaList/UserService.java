@@ -35,7 +35,7 @@ public class UserService {
                     if (i == go.length - 1) temp = temp + "'%" + go[i] + "%'";
                     else temp = temp + "'%" + go[i] + "%'  and COL14 like ";
                 }
-                System.out.println(temp);
+
 
                 if (!notExistquery.equals(""))
                     temp = temp + " AND " + notExistquery;

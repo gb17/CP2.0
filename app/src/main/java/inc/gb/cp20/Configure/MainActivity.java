@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
 
                     } else if (CONFIG_FLAG) {
                         if (PasswordString.equals(PasswordeditText.getText().toString())) {
-                            backupDatabase();
+
                             if (Connectivity.isConnected(MainActivity.this)) {
                                 getprogressDialog("Please Wait..");
                                 CallCVR(CONFIG_FLAG);
@@ -721,7 +721,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
         protected void onPostExecute(Boolean bool) {
             super.onPostExecute(bool);
             onTaskCompleted(bool);
-            Log.d("Mai yaha hu", " onPostExecute");
+
         }
     }
 
@@ -769,7 +769,7 @@ public class MainActivity extends AppCompatActivity implements DownloadInterface
             out.close();
             in.close();
         } catch (IOException e) {
-            Log.e("tag", "Exception", e);
+
         }
         if (path.contains(".zip")) {
             String directory = MainActivity.this.getFilesDir().getAbsolutePath() + "/";

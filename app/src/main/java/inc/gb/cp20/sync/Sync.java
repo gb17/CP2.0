@@ -4,10 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import inc.gb.cp20.DB.DBHandler;
 import inc.gb.cp20.Models.CNTACKPOJO;
 import inc.gb.cp20.Models.ContainerPOJO;
@@ -140,13 +138,13 @@ public class Sync {
                     @Override
                     public void onResponse(Response<List<SyncDetailingAckPOJO>> response, Retrofit retrofit) {
                         if (response.body() != null) {
-                            DBHandler handler = DBHandler.getInstance(context);
+                             DBHandler handler = DBHandler.getInstance(context);
                             SQLiteDatabase db = handler.getWritableDatabase();
                             List<SyncDetailingAckPOJO> strData = response.body();
                             for (SyncDetailingAckPOJO pojo : strData) {
                                 if (pojo.getOUT().equals("1")) {
                                     String whereClause = "COL0=?";
-                                    String[] whereArgs = new String[]{pojo.getOUT()};
+                                    String[] whereArgs = new String[]{pojo.getBATCHCODE()};
                                     db.delete("TBBNO", whereClause, whereArgs);
                                 }
                             }

@@ -1,15 +1,12 @@
 package inc.gb.cp20.Configure;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.trncic.library.DottedProgressBar;
@@ -232,19 +229,20 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
                             TBCVR word = CvrList.get(0);
                             String[] cvrvalues = word.getCOL2().split("\\^");
                             if (cvrvalues[0].equals(CmsInter.Change_PWD)) {
-                                AlertDialog.Builder alertbox = new AlertDialog.Builder(ConfigureActivity.this);
-                                alertbox.setMessage(datavalues[1]).setPositiveButton("OK",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
+                                final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(ConfigureActivity.this, CmsInter.ERROR_TYPE);
+                                sweetAlertDialog.setTitleText(word.getMSG())
+                                        .setConfirmText("Ok")
+                                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                            @Override
+                                            public void onClick(SweetAlertDialog sDialog) {
                                                 Intent ChangePwdIntent = new Intent(ConfigureActivity.this, ChangePasswordAcitvity.class);
                                                 ChangePwdIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                 startActivity(ChangePwdIntent);
-                                                dialog.dismiss();
+                                                sweetAlertDialog.dismiss();
 
                                             }
-                                        });
-                                alertbox.create();
-                                alertbox.show();
+                                        })
+                                        .show();
                             } else {
                                 if (configflag) {
 
@@ -493,7 +491,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
 
             @Override
             public void onFailure(Throwable t) {
-                Utility.showSweetAlert(ConfigureActivity.this, t.toString() + "ACKtagd", CmsInter.ERROR_TYPE);
+                Utility.showSweetAlert(ConfigureActivity.this, CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
 
             }
         });
@@ -533,7 +531,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Log.d("Mai yaha hu", "on pre exceutr");
+
 
         }
 
@@ -567,7 +565,7 @@ public class ConfigureActivity extends Activity implements DownloadInterface {
             super.onPostExecute(bool);
             numberProgressBar.setProgress(60);
             onTaskCompleted(bool);
-            Log.d("Mai yaha hu", " onPostExecute");
+
         }
     }
 
