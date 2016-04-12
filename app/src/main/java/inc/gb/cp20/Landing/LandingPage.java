@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
@@ -24,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.File;
@@ -119,12 +121,20 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
 
         try {
             AlphabetsList alphabetsList = new AlphabetsList(this);
-            lhsLinearLayout.addView(alphabetsList.getAlphabestListView("TBPARTY", false, false, true, 1, "", 11));
-            alphabetsList.setSidepannel(View.VISIBLE);
-            alphabetsList.SerachViewVis(View.VISIBLE);
+            if (dbHandler.genericSelect("Select * from TBPARTY", 2) != null) {
+                lhsLinearLayout.addView(alphabetsList.getAlphabestListView("TBPARTY", false, false, true, 1, "", 11));
+                alphabetsList.setSidepannel(View.VISIBLE);
+                alphabetsList.SerachViewVis(View.VISIBLE);
+            }
+            else {
+                lhsLinearLayout.setVisibility(View.GONE);
+            }
+
+
             defaultLayout();
             CallDownloadIRCSF(0);
         } catch (Exception e) {
+          //  lhsLinearLayout.setVisibility(View.GONE);
             new TagDownloading(LandingPage.this);
             e.printStackTrace();
         }
@@ -261,7 +271,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         content_dialog.getWindow().setBackgroundDrawable(
                 new ColorDrawable(Color.WHITE));
         Display display = ((WindowManager) LandingPage.this
-                .getSystemService(LandingPage.this.WINDOW_SERVICE))
+                .getSystemService(WINDOW_SERVICE))
                 .getDefaultDisplay();
         content_dialog.setCancelable(false);
         int width = display.getWidth();
@@ -314,7 +324,12 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                         if (adapter.mCheckedState[i] && !adapter.mEnableState[i]) {
                             IRCSFResponsePOJO pojo = list.get(i);
                             urlString.add(new String[]{pojo.getENTRYNO(), pojo.getPATH(), pojo.getFILE_SIZE(), i + ""});
-                            totalSize = totalSize + Integer.parseInt(pojo.getFILE_SIZE());
+
+                            try {
+                                totalSize = totalSize + Integer.parseInt(pojo.getFILE_SIZE());
+                            } catch (NumberFormatException e) {
+
+                            }
                         }
                     }
                     if (urlString.size() > 0) {
@@ -430,12 +445,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
                     intent.putExtras(bundle);
                     startActivity(intent);
                 } else {
-//                    String[][] playListData = dbHandler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11, (select count(1) from TBDRG r where r.col0 = b.col0 ) ref from TBDPS2 a , TBDPG b\n" +
-//                            "        where a.col5 = b.col0\n" +
-//                            "        and a.COL10 = '" + objDrListPOJO.getCOL0() + "' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 9);
 //
-//                    String Playlist2[][] = dbHandler.genericSelect("select A.COL0, A.COL1, A.COL2, A.COL3, A.COL4, A.COL5, A.COL6, A.COL7, A.COL8, A.COL9, '" + objDrListPOJO.getCOL0() + "', '0' from TBDPS A WHERE COL3 = '" + objDrListPOJO.getCOL0() + "' and COL9 = '" + objDrListPOJO.getCOL16() + "'", 10);
-
                     String brandQuery = "SELECT COL0, COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8 FROM TBBRAND b where b.COL0 = 'B' and exists (select 1 from TBDPS s, TBDPG t where s.col5 = t.col0 and s.col9= b.col0 and s.col1 =  b.col3 and t.col7 = '1' )";
                     String[][] brandData = dbHandler.genericSelect(brandQuery, 9);
 
@@ -492,6 +502,132 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
     @Override
     public void onRetryClick(TBBRAND item, View v, int position) {
         CallDownloadContainer(2, item.getCOL0(), item.getCOL3());
+    }
+
+    @Override
+    public void onPageClick(TBBRAND item, View v, int position, RelativeLayout layout, int total, ScrollView scrollView, TextView textView1) {
+        String[][] pagename = dbHandler.genericSelect("select b.COL2 from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  '" + item.getCOL3() + "' and a.COL9 = '" + item.getCOL0() + "'   and a.COL10 = 'IPL'", 1);
+        if (pagename != null) {
+            int prevTextViewId = 0;
+            for (int i = 0; i < pagename.length; i++) {
+                final TextView textView = new TextView(LandingPage.this);
+
+                String temp = "";
+                if (i < 10) {
+                    if (i == 9)
+                        temp = "0" + (i);
+                    else
+                        temp = "0" + (i + 1);
+                } else {
+                    temp = "" + (i + 1);
+                }
+
+
+                textView.setText(temp + " " + pagename[i][0]);
+                temp = "";
+                textView.setTextColor(Color.parseColor("#FFFFFF"));
+
+                int curTextViewId = prevTextViewId + 1;
+                textView.setId(curTextViewId);
+                final RelativeLayout.LayoutParams params =
+                        new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
+                                RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                params.addRule(RelativeLayout.BELOW, prevTextViewId);
+                params.setMargins(4, 4, 4, 4);
+                textView.setLayoutParams(params);
+
+                prevTextViewId = curTextViewId;
+                layout.addView(textView, params);
+            }
+
+
+            RelativeLayout relativeLayout = (RelativeLayout) v.getParent();
+            ScrollView scrollView1 = (ScrollView) relativeLayout.getChildAt(8);
+            RecyclerView recyclerView = (RecyclerView) relativeLayout.getParent();
+            RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+            int visibleItemCount = layoutManager.getChildCount();
+            int totalItemCount = layoutManager.getItemCount();
+            TextView clsTextView = (TextView) relativeLayout.getChildAt(10);
+
+            for (int i = 0; i < visibleItemCount; i++) {
+                RelativeLayout parent = (RelativeLayout) recyclerView.getChildAt(i);
+                ScrollView scrollView11 = (ScrollView) parent.getChildAt(8);
+                scrollView11.setVisibility(View.GONE);
+                TextView clsTextViewc = (TextView) parent.getChildAt(10);
+                clsTextViewc.setVisibility(View.GONE);
+            }
+            scrollView1.setVisibility(View.VISIBLE);
+            clsTextView.setVisibility(View.VISIBLE);
+        }
+
+
+    }
+
+    @Override
+    public void onRefClick(TBBRAND item, View v, int position, RelativeLayout layout, int total, ScrollView scrollView, TextView textView1) {
+        String Query = " select DISTINCT l.COL1,l.COL2,l.COL15  from TBDRG l\n" +
+                "        where exists(\n" +
+                "        select 1\n" +
+                "        from TBDPS a\n" +
+                "        where a.col9='" + item.getCOL0() + "'\n" +
+                "        and a.col3='" + item.getCOL3() + "'" +
+                "        and a.col10='IPL'\n" +
+                "        and a.col5=l.col0)";
+
+        String[][] pagename = dbHandler.genericSelect(Query, 3);
+        if (pagename != null) {
+            int prevTextViewId = 0;
+            for (int i = 0; i < pagename.length; i++) {
+                final TextView textView = new TextView(this);
+                String temp = "";
+                if (i < 10) {
+                    if (i == 9)
+                        temp = "0" + (i);
+                    else
+                        temp = "0" + (i + 1);
+                } else {
+                    temp = "" + (i + 1);
+                }
+
+
+                textView.setText(temp + " " + pagename[i][0]);
+                temp = "";
+                textView.setTextColor(Color.parseColor("#FFFFFF"));
+
+                int curTextViewId = prevTextViewId + 1;
+                textView.setId(curTextViewId);
+                final RelativeLayout.LayoutParams params =
+                        new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
+                                RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                params.addRule(RelativeLayout.BELOW, prevTextViewId);
+                params.setMargins(4, 4, 4, 4);
+                textView.setLayoutParams(params);
+
+                prevTextViewId = curTextViewId;
+                layout.addView(textView, params);
+
+                RelativeLayout relativeLayout = (RelativeLayout) v.getParent();
+                ScrollView scrollView1 = (ScrollView) relativeLayout.getChildAt(8);
+
+                TextView clsTextView = (TextView) relativeLayout.getChildAt(10);
+                RecyclerView recyclerView = (RecyclerView) relativeLayout.getParent();
+                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+
+                for (int k = 0; k < visibleItemCount; k++) {
+                    RelativeLayout parent = (RelativeLayout) recyclerView.getChildAt(k);
+                    ScrollView scrollView11 = (ScrollView) parent.getChildAt(8);
+                    scrollView11.setVisibility(View.GONE);
+                    TextView clsTextViewc = (TextView) parent.getChildAt(10);
+                    clsTextViewc.setVisibility(View.GONE);
+                }
+                scrollView1.setVisibility(View.VISIBLE);
+                clsTextView.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
 

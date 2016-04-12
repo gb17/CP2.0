@@ -36,7 +36,7 @@ public class ThumbnailAdapterForRefrence extends RecyclerView.Adapter<ThumbnailA
 
     public ThumbnailAdapterForRefrence(List<RefrenceContent> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener) {
         this.brandList = brandList;
-        this.mContext = mContext;
+        ThumbnailAdapterForRefrence.mContext = mContext;
         this.fragmentManager = fragmentManager;
         this.itemListener = itemListener;
         font = Typeface.createFromAsset(mContext.getAssets(),

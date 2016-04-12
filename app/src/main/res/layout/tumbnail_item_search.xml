@@ -41,6 +41,7 @@
         android:includeFontPadding="false"
         android:text="Fade pill"
         android:ellipsize="end"
+
         android:maxLines="1"
         android:textColor="@color/page_count"
         android:textSize="16sp" />

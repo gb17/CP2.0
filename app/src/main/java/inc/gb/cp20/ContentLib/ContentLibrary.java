@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.File;
@@ -462,7 +463,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
 //                "                and b.COL4 like '%" + whereQuery + "%'\n" +
 //                "                     order by  CAST (a.col2 AS INTEGER) ASC ";
 
-        String Query = "select  b.col1 IMAGEPATH , b.COL2 TITLE ,b.COl0 PAGECODE,a.COL9 CAT_TYPE, a.COL1 BRAND_CODE , b.col2  pagename , a.col4 cat_name , b.col8 " +
+        String Query = "select  b.col1 IMAGEPATH , b.COL2 TITLE ,b.COl0 PAGECODE,a.COL9 CAT_TYPE, a.COL1 BRAND_CODE , ''  pagename , a.col4 cat_name , b.col8 " +
                 "from  TBDPS a, TBDPG b where a.col5 = b.col0 and a.col10 = 'IPL' " +
                 "and b.col8 = 'P' and b.col7='1' and b.col4 like '%" + whereQuery + "%' " +
                 "union select  a.col1 imagepath  , " +
@@ -565,6 +566,16 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
     @Override
     public void onRetryClick(TBBRAND item, View v, int position) {
         CallDownloadContainer(2, item.getCOL0(), item.getCOL3());
+    }
+
+    @Override
+    public void onPageClick(TBBRAND item, View v, int position, RelativeLayout layout, int total, ScrollView scrollView, TextView textView) {
+
+    }
+
+    @Override
+    public void onRefClick(TBBRAND item, View v, int position, RelativeLayout layout, int total, ScrollView scrollView, TextView textView) {
+
     }
 
 

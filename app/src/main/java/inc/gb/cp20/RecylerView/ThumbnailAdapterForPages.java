@@ -39,9 +39,9 @@ public class ThumbnailAdapterForPages extends RecyclerView.Adapter<ThumbnailAdap
 
     public ThumbnailAdapterForPages(List<ContentPage> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener) {
         this.brandList = brandList;
-        this.mContext = mContext;
+        ThumbnailAdapterForPages.mContext = mContext;
         this.fragmentManager = fragmentManager;
-        this.itemListener = itemListener;
+        ThumbnailAdapterForPages.itemListener = itemListener;
         font = Typeface.createFromAsset(mContext.getAssets(),
                 "fontawesome-webfont.ttf");
 
@@ -105,6 +105,8 @@ public class ThumbnailAdapterForPages extends RecyclerView.Adapter<ThumbnailAdap
         String filePath = new File(mContext.getFilesDir() + "/" + FilenameUtils.removeExtension(tbbrand.getImagepath()) + "/", FilenameUtils.removeExtension(tbbrand.getImagepath()) + ".png").getAbsolutePath();
         bitmap = BitmapFactory.decodeFile(filePath);
         holder.imageView.setImageBitmap(bitmap);
+        if (bitmap == null)
+            holder.imageView.setImageResource(R.drawable.page);
         holder.bind(brandList.get(position), position);
 
 

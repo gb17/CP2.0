@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -30,7 +29,7 @@ public class UserListAdapter extends BaseAdapter {
     boolean headerview;
     boolean play_icon;
     boolean tick_icon;
-    private ItemFilter mFilter = new ItemFilter();
+
 
     Typeface font;
 
@@ -209,28 +208,8 @@ public class UserListAdapter extends BaseAdapter {
         return position;
     }
 
-    public Filter getFilter() {
-        return mFilter;
-    }
 
-    private class ItemFilter extends Filter {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
 
-            String filterString = constraint.toString().toLowerCase();
-            FilterResults results = new FilterResults();
-            return results;
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        protected void publishResults(CharSequence constraint,
-                                      FilterResults results) {
-
-            notifyDataSetChanged();
-        }
-
-    }
 
 
 }

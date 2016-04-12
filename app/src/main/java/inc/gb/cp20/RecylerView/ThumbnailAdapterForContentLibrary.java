@@ -41,10 +41,10 @@ public class ThumbnailAdapterForContentLibrary extends RecyclerView.Adapter<Thum
 
     public ThumbnailAdapterForContentLibrary(List<TBBRAND> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener, int index) {
         this.brandList = brandList;
-        this.mContext = mContext;
+        ThumbnailAdapterForContentLibrary.mContext = mContext;
         this.fragmentManager = fragmentManager;
-        this.itemListener = itemListener;
-        this.index = index;
+        ThumbnailAdapterForContentLibrary.itemListener = itemListener;
+        ThumbnailAdapterForContentLibrary.index = index;
         font = Typeface.createFromAsset(mContext.getAssets(),
                 "fontawesome-webfont.ttf");
 
@@ -184,10 +184,32 @@ public class ThumbnailAdapterForContentLibrary extends RecyclerView.Adapter<Thum
         try {
             String filePath = new File(mContext.getFilesDir() + "/", tbbrand.getCOL4() + ".png").getAbsolutePath();
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-            holder.imageView.setImageBitmap(bitmap);
+            if(bitmap!=null)
+                holder.imageView.setImageBitmap(bitmap);
+            else{
+                if (tbbrand.getCOL0().equals("B"))
+                    holder.imageView.setImageResource(R.drawable.brand);
+                else if (tbbrand.getCOL0().equals("S"))
+                    holder.imageView.setImageResource(R.drawable.speciality);
+                else if (tbbrand.getCOL0().equals("T"))
+                    holder.imageView.setImageResource(R.drawable.therapy);
+                else if (tbbrand.getCOL0().equals("C"))
+                    holder.imageView.setImageResource(R.drawable.corporate);
+                else if (tbbrand.getCOL0().equals("SR"))
+                    holder.imageView.setImageResource(R.drawable.services);
+            }
 
         } catch (Exception e) {
-
+            if (tbbrand.getCOL0().equals("B"))
+                holder.imageView.setImageResource(R.drawable.brand);
+            else if (tbbrand.getCOL0().equals("S"))
+                holder.imageView.setImageResource(R.drawable.speciality);
+            else if (tbbrand.getCOL0().equals("T"))
+                holder.imageView.setImageResource(R.drawable.therapy);
+            else if (tbbrand.getCOL0().equals("C"))
+                holder.imageView.setImageResource(R.drawable.corporate);
+            else if (tbbrand.getCOL0().equals("SR"))
+                holder.imageView.setImageResource(R.drawable.services);
         }
         holder.bind(brandList.get(position), itemListener);
         if (postionStack == position) {

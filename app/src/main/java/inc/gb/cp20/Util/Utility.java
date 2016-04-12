@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.StatFs;
@@ -18,7 +19,6 @@ import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -49,6 +49,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
@@ -57,6 +58,22 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import inc.gb.cp20.DB.DBHandler;
+import inc.gb.cp20.Models.ACKTAG;
+import inc.gb.cp20.Models.TBBRAND;
+import inc.gb.cp20.Models.TBDBL;
+import inc.gb.cp20.Models.TBDCP;
+import inc.gb.cp20.Models.TBDMENU;
+import inc.gb.cp20.Models.TBDPG;
+import inc.gb.cp20.Models.TBDPS;
+import inc.gb.cp20.Models.TBDSP;
+import inc.gb.cp20.Models.TBDTH;
+import inc.gb.cp20.Models.TBPARTY;
+import inc.gb.cp20.Models.TBTBC;
+import inc.gb.cp20.Models.TablesConfig;
+import retrofit.Response;
+
+import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 /**
  * @author chandra.s
@@ -317,7 +334,7 @@ public class Utility {
             // InputStream is = c.getInputStream();
 
             int lenghtOfFile = conexion.getContentLength();
-          //  Log.d("ANDRO_ASYNC", "Lenght of file: " + lenghtOfFile);
+            //  Log.d("ANDRO_ASYNC", "Lenght of file: " + lenghtOfFile);
 
             InputStream input = new BufferedInputStream(url.openStream());
             OutputStream output = new FileOutputStream(outputFile);
@@ -383,7 +400,7 @@ public class Utility {
             }
 
         } catch (IOException e) {
-           // Log.d("Exception in downloadZipFile---", "Error: " + e);
+            // Log.d("Exception in downloadZipFile---", "Error: " + e);
             file = "";
         }
         return file;
@@ -554,29 +571,20 @@ public class Utility {
     }
 
     public static boolean lengthCheck(String str, int length) {
-        if (str.length() < length) {
-            return true;
-        }
+        return str.length() < length;
 
-        return false;
     }
 
     public static boolean rangeCheck(String str, int min, int max) {
-        if (str.length() < min && str.length() > max) {
-            return true;
-        }
+        return str.length() < min && str.length() > max;
 
-        return false;
     }
 
     public static boolean isZeroAtStart(String str) {
         int ascii = 0;
         if (str.length() != 0)
             ascii = (int) str.charAt(0);
-        if (ascii == 48) {
-            return true;
-        }
-        return false;
+        return ascii == 48;
     }
 
 
@@ -606,11 +614,7 @@ public class Utility {
     }
 
     public static boolean isInitSpace(String str) {
-        if (str.startsWith(" ") && !str.equals("")) {
-            return true;
-        } else {
-            return false;
-        }
+        return str.startsWith(" ") && !str.equals("");
     }
 
     public static boolean isMidSpace(String str) {
@@ -1071,11 +1075,7 @@ public class Utility {
 
         Pattern pattern = Pattern.compile("^([" + allowcahr + "a-zA-Z0-9 ])*");
         Matcher matcher = pattern.matcher(str);
-        if (matcher.matches()) {
-            isvalidspe = true;
-        } else {
-            isvalidspe = false;
-        }
+        isvalidspe = matcher.matches();
         return isvalidspe;
     }
 
@@ -1086,11 +1086,7 @@ public class Utility {
 
         Pattern pattern = Pattern.compile("[" + allowcahr + "]");
         Matcher matcher = pattern.matcher(str);
-        if (matcher.matches()) {
-            isvalidspe = false;
-        } else {
-            isvalidspe = true;
-        }
+        isvalidspe = !matcher.matches();
         return isvalidspe;
     }
 
@@ -1128,12 +1124,8 @@ public class Utility {
         if (mobNo.equals("")) {
             isInvalidmobNo = false;
         } else {
-            if (mobNo.startsWith("9") || mobNo.startsWith("8")
-                    || mobNo.startsWith("7")) {
-                isInvalidmobNo = false;
-            } else {
-                isInvalidmobNo = true;
-            }
+            isInvalidmobNo = !(mobNo.startsWith("9") || mobNo.startsWith("8")
+                    || mobNo.startsWith("7"));
         }
 
         return isInvalidmobNo;
@@ -1421,5 +1413,122 @@ public class Utility {
         return 0;
     }
 
+    public static void dataInsert(Response<TablesConfig> response, DBHandler dbHandler) {
+        List<TBDCP> tbl = response.body().getTBDCP();
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+        for (int i = 0; i < tbl.size(); i++) {
+            TBDCP tbdcp = tbl.get(i);
+            cupboard().withDatabase(db).put(tbdcp);
+        }
+
+        List<TBDTH> tbl2 = response.body().getTBDTH();
+
+        for (int i = 0; i < tbl2.size(); i++) {
+            TBDTH tbdth = tbl2.get(i);
+            cupboard().withDatabase(db).put(tbdth);
+        }
+
+        List<TBDBL>
+                tbl3 = response.body().getTBDBL();
+
+        for (int i = 0; i < tbl3.size(); i++) {
+            TBDBL tbdbl = tbl3.get(i);
+            cupboard().withDatabase(db).put(tbdbl);
+        }
+
+        List<TBDSP>
+                tbl4 = response.body().getTBDSP();
+
+        for (int i = 0; i < tbl4.size(); i++) {
+            TBDSP tbdsp = tbl4.get(i);
+            cupboard().withDatabase(db).put(tbdsp);
+        }
+
+        List<TBTBC>
+                tbl5 = response.body().getTBTBC();
+
+        for (int i = 0; i < tbl5.size(); i++) {
+            TBTBC tbtbc = tbl5.get(i);
+            cupboard().withDatabase(db).put(tbtbc);
+        }
+
+
+        List<TBDPG>
+                tbl6 = response.body().getTBDPG();
+
+        for (int i = 0; i < tbl6.size(); i++) {
+            TBDPG tbdpg = tbl6.get(i);
+            cupboard().withDatabase(db).put(tbdpg);
+        }
+        List<TBPARTY>
+                tbl7 = response.body().getTBPARTY();
+
+        for (int i = 0; i < tbl7.size(); i++) {
+            TBPARTY tbparty = tbl7.get(i);
+            cupboard().withDatabase(db).put(tbparty);
+        }
+
+        List<TBDPS>
+                tbl8 = response.body().getTBDPS();
+
+        for (int i = 0; i < tbl8.size(); i++) {
+            TBDPS tbdps = tbl8.get(i);
+            cupboard().withDatabase(db).put(tbdps);
+        }
+
+        List<TBBRAND>
+                tbl9 = response.body().getTBBRAND();
+
+        for (int i = 0; i < tbl9.size(); i++) {
+            TBBRAND tbbrand = tbl9.get(i);
+            cupboard().withDatabase(db).put(tbbrand);
+        }
+
+        List<TBDMENU>
+                tbl10 = response.body().getTBDMENU();
+
+        for (int i = 0; i < tbl10.size(); i++) {
+            TBDMENU tbdmenu = tbl10.get(i);
+            cupboard().withDatabase(db).put(tbdmenu);
+        }
+
+
+    }
+
+    /**
+     * The methods is use to find the SuccessTag and FailureTag from TBTBC
+     * returns ACKTAG object
+     **/
+
+    public static ACKTAG ChkAcknowledgeTag(String Repcode, String ClientID, DBHandler dbHandler) {
+        ACKTAG acktag;
+        dbHandler.check_control_table();
+        String SuccessTag = "";
+        String failTag = "";
+        String s[][] = dbHandler.genericSelect("Select * from TBTBC where MOB_COUNT !='0' ", 2);
+        if (s != null)
+            for (int i = 0; i < s.length; i++) {
+                if (i == s.length - 1)
+                    failTag = failTag + s[i][1];
+                else
+                    failTag = failTag + s[i][1] + ",";
+            }
+        String s2[][] = dbHandler.genericSelect("Select * from TBTBC where MOB_COUNT ='0' ", 2);
+        if (s2 != null) {
+            for (int i = 0; i < s2.length; i++) {
+                if (i == s2.length - 1)
+                    SuccessTag = SuccessTag + s2[i][1];
+                else
+                    SuccessTag = SuccessTag + s2[i][1] + ",";
+            }
+        }
+
+        acktag = new ACKTAG();
+        acktag.setREPCODE(Repcode);
+        acktag.setCLIENTID(ClientID);
+        acktag.setFAILTAG(failTag);
+        acktag.setSUCCESSTAG(SuccessTag);
+        return acktag;
+    }
 
 }

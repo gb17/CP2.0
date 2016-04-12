@@ -137,9 +137,22 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         SearchData tbdpg = brandList.get(position);
-        holder.title.setText(tbdpg.getPageNamee());
-        holder.pagename.setText(tbdpg.getSubpageName());
-        holder.brandname.setText(tbdpg.getCat_Name());
+
+        if (!tbdpg.getPageNamee().equals(""))
+            holder.title.setText(tbdpg.getPageNamee());
+        else
+            holder.title.setVisibility(View.GONE);
+
+        if (!tbdpg.getSubpageName().equals(""))
+            holder.pagename.setText(tbdpg.getSubpageName());
+        else
+            holder.pagename.setVisibility(View.GONE);
+
+        if (!tbdpg.getCat_Name().equals(""))
+            holder.brandname.setText(tbdpg.getCat_Name());
+        else
+            holder.brandname.setVisibility(View.GONE);
+
         String filePath = new File(mContext.getFilesDir() + "/" + FilenameUtils.removeExtension(tbdpg.getImagePath()) + "/", FilenameUtils.removeExtension(tbdpg.getImagePath()) + ".png").getAbsolutePath();
         if (tbdpg.getPageNamee().toLowerCase().contains("mp4")) {
             holder.imageView.setScaleType(ImageView.ScaleType.CENTER);
@@ -150,6 +163,8 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
         } else {
             bitmap = BitmapFactory.decodeFile(filePath);
             holder.imageView.setImageBitmap(bitmap);
+            if (bitmap == null)
+                holder.imageView.setImageResource(R.drawable.page);
         }
 
         holder.bind(brandList.get(position), position);

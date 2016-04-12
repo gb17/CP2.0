@@ -71,6 +71,7 @@ import inc.gb.cp20.widget.ColorPickerDialog;
  * Created by Shubham on 2/8/16.
  */
 
+@SuppressWarnings("deprecation")
 @SuppressLint("SetJavaScriptEnabled")
 public class Container extends AlphaListActivity implements View.OnClickListener {
 
@@ -303,6 +304,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         mylinear = (LinearLayout) findViewById(R.id.mainid);
         webView = (WebView) findViewById(R.id.webView);
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setSupportZoom(true);
+        //noinspection deprecation,deprecation,deprecation,deprecation,deprecation,deprecation,deprecation,deprecation,deprecation
         webView.getSettings().setPluginState(WebSettings.PluginState.ON_DEMAND);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAllowFileAccess(true);
@@ -578,10 +582,17 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                         LayoutInflater inflater = (LayoutInflater) Container.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View view = inflater.inflate(R.layout.playlist_groups, null);
                         view.setId(i);
-                        String filePath = new File(getFilesDir() + "/" + FilenameUtils.removeExtension(playstData[i][2]) + "/", FilenameUtils.removeExtension(playstData[i][2]) + ".png").getAbsolutePath();
-                        bitmap = BitmapFactory.decodeFile(filePath);
                         ImageView img = (ImageView) view.findViewById(R.id.img);
-                        img.setImageBitmap(bitmap);
+                        try {
+                            String filePath = new File(getFilesDir() + "/" + FilenameUtils.removeExtension(playstData[i][2]) + "/", FilenameUtils.removeExtension(playstData[i][2]) + ".png").getAbsolutePath();
+                            bitmap = BitmapFactory.decodeFile(filePath);
+                            if (bitmap != null)
+                                img.setImageBitmap(bitmap);
+                            else
+                                img.setImageResource(R.drawable.page);
+                        } catch (Exception e) {
+                            img.setImageResource(R.drawable.page);
+                        }
 
                         TextView name = (TextView) view.findViewById(R.id.name);
                         name.setText(playstData[i][3]);
@@ -609,10 +620,20 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             for (int i = 0; i < brandData.length; i++) {
                 LayoutInflater inflater = (LayoutInflater) Container.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View childView = inflater.inflate(R.layout.subgroups, null);
-                String filePath = new File(getFilesDir() + "/", brandData[i][4] + ".png").getAbsolutePath();
-                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+
+
                 ImageView sub_img = (ImageView) childView.findViewById(R.id.sub_img);
-                sub_img.setImageBitmap(bitmap);
+                try {
+                    String filePath = new File(getFilesDir() + "/", brandData[i][4] + ".png").getAbsolutePath();
+                    Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                    if (bitmap != null)
+                        sub_img.setImageBitmap(bitmap);
+                    else
+                        sub_img.setImageResource(R.drawable.brand);
+                } catch (Exception e) {
+                    sub_img.setImageResource(R.drawable.brand);
+                }
+
 
                 TextView name = (TextView) childView.findViewById(R.id.namesub);
                 name.setText(brandData[i][2]);
@@ -1281,8 +1302,10 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE))
                 .getDefaultDisplay();
         // dialog.setCancelable(false);
-        int width = display.getWidth();
-        int height = display.getHeight();
+        //noinspection deprecation,deprecation
+        @SuppressWarnings("deprecation") int width = display.getWidth();
+        //noinspection deprecation,deprecation
+        @SuppressWarnings("deprecation") int height = display.getHeight();
         dialog.getWindow().setLayout((29 * width) / 30,
                 (height * 9) / 10);
         LinearLayout first = (LinearLayout) dialog
@@ -1720,9 +1743,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     }
 
     private void SyncData() {
-//        Intent intent = new Intent(Container.this, LandingPage.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        startActivity(intent);
+
         Sync sync = new Sync(Container.this);
         sync.prepareRequest(1);
         final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(Container.this, CmsInter.SUCCESS_TYPE);
@@ -1763,15 +1784,6 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             for (int i = 0; i < playstData.length; ++i) {
                 for (int j = 0; j < playstData[i].length; ++j) {
                     if (temp.equals(playstData[i][j])) {
-//                        ImageView imageView = (ImageView) ((RelativeLayout) content2.getChildAt(i)).getChildAt(0);
-//                        for (int k = 0; k < content2.getChildCount(); k++) {
-//                            ImageView child = (ImageView) ((RelativeLayout) content2.getChildAt(k)).getChildAt(0);
-//                            child.setScaleX(1.0f);
-//                            child.setScaleY(1.0f);
-//                        }
-//                        imageView.setScaleX(1.4f);
-//                        imageView.setScaleY(1.4f);
-
                         if (count == 0)
                             actualPlayIndex = playIndex;
                         count++;

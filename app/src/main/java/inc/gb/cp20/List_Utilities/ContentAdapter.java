@@ -121,7 +121,9 @@ public class ContentAdapter extends BaseAdapter {
                 holder.status.setTextColor(context.getResources().getColor(R.color.thumbnail_productname_title));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+          //
+            //
+            // e.printStackTrace();
         }
 
 

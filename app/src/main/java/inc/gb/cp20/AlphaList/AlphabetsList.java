@@ -30,6 +30,7 @@ import inc.gb.cp20.Util.CmsInter;
 /**
  * Created by GB on 2/12/16.
  */
+@SuppressWarnings("ALL")
 public class AlphabetsList {
     Context mContext;
     int mLastFirstVisibleItem = 0;
@@ -417,6 +418,7 @@ public class AlphabetsList {
     /**
      * getDisplayListOnChange method display the list from the index.
      */
+    @SuppressWarnings("deprecation")
     public void getDisplayListOnChange(View view) {
         LinearLayout sideIndex = (LinearLayout) view.findViewById(R.id.sideIndex);
         sideIndexHeight = sideIndex.getHeight();
@@ -425,6 +427,7 @@ public class AlphabetsList {
             Display display = ((WindowManager) mContext
                     .getSystemService(Context.WINDOW_SERVICE))
                     .getDefaultDisplay();
+            //noinspection deprecation,deprecation
             sideIndexHeight = display.getHeight();
             // Navigation Bar + Tab space comes approximately 80dip
         }

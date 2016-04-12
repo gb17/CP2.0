@@ -99,23 +99,18 @@ public class ChangePasswordAcitvity extends Activity implements View.OnClickList
                     Utility.isEmpty(strCpwNewPwd)
                     || Utility.isEmpty(strCpwConfirmPwd)) {
                 Utility.showSweetAlert(context, CmsInter.AL_BLANK, CmsInter.ERROR_TYPE);
-                return;
             } else if (Utility.isSpecial(strCpwOldPwd, "#$%^&")
                     || Utility.isSpecial(strCpwNewPwd, "#$%^&")
                     || Utility.isSpecial(strCpwConfirmPwd, "#$%^&")) {
                 Utility.showSweetAlert(context, CmsInter.AL_IS_SPECIAL, CmsInter.ERROR_TYPE);
-                return;
             } else if (Utility.isSpace(strCpwOldPwd)
                     || Utility.isSpace(strCpwNewPwd)
                     || Utility.isSpace(strCpwConfirmPwd)) {
                 Utility.showSweetAlert(context, CmsInter.AL_SPACE, CmsInter.ERROR_TYPE);
-                return;
             } else if (!strCpwOldPwd.equals(PasswordString)) {
                 Utility.showSweetAlert(context, CmsInter.AL_OLD_PASS_INVALID, CmsInter.ERROR_TYPE);
-                return;
             } else if (!strCpwNewPwd.equals(strCpwConfirmPwd)) {
                 Utility.showSweetAlert(context, CmsInter.AL_CONFIRM_PWD, CmsInter.ERROR_TYPE);
-                return;
             } else if (Utility.lengthCheck(strCpwNewPwd,
                     Integer.parseInt("4"))
                     || Utility.lengthCheck(strCpwConfirmPwd,

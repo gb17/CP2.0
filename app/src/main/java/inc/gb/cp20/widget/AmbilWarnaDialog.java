@@ -187,11 +187,11 @@ public class AmbilWarnaDialog {
 		layoutParams.leftMargin = (int) (viewHue.getLeft()
 				- Math.floor(viewCursor.getMeasuredWidth() / 2) - viewContainer
 				.getPaddingLeft());
-		;
+
 		layoutParams.topMargin = (int) (viewHue.getTop() + y
 				- Math.floor(viewCursor.getMeasuredHeight() / 2) - viewContainer
 				.getPaddingTop());
-		;
+
 		viewCursor.setLayoutParams(layoutParams);
 	}
 

@@ -34,13 +34,6 @@
 
         </activity>
 
-        <activity
-            android:name=".Landing.LoginPageActivity"
-            android:screenOrientation="landscape"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden">
-        </activity>
-
 
         <activity
             android:name=".Landing.SplashScreen"

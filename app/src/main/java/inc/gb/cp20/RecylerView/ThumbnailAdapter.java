@@ -3,7 +3,6 @@ package inc.gb.cp20.RecylerView;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,14 +37,13 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
 
     static int index;
 
-    static int pageflag = -1;
 
     public ThumbnailAdapter(List<TBBRAND> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener, int index) {
         this.brandList = brandList;
-        this.mContext = mContext;
+        ThumbnailAdapter.mContext = mContext;
         this.fragmentManager = fragmentManager;
-        this.itemListener = itemListener;
-        this.index = index;
+        ThumbnailAdapter.itemListener = itemListener;
+        ThumbnailAdapter.index = index;
         font = Typeface.createFromAsset(mContext.getAssets(),
                 "fontawesome-webfont.ttf");
         dbHandler = DBHandler.getInstance(mContext);
@@ -59,6 +57,8 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
         ScrollView childScrollView;
         RelativeLayout masklayRelativeLayout;
         LinearLayout retryLinearLayout;
+        int pagedis = -1;
+        int refdis = -1;
 
 
         public MyViewHolder(View view) {
@@ -113,108 +113,31 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
 
         }
 
-        public void bind(final TBBRAND brandList, final int total) {
+        public void bind(final TBBRAND brandList,
+                         final int total,
+                         final TextView fb,
+                         final RelativeLayout layout,
+                         final RecyclerViewClickListener listener,
+                         final ScrollView scrollView,
+                         final TextView textView
+        ) {
             if (index == 1) {
                 pageFloatingActionButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
-                        pageflag = getLayoutPosition();
-
-
-                        childScrollView.setVisibility(View.VISIBLE);
-                        fb.setVisibility(View.VISIBLE);
+                        pagedis = getLayoutPosition();
                         layout.removeAllViews();
-                        String[][] pagename = dbHandler.genericSelect("select b.COL2 from TBDPS a , TBDPG b where a.col5 = b.col0 and a.col3 =  '" + brandList.getCOL3() + "' and a.COL9 = '" + brandList.getCOL0() + "'   and a.COL10 = 'IPL'", 1);
-                        if (pagename != null) {
-                            int prevTextViewId = 0;
-                            for (int i = 0; i < pagename.length; i++) {
-                                final TextView textView = new TextView(mContext);
-
-                                String temp = "";
-                                if (i < 10) {
-                                    if (i == 9)
-                                        temp = "0" + (i);
-                                    else
-                                        temp = "0" + (i + 1);
-                                } else {
-                                    temp = "" + (i + 1);
-                                }
-
-
-                                textView.setText(temp + " " + pagename[i][0]);
-                                temp = "";
-                                textView.setTextColor(Color.parseColor("#FFFFFF"));
-
-                                int curTextViewId = prevTextViewId + 1;
-                                textView.setId(curTextViewId);
-                                final RelativeLayout.LayoutParams params =
-                                        new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
-                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-                                params.addRule(RelativeLayout.BELOW, prevTextViewId);
-                                params.setMargins(4, 4, 4, 4);
-                                textView.setLayoutParams(params);
-
-                                prevTextViewId = curTextViewId;
-                                layout.addView(textView, params);
-                            }
-                        }
-
+                        listener.onPageClick(brandList, view, getLayoutPosition(), layout, total, scrollView, textView);
                     }
                 });
-
 
                 refFloatingActionButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        childScrollView.setVisibility(View.VISIBLE);
+                        pagedis = getLayoutPosition();
                         layout.removeAllViews();
-                        fb.setVisibility(View.VISIBLE);
-                        String Query = " select DISTINCT l.COL1,l.COL2,l.COL15  from TBDRG l\n" +
-                                "        where exists(\n" +
-                                "        select 1\n" +
-                                "        from TBDPS a\n" +
-                                "        where a.col9='" + brandList.getCOL0() + "'\n" +
-                                "        and a.col3='" + brandList.getCOL3() + "'" +
-                                "        and a.col10='IPL'\n" +
-                                "        and a.col5=l.col0)";
+                        listener.onRefClick(brandList, view, getLayoutPosition(), layout, total, scrollView, textView);
 
-                        String[][] pagename = dbHandler.genericSelect(Query, 3);
-                        if (pagename != null) {
-                            int prevTextViewId = 0;
-                            for (int i = 0; i < pagename.length; i++) {
-                                final TextView textView = new TextView(mContext);
-                                String temp = "";
-                                if (i < 10) {
-                                    if (i == 9)
-                                        temp = "0" + (i);
-                                    else
-                                        temp = "0" + (i + 1);
-                                } else {
-                                    temp = "" + (i + 1);
-                                }
-
-
-                                textView.setText(temp + " " + pagename[i][0]);
-                                temp = "";
-
-                                textView.setTextColor(Color.parseColor("#FFFFFF"));
-
-                                int curTextViewId = prevTextViewId + 1;
-                                textView.setId(curTextViewId);
-                                final RelativeLayout.LayoutParams params =
-                                        new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT,
-                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-                                params.addRule(RelativeLayout.BELOW, prevTextViewId);
-                                params.setMargins(4, 4, 4, 4);
-                                textView.setLayoutParams(params);
-
-                                prevTextViewId = curTextViewId;
-                                layout.addView(textView, params);
-                            }
-                        }
                     }
                 });
 
@@ -281,10 +204,32 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
         try {
             String filePath = new File(mContext.getFilesDir() + "/", tbbrand.getCOL4() + ".png").getAbsolutePath();
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+            if(bitmap!=null)
             holder.imageView.setImageBitmap(bitmap);
+            else{
+                if (tbbrand.getCOL0().equals("B"))
+                    holder.imageView.setImageResource(R.drawable.brand);
+                else if (tbbrand.getCOL0().equals("S"))
+                    holder.imageView.setImageResource(R.drawable.speciality);
+                else if (tbbrand.getCOL0().equals("T"))
+                    holder.imageView.setImageResource(R.drawable.therapy);
+                else if (tbbrand.getCOL0().equals("C"))
+                    holder.imageView.setImageResource(R.drawable.corporate);
+                else if (tbbrand.getCOL0().equals("SR"))
+                    holder.imageView.setImageResource(R.drawable.services);
+            }
 
         } catch (Exception e) {
-            //holder.imageView.setI
+            if (tbbrand.getCOL0().equals("B"))
+                holder.imageView.setImageResource(R.drawable.brand);
+            else if (tbbrand.getCOL0().equals("S"))
+                holder.imageView.setImageResource(R.drawable.speciality);
+            else if (tbbrand.getCOL0().equals("T"))
+                holder.imageView.setImageResource(R.drawable.therapy);
+            else if (tbbrand.getCOL0().equals("C"))
+                holder.imageView.setImageResource(R.drawable.corporate);
+            else if (tbbrand.getCOL0().equals("SR"))
+                holder.imageView.setImageResource(R.drawable.services);
         }
 
         //For New Tag
@@ -295,7 +240,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
         }
 
         //For PAGE Layout
-        if (pageflag == position) {
+        if (holder.pagedis == position) {
             holder.childScrollView.setVisibility(View.VISIBLE);
             holder.fb.setVisibility(View.VISIBLE);
         } else {
@@ -303,7 +248,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
             holder.fb.setVisibility(View.GONE);
         }
         holder.bind(brandList.get(position), itemListener);
-        holder.bind(brandList.get(position), getItemCount());
+        holder.bind(brandList.get(position), getItemCount(), holder.fb, holder.layout, itemListener, holder.childScrollView, holder.fb);
 
 
     }

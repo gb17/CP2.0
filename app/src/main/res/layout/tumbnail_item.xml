@@ -9,9 +9,11 @@
         android:id="@+id/bandimage"
         android:layout_width="216dp"
         android:layout_height="150dp"
-        android:background="#FFFFFF"
+        android:background="#c9c6c6"
         android:scaleType="fitXY"
-        android:src="@drawable/newcfix1" />
+        android:padding="1dp"
+
+        android:src="@drawable/page" />
 
     <TextView
         android:id="@+id/title"

@@ -302,7 +302,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
 
-    public int check_control_table() {
+    public  int check_control_table() {
         String TABLE = "";
         int a = 0;
         String[][] tablesname = genericSelect(
@@ -419,7 +419,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 }
             }
         } catch (Exception e) {
-          e.printStackTrace();
+            e.printStackTrace();
         } finally {
             if (cur != null && !cur.isClosed())
                 cur.close();

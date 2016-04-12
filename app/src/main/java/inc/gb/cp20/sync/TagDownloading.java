@@ -23,17 +23,7 @@ import inc.gb.cp20.Models.CVR;
 import inc.gb.cp20.Models.IRCSFResponsePOJO;
 import inc.gb.cp20.Models.ReqCVR;
 import inc.gb.cp20.Models.TAG;
-import inc.gb.cp20.Models.TBBRAND;
 import inc.gb.cp20.Models.TBCVR;
-import inc.gb.cp20.Models.TBDBL;
-import inc.gb.cp20.Models.TBDCP;
-import inc.gb.cp20.Models.TBDMENU;
-import inc.gb.cp20.Models.TBDPG;
-import inc.gb.cp20.Models.TBDPS;
-import inc.gb.cp20.Models.TBDSP;
-import inc.gb.cp20.Models.TBDTH;
-import inc.gb.cp20.Models.TBPARTY;
-import inc.gb.cp20.Models.TBTBC;
 import inc.gb.cp20.Models.TablesConfig;
 import inc.gb.cp20.Util.CmsInter;
 import inc.gb.cp20.Util.RestClient;
@@ -43,8 +33,6 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
-
-import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 /**
  * Created by GB on 3/19/16.
@@ -64,7 +52,7 @@ public class TagDownloading implements DownloadInterface {
 
     public boolean CONFIG_FLAG = false;
     SweetAlertDialog configAlertDialog = null;
-
+    final int finalacknowledgeTag = 96;
     Context mContext;
 
     public TagDownloading(Context mContext) {
@@ -82,7 +70,7 @@ public class TagDownloading implements DownloadInterface {
     }
 
     public void CallCVR(final boolean configflag) {
-        getprogressDialog("Please Wait");
+        getprogressDialog("Please Wait...");
         final String[][] psdf = dbHandler.genericSelect("SELECT * FROM TBUPW", 6);
         if (psdf != null) {
             final String datavalues[] = psdf[0][3].split("\\^");
@@ -158,10 +146,7 @@ public class TagDownloading implements DownloadInterface {
                                                     });
                                             configAlertDialogv.show();
                                         }
-//                                        Intent LandingIntent = new Intent(mContext, LandingPage.class);
-//                                        LandingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                        LandingIntent.putExtra("CALLSYNC", "1");
-//                                        mContext.startActivity(LandingIntent);
+
                                     } else {
                                         if (cvrvalues[0].equals(CmsInter.INVALID_INSTANCE)) {
 
@@ -190,7 +175,7 @@ public class TagDownloading implements DownloadInterface {
                         }
 
                     } else {
-                        Utility.showSweetAlert(mContext,CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
+                        Utility.showSweetAlert(mContext, CmsInter.AL_NETERROR, CmsInter.ERROR_TYPE);
                         dialog.dismiss();
                     }
                 }
@@ -229,8 +214,8 @@ public class TagDownloading implements DownloadInterface {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                dataInsert(response);
-                                ChkAck();
+                                Utility.dataInsert(response, dbHandler);
+                                acknowledgeTag(Utility.ChkAcknowledgeTag(Repcode, ClientID, dbHandler), finalacknowledgeTag);
                             }
                         }).start();
 
@@ -253,117 +238,8 @@ public class TagDownloading implements DownloadInterface {
         }
     }
 
-    public void dataInsert(Response<TablesConfig> response) {
-        List<TBDCP> tbl = response.body().getTBDCP();
-        SQLiteDatabase db = dbHandler.getWritableDatabase();
-        for (int i = 0; i < tbl.size(); i++) {
-            TBDCP tbdcp = tbl.get(i);
-            cupboard().withDatabase(db).put(tbdcp);
-        }
 
-        List<TBDTH> tbl2 = response.body().getTBDTH();
-
-        for (int i = 0; i < tbl2.size(); i++) {
-            TBDTH tbdth = tbl2.get(i);
-            cupboard().withDatabase(db).put(tbdth);
-        }
-
-        List<TBDBL>
-                tbl3 = response.body().getTBDBL();
-
-        for (int i = 0; i < tbl3.size(); i++) {
-            TBDBL tbdbl = tbl3.get(i);
-            cupboard().withDatabase(db).put(tbdbl);
-        }
-
-        List<TBDSP>
-                tbl4 = response.body().getTBDSP();
-
-        for (int i = 0; i < tbl4.size(); i++) {
-            TBDSP tbdsp = tbl4.get(i);
-            cupboard().withDatabase(db).put(tbdsp);
-        }
-
-        List<TBTBC>
-                tbl5 = response.body().getTBTBC();
-
-        for (int i = 0; i < tbl5.size(); i++) {
-            TBTBC tbtbc = tbl5.get(i);
-            cupboard().withDatabase(db).put(tbtbc);
-        }
-
-
-        List<TBDPG>
-                tbl6 = response.body().getTBDPG();
-
-        for (int i = 0; i < tbl6.size(); i++) {
-            TBDPG tbdpg = tbl6.get(i);
-            cupboard().withDatabase(db).put(tbdpg);
-        }
-        List<TBPARTY>
-                tbl7 = response.body().getTBPARTY();
-
-        for (int i = 0; i < tbl7.size(); i++) {
-            TBPARTY tbparty = tbl7.get(i);
-            cupboard().withDatabase(db).put(tbparty);
-        }
-
-        List<TBDPS>
-                tbl8 = response.body().getTBDPS();
-
-        for (int i = 0; i < tbl8.size(); i++) {
-            TBDPS tbdps = tbl8.get(i);
-            cupboard().withDatabase(db).put(tbdps);
-        }
-
-        List<TBBRAND>
-                tbl9 = response.body().getTBBRAND();
-
-        for (int i = 0; i < tbl9.size(); i++) {
-            TBBRAND tbbrand = tbl9.get(i);
-            cupboard().withDatabase(db).put(tbbrand);
-        }
-
-        List<TBDMENU>
-                tbl10 = response.body().getTBDMENU();
-
-        for (int i = 0; i < tbl10.size(); i++) {
-            TBDMENU tbdmenu = tbl10.get(i);
-            cupboard().withDatabase(db).put(tbdmenu);
-        }
-
-
-    }
-
-    public void ChkAck() {
-
-        dbHandler.check_control_table();
-        String suc = "";
-        String fail = "";
-        String s[][] = dbHandler.genericSelect("Select * from TBTBC where MOB_COUNT !='0' ", 2);
-        if (s != null)
-            for (int i = 0; i < s.length; i++) {
-                fail = fail + s[i][1] + ",";
-            }
-        String s2[][] = dbHandler.genericSelect("Select * from TBTBC where MOB_COUNT ='0' ", 2);
-        if (s2 != null) {
-            for (int i = 0; i < s2.length; i++) {
-                suc = suc + s2[i][1] + ",";
-            }
-        }
-
-        ACKtagd(fail, suc);
-
-
-    }
-
-    public void ACKtagd(String fail, String Success) {
-        ACKTAG acktag = new ACKTAG();
-        acktag.setREPCODE(Repcode);
-        acktag.setCLIENTID(ClientID);
-        acktag.setFAILTAG(fail);
-        acktag.setSUCCESSTAG(Success);
-
+    public void acknowledgeTag(ACKTAG acktag, final int mode) {
 
         RestClient.GitApiInterface service = RestClient.getClient();
 
@@ -371,19 +247,20 @@ public class TagDownloading implements DownloadInterface {
         call.enqueue(new Callback<ACKTAG>() {
             @Override
             public void onResponse(Response<ACKTAG> response, Retrofit retrofit) {
+                if (mode == finalacknowledgeTag) {
+                    configAlertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
+                            .setTitleText(CmsInter.AL_SYNC_SUC)
+                            .setConfirmText("Ok")
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    configAlertDialog.dismiss();
 
-                configAlertDialog = new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText(CmsInter.AL_SYNC_SUC)
-                        .setConfirmText("Ok")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                configAlertDialog.dismiss();
-
-                            }
-                        });
-                configAlertDialog.show();
-                dialog.dismiss();
+                                }
+                            });
+                    configAlertDialog.show();
+                    dialog.dismiss();
+                }
             }
 
             @Override
@@ -404,15 +281,9 @@ public class TagDownloading implements DownloadInterface {
     public void onTaskCompleted(boolean flag) {
 
         if (flag) {
-
-            ChkAck();
-
+            acknowledgeTag(Utility.ChkAcknowledgeTag(Repcode, ClientID, dbHandler), finalacknowledgeTag);
         } else {
             dialog.dismiss();
-
-//            new SweetAlertDialog(mContext, SweetAlertDialog.ERROR_TYPE)
-//                    .setTitleText("Configuration Fail")
-//                    .show();
 
 
         }
@@ -430,8 +301,7 @@ public class TagDownloading implements DownloadInterface {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            new TBImgClass().execute();
-            Log.d("Mai yaha hu", "on pre exceutr");
+            new DownloadImageTask(dbHandler, mContext);
 
         }
 
@@ -449,13 +319,16 @@ public class TagDownloading implements DownloadInterface {
                         String directory = mContext.getFilesDir().getAbsolutePath()
                                 + "/";
                         Utility.unZipFile(zipfile, directory);
+                        aBoolean = dbHandler.executscript();
+                        if (Urls.length == i - 1) {
+                        } else
+                            acknowledgeTag(Utility.ChkAcknowledgeTag(Repcode, ClientID, dbHandler), i);
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
-            aBoolean = dbHandler.executscript();
 
 
             return aBoolean;
@@ -465,61 +338,7 @@ public class TagDownloading implements DownloadInterface {
         protected void onPostExecute(Boolean bool) {
             super.onPostExecute(bool);
             onTaskCompleted(bool);
-            Log.d("Mai yaha hu", " onPostExecute");
+
         }
-    }
-
-    class TBImgClass extends AsyncTask<Void, Integer, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            String[][] tbImg = dbHandler.genericSelect("select COL1 from TBIMG WHERE COL2 = 'Y'", 1);
-            if (tbImg != null) {
-
-                for (int i = 0; i < tbImg.length; i++) {
-                    String url = tbImg[i][0];
-                    String msg = Utility.downloadZipFile(url);
-                    if (!msg.startsWith("fail")) {
-                        try {
-                            File zipfile = new File(msg);
-                            String directory = mContext.getFilesDir().getAbsolutePath()
-                                    + "/";
-                            String str = Utility.unZipFile(zipfile, directory);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        dbHandler.ExecuteQuery("UPDATE TBIMG SET COL2 = 'N' where COL1 = '" + url + "'");
-
-                    }
-                }
-            }
-            return null;
-        }
-    }
-
-    private boolean checkConfigOrNot() {
-        boolean mission;
-        dbHandler = DBHandler.getInstance(mContext);
-
-        String data[][] = dbHandler.genericSelect("*", DBHandler.TBUPW,
-                "", "", "", 6);
-        if (data != null) {
-
-
-            //data[0][2];
-            String datavalues[] = data[0][3].split("\\^");
-//                instaneceId = datavalues[4];
-//                Repcode = datavalues[3];
-//                RoleCode = datavalues[5].substring(0, 1);
-//                Version = data[0][1];
-            ClientID = data[0][4];
-            mission = true;
-        } else {
-
-            mission = false;
-        }
-
-
-        return mission;
-
     }
 }
