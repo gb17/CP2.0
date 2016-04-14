@@ -9,9 +9,9 @@
         android:id="@+id/bandimage"
         android:layout_width="216dp"
         android:layout_height="150dp"
-        android:background="#c9c6c6"
+        android:background="#FFFFFF"
         android:scaleType="fitXY"
-        android:padding="1dp"
+
 
         android:src="@drawable/page" />
 

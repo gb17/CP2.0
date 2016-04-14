@@ -17,6 +17,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Display;
@@ -73,7 +75,7 @@ import inc.gb.cp20.widget.ColorPickerDialog;
 
 @SuppressWarnings("deprecation")
 @SuppressLint("SetJavaScriptEnabled")
-public class Container extends AlphaListActivity implements View.OnClickListener {
+public class ContainerwithSwipe extends AlphaListActivity implements View.OnClickListener {
 
 
     int stepcount = 1;
@@ -86,7 +88,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     RelativeLayout myscroll2;
     SeekBar seek;
     ImageView colorw;
-    WebView webView;
+    // WebView webView;
     private String playstData[][];
     private String brandData[][];
     int count = 0;
@@ -157,10 +159,30 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
     int mycountcount = 0;
 
+    int swipeAdap = 0;
+
+    //Page =false or barad =true
+
+    boolean isBrand = true;
+
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+
+    /**
+     * The {@link ViewPager} that will host the section contents.
+     */
+    private ViewPager mViewPager;
+    LayoutInflater inflater;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
+
+        setContentView(R.layout.activity_containerwith_swipe);
+        mSectionsPagerAdapter = new SectionsPagerAdapter();
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+
+        inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         randomNumber = Utility.getUniqueNo();
         font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         Bundle extras = getIntent().getExtras();
@@ -211,8 +233,8 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         String brandQuery = "SELECT COL0, COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8 FROM TBBRAND b where b.COL0 = '" + thumbnail_category + "' and exists (select 1 from TBDPS s, TBDPG t where s.col5 = t.col0 and s.col9= b.col0 and s.col1 =  b.col3 and t.col7 = '1' )";
 
         brandData = handler.genericSelect(brandQuery, 9);
-        setContentView(R.layout.container);
-        tracker = new GPSTracker(Container.this);
+
+        tracker = new GPSTracker(ContainerwithSwipe.this);
 
         backtoplaylist = (ImageView) findViewById(R.id.backtoplaylist);
         backtoplaylist.setOnClickListener(this);
@@ -240,29 +262,29 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 String content_id = view.getTag().toString();
                 refData = handler.genericSelect("Select COL1, COL15, COL3, COL2 from TBDRG where COL0 = '" + content_id + "'", 4);
                 if (refData != null) {
-                    refDialog = new Dialog(Container.this);
+                    refDialog = new Dialog(ContainerwithSwipe.this);
                     refDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     refDialog.setContentView(R.layout.listnil);
                     ListView lv = (ListView) refDialog.findViewById(R.id.listView);
-                    Custom_grid adaptor = new Custom_grid(Container.this,
+                    Custom_grid adaptor = new Custom_grid(ContainerwithSwipe.this,
                             refData);
                     lv.setAdapter(adaptor);
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
-                            Container.this.position = position;
+                            ContainerwithSwipe.this.position = position;
                             startTimeForReference = System.currentTimeMillis();
                             Date date = new Date();
                             DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
                             startTimeStringForRef = formatter.format(date);
                             if (refData[position][2].toLowerCase().equals("mp4")) {
-                                Intent intent = new Intent(Container.this,
+                                Intent intent = new Intent(ContainerwithSwipe.this,
                                         VideoPlay.class);
                                 intent.putExtra("fileName", refData[position][0]);
                                 startActivityForResult(intent, 1001);
                             } else if (refData[position][2].toLowerCase().equals("pdf")) {
-                                String path1 = Container.this.getFilesDir().getAbsolutePath() + "/"
+                                String path1 = ContainerwithSwipe.this.getFilesDir().getAbsolutePath() + "/"
                                         + refData[position][0];
                                 File file1 = new File(path1);
                                 if (file1.exists()) {
@@ -275,7 +297,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                         System.out.println("PDF Exception = = = >" + e.toString());
                                     }
                                 } else {
-                                    Toast.makeText(Container.this,
+                                    Toast.makeText(ContainerwithSwipe.this,
                                             "Please wait PDF being downloaded.....", Toast.LENGTH_SHORT)
                                             .show();
                                 }
@@ -302,23 +324,23 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         myscroll2 = (RelativeLayout) findViewById(R.id.scroll2);
 
         mylinear = (LinearLayout) findViewById(R.id.mainid);
-        webView = (WebView) findViewById(R.id.webView);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setBuiltInZoomControls(true);
-        webView.getSettings().setSupportZoom(true);
-        //noinspection deprecation,deprecation,deprecation,deprecation,deprecation,deprecation,deprecation,deprecation,deprecation
-        webView.getSettings().setPluginState(WebSettings.PluginState.ON_DEMAND);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setAllowFileAccess(true);
-        int SDK_INT = android.os.Build.VERSION.SDK_INT;
-        if (SDK_INT > 16) {
-            webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
-        }
-
-        // webView.addJavascriptInterface(this, "cpjs");
-
-        webView.addJavascriptInterface(new JavaScriptInterface(this),
-                "cpjs");
+//        webView = (WebView) findViewById(R.id.webView);
+//        webView.getSettings().setJavaScriptEnabled(true);
+//        webView.getSettings().setBuiltInZoomControls(true);
+//        webView.getSettings().setSupportZoom(true);
+//        //noinspection deprecation,deprecation,deprecation,deprecation,deprecation,deprecation,deprecation,deprecation,deprecation
+//        webView.getSettings().setPluginState(WebSettings.PluginState.ON_DEMAND);
+//        webView.getSettings().setJavaScriptEnabled(true);
+//        webView.getSettings().setAllowFileAccess(true);
+//        int SDK_INT = android.os.Build.VERSION.SDK_INT;
+//        if (SDK_INT > 16) {
+//            webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+//        }
+//
+//        // webView.addJavascriptInterface(this, "cpjs");
+//
+//        webView.addJavascriptInterface(new JavaScriptInterface(this),
+//                "cpjs");
 
 
         gesturesView = (GestureOverlayView) findViewById(R.id.gestures);
@@ -336,7 +358,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 if (gesturesView2.getVisibility() == View.VISIBLE) {
                     gesturesView2.setVisibility(View.GONE);
                     Animation animation = AnimationUtils.loadAnimation(
-                            Container.this, R.anim.top_to_bottom);
+                            ContainerwithSwipe.this, R.anim.top_to_bottom);
                     animation.setAnimationListener(new Animation.AnimationListener() {
 
                         @Override
@@ -378,7 +400,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 ColorPickerDialog colorPickerDialog = new ColorPickerDialog(
-                        Container.this, Color.parseColor("#00ff09"),
+                        ContainerwithSwipe.this, Color.parseColor("#00ff09"),
                         new ColorPickerDialog.OnColorSelectedListener() {
 
                             @Override
@@ -451,9 +473,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     mylinear.setVisibility(View.VISIBLE);
                     myscroll2.setVisibility(View.VISIBLE);
                     myscroll2.startAnimation(AnimationUtils.loadAnimation(
-                            Container.this, R.anim.bottom_to_top));
+                            ContainerwithSwipe.this, R.anim.bottom_to_top));
                     Animation animation = AnimationUtils.loadAnimation(
-                            Container.this, R.anim.bottom_to_top);
+                            ContainerwithSwipe.this, R.anim.bottom_to_top);
                     animation.setAnimationListener(new Animation.AnimationListener() {
 
                         @Override
@@ -483,7 +505,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     open.setVisibility(View.INVISIBLE);
                     // webView.setClickable(true);
                     Animation animation = AnimationUtils.loadAnimation(
-                            Container.this, R.anim.top_to_bottom);
+                            ContainerwithSwipe.this, R.anim.top_to_bottom);
                     animation.setAnimationListener(new Animation.AnimationListener() {
 
                         @Override
@@ -520,13 +542,96 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         else
             fillPlayList(0);
         fillBrandList();
-    }
 
+//        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//
+//                gesturesView.cancelClearAnimation();
+//                gesturesView.clear(true);
+//                gesturesView.setVisibility(View.GONE);
+//                seek.setVisibility(View.GONE);
+//                colorw.setVisibility(View.GONE);
+//                ImageView image = (ImageView) findViewById(R.id.annot1);
+//                image.setTag("1");
+//                previousIndex = playIndex;
+//
+//
+//                if (playIndex < playstData.length - 1) {
+//                    playIndex++;
+//                    ImageView imageView = (ImageView) ((RelativeLayout) content2.getChildAt(playIndex)).getChildAt(0);
+//                    for (int i = 0; i < content2.getChildCount(); i++) {
+//                        ImageView child = (ImageView) ((RelativeLayout) content2.getChildAt(i)).getChildAt(0);
+//                        child.setScaleX(1.0f);
+//                        child.setScaleY(1.0f);
+//                    }
+//                    imageView.setScaleX(1.4f);
+//                    imageView.setScaleY(1.4f);
+//                    displayFocussedBrands(playIndex);
+//                } else if (playIndex < playstData.length && !customer_id.equals("")) {
+//                    playIndex++;
+//                    for (int i = 0; i < content2.getChildCount(); i++) {
+//                        ImageView child = (ImageView) ((RelativeLayout) content2.getChildAt(i)).getChildAt(0);
+//                        child.setScaleX(1.0f);
+//                        child.setScaleY(1.0f);
+//                    }
+//                    displayFocussedBrands(playIndex);
+//                }
+////                if (1 == R.id.previousbrand) {
+////                    if (playIndex > 0) {
+////                        playIndex--;
+////                        ImageView imageView = (ImageView) ((RelativeLayout) content2.getChildAt(playIndex)).getChildAt(0);
+////                        for (int i = 0; i < content2.getChildCount(); i++) {
+////                            ImageView child = (ImageView) ((RelativeLayout) content2.getChildAt(i)).getChildAt(0);
+////                            child.setScaleX(1.0f);
+////                            child.setScaleY(1.0f);
+////                        }
+////                        imageView.setScaleX(1.4f);
+////                        imageView.setScaleY(1.4f);
+////                        displayFocussedBrands(playIndex);
+////                    }
+////                } else if (1 == R.id.nextbrand) {
+////                    if (playIndex < playstData.length - 1) {
+////                        playIndex++;
+////                        ImageView imageView = (ImageView) ((RelativeLayout) content2.getChildAt(playIndex)).getChildAt(0);
+////                        for (int i = 0; i < content2.getChildCount(); i++) {
+////                            ImageView child = (ImageView) ((RelativeLayout) content2.getChildAt(i)).getChildAt(0);
+////                            child.setScaleX(1.0f);
+////                            child.setScaleY(1.0f);
+////                        }
+////                        imageView.setScaleX(1.4f);
+////                        imageView.setScaleY(1.4f);
+////                        displayFocussedBrands(playIndex);
+////                    } else if (playIndex < playstData.length && !customer_id.equals("")) {
+////                        playIndex++;
+////                        for (int i = 0; i < content2.getChildCount(); i++) {
+////                            ImageView child = (ImageView) ((RelativeLayout) content2.getChildAt(i)).getChildAt(0);
+////                            child.setScaleX(1.0f);
+////                            child.setScaleY(1.0f);
+////                        }
+////                        displayFocussedBrands(playIndex);
+////                    }
+////                }
+//                hideDrawer();
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//
+//            }
+//        });
+
+    }
 
     public void disMiss(int pos) {
         refEmailPos = pos;
         refDialog.dismiss();
-        handler = DBHandler.getInstance(Container.this);
+        handler = DBHandler.getInstance(ContainerwithSwipe.this);
         SQLiteDatabase db = handler.getWritableDatabase();
 
         double latitude = tracker.getLatitude();
@@ -572,14 +677,14 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
     private void fillPlayList(final int index) {
 
-        Container.this.runOnUiThread(new Runnable() {
+        ContainerwithSwipe.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (playstData != null) {
                     Bitmap bitmap = null;
                     content2.removeAllViews();
                     for (int i = 0; i < playstData.length; i++) {
-                        LayoutInflater inflater = (LayoutInflater) Container.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        LayoutInflater inflater = (LayoutInflater) ContainerwithSwipe.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View view = inflater.inflate(R.layout.playlist_groups, null);
                         view.setId(i);
                         ImageView img = (ImageView) view.findViewById(R.id.img);
@@ -618,7 +723,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         content3.removeAllViews();
         if (brandData != null)
             for (int i = 0; i < brandData.length; i++) {
-                LayoutInflater inflater = (LayoutInflater) Container.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                LayoutInflater inflater = (LayoutInflater) ContainerwithSwipe.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View childView = inflater.inflate(R.layout.subgroups, null);
 
 
@@ -642,7 +747,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 content3.addView(childView);
             }
         else
-            Utility.showSweetAlert(Container.this, "No Brands Available", CmsInter.ERROR_TYPE);
+            Utility.showSweetAlert(ContainerwithSwipe.this, "No Brands Available", CmsInter.ERROR_TYPE);
     }
 
     View.OnClickListener brandListener = new View.OnClickListener() {
@@ -654,7 +759,6 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             count++;
 
             System.out.println("Step" + stepcount + "------------Ac-" + actualPlayIndex + "-------Play>" + playIndex);
-
             ImageView imageView = (ImageView) ((RelativeLayout) view).getChildAt(0);
             for (int i = 0; i < content3.getChildCount(); i++) {
                 ImageView child = (ImageView) ((RelativeLayout) content3.getChildAt(i)).getChildAt(0);
@@ -669,6 +773,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11 from TBDPS a , TBDPG b\n" +
                     "        where a.col5 = b.col0\n" +
                     "        and a.COL3 = '" + brandcode + "' and a.COL9 = '" + thumbnail_category + "' and a.COL10 = 'IPL' and b.COL7 = '1' order by  CAST (a.col2 AS INTEGER) ASC ", 8);
+            isBrand = true;
             fillPlayList(0);
             if (!customer_id.equals("") || category_name.equalsIgnoreCase("S")) {
                 backtoplaylist.setVisibility(View.VISIBLE);
@@ -691,6 +796,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             imageView.setScaleY(1.4f);
             previousIndex = playIndex;
             playIndex = view.getId();
+            isBrand = false;
             displayFocussedBrands(playIndex);
             hideDrawer();
         }
@@ -762,7 +868,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             gesturesView2.setVisibility(View.GONE);
             // webView.setClickable(true);
             Animation animation = AnimationUtils.loadAnimation(
-                    Container.this, R.anim.top_to_bottom);
+                    ContainerwithSwipe.this, R.anim.top_to_bottom);
             animation.setAnimationListener(new Animation.AnimationListener() {
 
                 @Override
@@ -801,6 +907,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     }
 
     public void displayFocussedBrands(int playIndex) {
+
+        System.out.println("Step" + stepcount + "------------Ac-" + actualPlayIndex + "-------Play>" + playIndex);
+
         if (savingCount == 0) {
             startTime = System.currentTimeMillis();
             Date date = new Date();
@@ -815,7 +924,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             Date date = new Date();
             DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
             startTimeString = formatter.format(date);
-            Container.this.runOnUiThread(new Runnable() {
+            ContainerwithSwipe.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     emailFlag = "0";
@@ -852,21 +961,21 @@ public class Container extends AlphaListActivity implements View.OnClickListener
             if (backtoplaylist.getVisibility() != View.VISIBLE) {
                 final String url = "file://" + getFilesDir().getAbsolutePath() + "/thank/thank.htm";
 
-
-                int SDK_INT = android.os.Build.VERSION.SDK_INT;
-                if (SDK_INT > 16) {
-                    webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
-                }
+//
+//                int SDK_INT = android.os.Build.VERSION.SDK_INT;
+//                if (SDK_INT > 16) {
+//                    webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+//                }
 
                 iconsBar.getChildAt(0).setVisibility(View.GONE);
                 iconsBar.getChildAt(1).setVisibility(View.GONE);
                 reference.setVisibility(View.GONE);
-                webView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        webView.loadUrl(url);
-                    }
-                });
+//                webView.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        webView.loadUrl(url);
+//                    }
+//                });
             }
         } else {
 
@@ -889,12 +998,20 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
 
             // startTime = System.currentTimeMillis();
-            webView.post(new Runnable() {
-                @Override
-                public void run() {
-                    webView.loadUrl(url);
-                }
-            });
+//            webView.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    webView.loadUrl(url);
+//                }
+//            });
+
+
+                mViewPager.setAdapter(mSectionsPagerAdapter);
+                mSectionsPagerAdapter.notifyDataSetChanged();
+
+            mViewPager.setCurrentItem(playIndex);
+
+
             handler.GenricUpdates("TBDPG", "COL13", "1", "COL0", playstData[playIndex][0]);
             handler.ExecuteQuery("update TBBRAND \n" +
                     "set col11 = (\n" +
@@ -925,6 +1042,9 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 case R.id.backtoplaylist: // Back to Playlist
                     previousIndex = playIndex;
                     playIndex = actualPlayIndex;
+
+                    System.out.println("Step" + stepcount + "------------Ac-" + actualPlayIndex + "-------Play>" + playIndex);
+
 
                     count = 0;
                     for (int i = 0; i < content3.getChildCount(); i++) {
@@ -1158,7 +1278,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                     db = handler.getWritableDatabase();
                     db.delete("TBNAME", whereClause, whereArgs);
                     String notexistQuery = " not exists (SELECT 1 FROM TBNAME where COL0 = TBPARTY.COL0)";
-                    Vector<DrList_POJO> userVector = UserService.getUserList(Container.this, "TBPARTY", searchView.getText().toString().trim(), notexistQuery, true);
+                    Vector<DrList_POJO> userVector = UserService.getUserList(ContainerwithSwipe.this, "TBPARTY", searchView.getText().toString().trim(), notexistQuery, true);
                     list.userVector = userVector;
 
                 }
@@ -1210,7 +1330,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     }
 
     private void showAlertForDetailing() {
-        SweetAlertDialog sDialog = new SweetAlertDialog(Container.this, SweetAlertDialog.WARNING_TYPE);
+        SweetAlertDialog sDialog = new SweetAlertDialog(ContainerwithSwipe.this, SweetAlertDialog.WARNING_TYPE);
         sDialog.setTitleText("Do you want to end this session?")
                 .setCancelText("Cancel!")
                 .setConfirmText("Save!")
@@ -1244,7 +1364,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                             saveData(PLAYLISTINDEX);
                         SQLiteDatabase db = handler.getWritableDatabase();
                         db.execSQL("update  TXN102  set COL20 = '-1' where COL18 = '" + randomNumber + "'");
-                        Intent intent = new Intent(Container.this, LandingPage.class);
+                        Intent intent = new Intent(ContainerwithSwipe.this, LandingPage.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
@@ -1253,7 +1373,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     }
 
     private void showAddDocDialog() {
-        SweetAlertDialog dialog = new SweetAlertDialog(Container.this, SweetAlertDialog.WARNING_TYPE);
+        SweetAlertDialog dialog = new SweetAlertDialog(ContainerwithSwipe.this, SweetAlertDialog.WARNING_TYPE);
         dialog.setTitleText("Do you want to add more doctors?")
                 .setCancelText("No !")
                 .setConfirmText("Yes !")
@@ -1294,7 +1414,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     private void showAddDocScreen() {
         final SQLiteDatabase db = handler.getWritableDatabase();
 
-        dialog = new Dialog(Container.this);
+        dialog = new Dialog(ContainerwithSwipe.this);
         dialog.getWindow();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.add_doc);
@@ -1313,7 +1433,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 (height * 9) / 10);
         LinearLayout first = (LinearLayout) dialog
                 .findViewById(R.id.first);
-        list = new AlphabetsList(Container.this);
+        list = new AlphabetsList(ContainerwithSwipe.this);
         View view1 = list.getAlphabestListView("TBPARTY", false, false, true, 0, "", CmsInter.TAG_DOC_LEFT);
         first.addView(view1);
         leftList = (ListView) ((LinearLayout) ((RelativeLayout) view1).getChildAt(1)).getChildAt(0);
@@ -1328,7 +1448,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
                                               @Override
                                               public void onTextChanged(CharSequence s, int i, int i1, int i2) {
-                                                  Vector<DrList_POJO> userVector = UserService.getUserList(Container.this, "TBPARTY", s.toString(), notexistQuery, true);
+                                                  Vector<DrList_POJO> userVector = UserService.getUserList(ContainerwithSwipe.this, "TBPARTY", s.toString(), notexistQuery, true);
                                                   list.userVector = userVector;
                                                   list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true, CmsInter.TAG_DOC_LEFT, "");
                                               }
@@ -1343,7 +1463,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
         LinearLayout second = (LinearLayout) dialog
                 .findViewById(R.id.second);
-        list2 = new AlphabetsList(Container.this);
+        list2 = new AlphabetsList(ContainerwithSwipe.this);
 
         View view2 = list2.getAlphabestListView("TBNAME", false, false, false, 0, customer_id, CmsInter.TAG_DOC_RIGHT);
         view2.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -1361,7 +1481,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         cgCodeDPL = new String[1];
         cgDataDPL[0] = "Select Patch*";
         cgCodeDPL[0] = "0";
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDPL);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(ContainerwithSwipe.this, android.R.layout.simple_spinner_item, cgDataDPL);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         patch.setAdapter(adapter);
 
@@ -1376,7 +1496,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 cgDataDTG[j + 1] = strData1[j][1];
                 cgCodeDTG[j + 1] = strData1[j][0];
             }
-            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDTG);
+            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(ContainerwithSwipe.this, android.R.layout.simple_spinner_item, cgDataDTG);
             spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             hq.setAdapter(spinnerArrayAdapter);
         }
@@ -1395,7 +1515,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                                      cgDataDPL[j + 1] = strData[j][1];
                                                      cgCodeDPL[j + 1] = strData[j][0];
                                                  }
-                                                 ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDPL);
+                                                 ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(ContainerwithSwipe.this, android.R.layout.simple_spinner_item, cgDataDPL);
                                                  spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                                  patch.setAdapter(spinnerArrayAdapter);
                                              } else {
@@ -1403,7 +1523,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                                  cgCodeDPL = new String[1];
                                                  cgDataDPL[0] = "Select Patch*";
                                                  cgCodeDPL[0] = "0";
-                                                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDPL);
+                                                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(ContainerwithSwipe.this, android.R.layout.simple_spinner_item, cgDataDPL);
                                                  adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                                  patch.setAdapter(adapter);
                                              }
@@ -1429,7 +1549,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 cgDataDSP[j + 1] = strData2[j][1];
                 cgCodeDSP[j + 1] = strData2[j][0];
             }
-            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDSP);
+            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(ContainerwithSwipe.this, android.R.layout.simple_spinner_item, cgDataDSP);
             spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             speciality.setAdapter(spinnerArrayAdapter);
         }
@@ -1446,7 +1566,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                 cgDataDDC[j + 1] = strData3[j][1];
                 cgCodeDDC[j + 1] = strData3[j][0];
             }
-            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(Container.this, android.R.layout.simple_spinner_item, cgDataDDC);
+            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(ContainerwithSwipe.this, android.R.layout.simple_spinner_item, cgDataDDC);
             spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             clas.setAdapter(spinnerArrayAdapter);
         }
@@ -1455,7 +1575,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
         if (!customer_id.equals("")) {
             done.setVisibility(View.VISIBLE);
             String notexistQuery = " not exists (SELECT 1 FROM TBNAME where COL0 = TBPARTY.COL0)";
-            Vector<DrList_POJO> userVector = UserService.getUserList(Container.this, "TBPARTY", "", notexistQuery, true);
+            Vector<DrList_POJO> userVector = UserService.getUserList(ContainerwithSwipe.this, "TBPARTY", "", notexistQuery, true);
             list.userVector = userVector;
             list.setAdapter(1, leftList, "TBPARTY", false, false, true, CmsInter.LIST_TAG_DOC, true, CmsInter.TAG_DOC_LEFT, "");
         }
@@ -1565,7 +1685,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                                             speciality.setSelection(0);
                                             clas.setSelection(0);
                                         } else {
-                                            Utility.showSweetAlert(Container.this, CmsInter.AL_BLANK, CmsInter.ERROR_TYPE);
+                                            Utility.showSweetAlert(ContainerwithSwipe.this, CmsInter.AL_BLANK, CmsInter.ERROR_TYPE);
                                         }
                                     }
                                 }
@@ -1591,7 +1711,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
     }
 
     private void showAlertForTagDoc() {
-        SweetAlertDialog sDialog = new SweetAlertDialog(Container.this, SweetAlertDialog.WARNING_TYPE);
+        SweetAlertDialog sDialog = new SweetAlertDialog(ContainerwithSwipe.this, SweetAlertDialog.WARNING_TYPE);
         sDialog.setTitleText("Save Data?")
                 .setCancelText("Cancel !")
                 .setConfirmText("Yes !")
@@ -1632,7 +1752,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                         sDialog.cancel();
                         SQLiteDatabase db = handler.getWritableDatabase();
                         db.execSQL("update  TXN102  set COL20 = '-1' where COL18 = '" + randomNumber + "'");
-                        Intent intent = new Intent(Container.this, LandingPage.class);
+                        Intent intent = new Intent(ContainerwithSwipe.this, LandingPage.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
@@ -1747,16 +1867,16 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
     private void SyncData() {
 
-        Sync sync = new Sync(Container.this);
+        Sync sync = new Sync(ContainerwithSwipe.this);
         sync.prepareRequest(1);
-        final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(Container.this, CmsInter.SUCCESS_TYPE);
+        final SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(ContainerwithSwipe.this, CmsInter.SUCCESS_TYPE);
         sweetAlertDialog.setTitleText("Data Saved Successfully")
                 .setConfirmText("Ok")
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         sweetAlertDialog.dismiss();
-                        Intent intent = new Intent(Container.this, LandingPage.class);
+                        Intent intent = new Intent(ContainerwithSwipe.this, LandingPage.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
@@ -1773,7 +1893,7 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
         @android.webkit.JavascriptInterface
         public void sendToAndroid(String str) {
-//            Toast.makeText(Container.this, "Hot Spot Called-->" + str, Toast.LENGTH_LONG).show();
+//            Toast.makeText(ContainerwithSwipe.this, "Hot Spot Called-->" + str, Toast.LENGTH_LONG).show();
             previousIndex = playIndex;
             String[][] Query = handler.genericSelect("select COL10,COL15 ,COL1 from TBDPG where Col1='" + str + ".htm'", 3);
             playstData = handler.genericSelect("select a.COL5, a.COL2, b.COL1, b.COL2, b.COL3, b.COL5, b.COL16, a.COL11 from TBDPS a , TBDPG b\n" +
@@ -1791,8 +1911,10 @@ public class Container extends AlphaListActivity implements View.OnClickListener
                             actualPlayIndex = playIndex;
                         count++;
                         //  if (!index.equals("4"))
+                        System.out.println("Step" + stepcount + "------------Ac-" + actualPlayIndex + "-------Play>" + playIndex);
+
                         playIndex = i;
-                        Container.this.runOnUiThread(new Runnable() {
+                        ContainerwithSwipe.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 if (!customer_id.equals("") || category_name.equalsIgnoreCase("S")) {
@@ -1812,5 +1934,154 @@ public class Container extends AlphaListActivity implements View.OnClickListener
 
     }
 
+//    /**
+//     * A placeholder fragment containing a simple view.
+//     */
+//    public class PlaceholderFragment extends Fragment {
+//
+//
+//        /**
+//         * The fragment argument representing the section number for this
+//         * fragment.
+//         */
+//        private static final String ARG_SECTION_NUMBER = "section_number";
+//
+//        public PlaceholderFragment() {
+//        }
+//
+//        /**
+//         * Returns a new instance of this fragment for the given section
+//         * number.
+//         */
+//        public PlaceholderFragment newInstance(int sectionNumber) {
+//            PlaceholderFragment fragment = new PlaceholderFragment();
+//            Bundle args = new Bundle();
+//            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+//            fragment.setArguments(args);
+//            return fragment;
+//        }
+//
+//        @Override
+//        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                                 Bundle savedInstanceState) {
+//            int playIndex_viewPager = 0;
+//            View rootView = inflater.inflate(R.layout.fragment_containerwith_swipe, container, false);
+//            WebView webView = (WebView) rootView.findViewById(R.id.webView);
+//            webView.getSettings().setJavaScriptEnabled(true);
+//            webView.addJavascriptInterface(new JavaScriptInterface(getActivity()),
+//                    "cpjs");
+//
+//            webView.getSettings().setBuiltInZoomControls(true);
+//            webView.getSettings().setSupportZoom(true);
+//            //noinspection deprecation,deprecation,deprecation,deprecation,deprecation,deprecation,deprecation,deprecation,deprecation
+//            webView.getSettings().setPluginState(WebSettings.PluginState.ON_DEMAND);
+//            webView.getSettings().setAllowFileAccess(true);
+//            int SDK_INT = android.os.Build.VERSION.SDK_INT;
+//            if (SDK_INT > 16) {
+//                webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+//            }
+//            playIndex_viewPager = getArguments().getInt(ARG_SECTION_NUMBER);
+//
+////            if (playIndex == -1)
+////                playIndex = 0;
+////        //    else if (playstData.length == playIndex_viewPager)
+////
+////            else
+//            playIndex = playIndex_viewPager;
+//            // playIndex = (playIndex_viewPager - 1);
+//
+//
+//            String url = "file://" + getActivity().getFilesDir().getAbsolutePath() + "/" + FilenameUtils.removeExtension(playstData[playIndex_viewPager][2]) + "/" + playstData[playIndex_viewPager][2];
+//
+//            webView.loadUrl(url);
+//            System.out.println("Step" + stepcount + "------------Ac-" + actualPlayIndex + "-------Play>" + playIndex);
+//
+//
+//            return rootView;
+//        }
+//    }
+//
+//    /**
+//     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+//     * one of the sections/tabs/pages.
+//     */
+//    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+//
+//        public SectionsPagerAdapter(FragmentManager fm) {
+//            super(fm);
+//        }
+//
+//        @Override
+//        public Fragment getItem(int position) {
+//            // getItem is called to instantiate the fragment for the given page.
+//            // Return a PlaceholderFragment (defined as a static inner class below).
+//            PlaceholderFragment p = new PlaceholderFragment();
+//            return p.newInstance(position);
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            // Show  total pages.
+//            return playstData.length;
+//        }
+//
+//
+//    }
 
+
+    class SectionsPagerAdapter extends PagerAdapter {
+        @Override
+        public int getCount() {
+            //Return total pages, here one for each data item
+            return playstData.length;
+        }
+
+        //Create the given page (indicated by position)
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            View rootView = inflater.inflate(R.layout.fragment_containerwith_swipe, null);
+
+
+            int playIndex_viewPager;
+
+            WebView webView = (WebView) rootView.findViewById(R.id.webView);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.addJavascriptInterface(new JavaScriptInterface(ContainerwithSwipe.this),
+                    "cpjs");
+
+            webView.getSettings().setBuiltInZoomControls(true);
+            webView.getSettings().setSupportZoom(true);
+            //noinspection deprecation,deprecation,deprecation,deprecation,deprecation,deprecation,deprecation,deprecation,deprecation
+            webView.getSettings().setPluginState(WebSettings.PluginState.ON_DEMAND);
+            webView.getSettings().setAllowFileAccess(true);
+            int SDK_INT = android.os.Build.VERSION.SDK_INT;
+            if (SDK_INT > 16) {
+                webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+            }
+            playIndex_viewPager = position;
+            playIndex = playIndex_viewPager;
+            String url = "file://" + ContainerwithSwipe.this.getFilesDir().getAbsolutePath() + "/" + FilenameUtils.removeExtension(playstData[playIndex_viewPager][2]) + "/" + playstData[playIndex_viewPager][2];
+            webView.loadUrl(url);
+            //Add the page to the front of the queue
+            container.addView(rootView, 0);
+
+
+            System.out.println("Step in Get" + stepcount + "------------Ac-" + actualPlayIndex + "-------Play>" + playIndex + "---dsf" + position);
+            return rootView;
+        }
+
+        @Override
+        public boolean isViewFromObject(View arg0, Object arg1) {
+            //See if object from instantiateItem is related to the given view
+            //required by API
+            return arg0 == (View) arg1;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            ((ViewPager) container).removeView((View) object);
+            object = null;
+        }
+    }
 }
+

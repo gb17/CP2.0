@@ -119,14 +119,15 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         RHS_Deatailing = (LinearLayout) view.findViewById(R.id.rhsdetaling);
         LinearLayout lhsLinearLayout = (LinearLayout) view.findViewById(R.id.lhs);
 
+        dbHandler.ExecuteQuery("DELETE FROM TXN102");
+
         try {
             AlphabetsList alphabetsList = new AlphabetsList(this);
             if (dbHandler.genericSelect("Select * from TBPARTY", 2) != null) {
                 lhsLinearLayout.addView(alphabetsList.getAlphabestListView("TBPARTY", false, false, true, 1, "", 11));
                 alphabetsList.setSidepannel(View.VISIBLE);
                 alphabetsList.SerachViewVis(View.VISIBLE);
-            }
-            else {
+            } else {
                 lhsLinearLayout.setVisibility(View.GONE);
             }
 
@@ -134,7 +135,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
             defaultLayout();
             CallDownloadIRCSF(0);
         } catch (Exception e) {
-          //  lhsLinearLayout.setVisibility(View.GONE);
+            //  lhsLinearLayout.setVisibility(View.GONE);
             new TagDownloading(LandingPage.this);
             e.printStackTrace();
         }

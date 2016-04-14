@@ -30,11 +30,7 @@
             android:name=".Configure.MainActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden">
-
-        </activity>
-
-
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Landing.SplashScreen"
             android:screenOrientation="landscape"
@@ -45,20 +41,19 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
 
+        </activity>
         <activity
             android:name=".Landing.LandingPage"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden">
-        </activity>
 
+        </activity>
         <activity
             android:name=".AlphaList.AlphaListActivity"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="stateHidden">
-        </activity>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".container.LightContainer"
             android:screenOrientation="landscape" />
@@ -77,14 +72,15 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".ContentLib.ContentLibrary"
-            android:screenOrientation="landscape">
-        </activity>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ChangePwd.ChangePasswordAcitvity"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="stateHidden">
-        </activity>
-
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".container.ContainerwithSwipe"
+            android:label="@string/title_activity_containerwith_swipe"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

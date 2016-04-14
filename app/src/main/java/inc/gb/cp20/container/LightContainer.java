@@ -55,7 +55,7 @@ public class LightContainer extends Activity {
         if (customer_name != null)
             name.setText(customer_name);
         else{
-            Intent intent = new Intent(LightContainer.this, Container.class);
+            Intent intent = new Intent(LightContainer.this, ContainerwithSwipe.class);
             Bundle bundle = new Bundle();
             bundle.putString("category_code", category_code);
             bundle.putString("category_name", category_name);
@@ -93,7 +93,7 @@ public class LightContainer extends Activity {
             name.setVisibility(View.GONE);
             next.setVisibility(View.GONE);
 
-            Intent intent = new Intent(LightContainer.this, Container.class);
+            Intent intent = new Intent(LightContainer.this, ContainerwithSwipe.class);
             Bundle bundle = new Bundle();
             if (customer_id != null && customer_name != null) {
                 bundle.putString("customer_id", customer_id);

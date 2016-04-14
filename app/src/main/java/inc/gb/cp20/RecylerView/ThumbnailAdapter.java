@@ -178,7 +178,7 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
     public void onBindViewHolder(MyViewHolder holder, int position) {
         TBBRAND tbbrand = brandList.get(position);
         holder.title.setText(tbbrand.getCOL2());
-//Retry
+        //Retry
         if (!tbbrand.getCOL10().equals("0"))
             holder.masklayRelativeLayout.setVisibility(View.VISIBLE);
         else {
@@ -240,13 +240,15 @@ public class ThumbnailAdapter extends RecyclerView.Adapter<ThumbnailAdapter.MyVi
         }
 
         //For PAGE Layout
-        if (holder.pagedis == position) {
-            holder.childScrollView.setVisibility(View.VISIBLE);
-            holder.fb.setVisibility(View.VISIBLE);
-        } else {
-            holder.childScrollView.setVisibility(View.GONE);
+//        if (holder.pagedis == position) {
+//            holder.childScrollView.setVisibility(View.VISIBLE);
+//            holder.fb.setVisibility(View.VISIBLE);
+//        } else {
+//
+//        }
+
+        holder.childScrollView.setVisibility(View.GONE);
             holder.fb.setVisibility(View.GONE);
-        }
         holder.bind(brandList.get(position), itemListener);
         holder.bind(brandList.get(position), getItemCount(), holder.fb, holder.layout, itemListener, holder.childScrollView, holder.fb);
 
