@@ -1884,7 +1884,7 @@ public class ContainerwithSwipe extends AlphaListActivity implements View.OnClic
                 .show();
     }
 
-    public class JavaScriptInterface {
+    public class JavaScriptInterface       {
         Context mContext;
 
         JavaScriptInterface(Context c) {
