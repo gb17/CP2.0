@@ -77,7 +77,7 @@ public class Custom_grid extends BaseAdapter {
                     e.printStackTrace();
                 }
 
-                ((Container)mcontext).disMiss(position);
+                ((ContainerWithGesture)mcontext).disMiss(position);
             }
         });
         return convertView;

@@ -1,12 +1,15 @@
 package inc.gb.cp20.ContentLib;
 
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -32,9 +35,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -52,12 +58,15 @@ import inc.gb.cp20.RecylerView.ThumbnailAdapterForPages;
 import inc.gb.cp20.RecylerView.ThumbnailAdapterForRefrence;
 import inc.gb.cp20.RecylerView.ThumbnailAdpForSearch;
 import inc.gb.cp20.Util.Utility;
+import inc.gb.cp20.container.VideoPlay;
 import inc.gb.cp20.interfaces.DownloadInterface;
 import inc.gb.cp20.interfaces.RecyclerViewClickListener;
+import inc.gb.cp20.interfaces.RefrenceListner;
 import inc.gb.cp20.sync.Sync;
+import inc.gb.cp20.tracker.GPSTracker;
 
 
-public class ContentLibrary extends AppCompatActivity implements RecyclerViewClickListener, DownloadInterface {
+public class ContentLibrary extends AppCompatActivity implements RecyclerViewClickListener, DownloadInterface, RefrenceListner {
 
 
     private RecyclerView recyclerView, recyclerView_sub, recyclerView_ref, recyclerView_search;
@@ -101,12 +110,38 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
     DBHandler dbHandler;
     TextView search_result;
 
+    String Patch = "";
+    String randomnumber = "";
+
+    RefrenceContent brandList;
+
+
+    static public long startTime = 0;
+    static public long endTime = 0;
+    static public long duration = 0;
+
+
+    String Refrencecode;
+    String Catcode;
+    String CatName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dbHandler = DBHandler.getInstance(this);
         setContentView(R.layout.content_library_layout);
+        try {
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null) {
+                Patch = bundle.getString("patch");
+                randomnumber = bundle.getString("RANDOM");
+
+            }
+        } catch (Exception e) {
+
+        }
+
         content_view = (LinearLayout) findViewById(R.id.content_lib);
         recyclerView_search = (RecyclerView) findViewById(R.id.recycler_view_for_search);
         layoutManager3 = new LinearLayoutManager(ContentLibrary.this, LinearLayoutManager.HORIZONTAL, false);
@@ -248,7 +283,7 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         List<RefrenceContent> thumbnailPOJOList_sub = new ArrayList<>();
 
 
-        ThumbnailAdapterForRefrence mAdapter_ref = new ThumbnailAdapterForRefrence(thumbnailPOJOList_sub, ContentLibrary.this, getSupportFragmentManager(), this);
+        ThumbnailAdapterForRefrence mAdapter_ref = new ThumbnailAdapterForRefrence(thumbnailPOJOList_sub, ContentLibrary.this, getSupportFragmentManager(), this, Patch, randomnumber);
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter_ref);
@@ -729,6 +764,75 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         content_dialog.show();
     }
 
+    @Override
+    public void onRefrenceClick(RefrenceContent brandList) {
+
+        startTime = System.currentTimeMillis();
+        Refrencecode = brandList.getRefrenceCode();
+        Catcode = brandList.getCategory_code();
+        CatName = brandList.getCategory_name();
+
+        if (brandList.getRefrenceName().toLowerCase().contains("mp4")) {
+            Intent intent = new Intent(this,
+                    VideoPlay.class);
+            intent.putExtra("fileName", brandList.getRefrenceName());
+            startActivityForResult(intent, 1111);
+
+        } else if (brandList.getRefrenceName().contains("pdf")) {
+            String path1 = this.getFilesDir().getAbsolutePath() + "/"
+                    + brandList.getRefrenceName();
+            File file1 = new File(path1);
+            if (file1.exists()) {
+                file1.setReadable(true, false);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(file1), "application/pdf");
+                try {
+                    startActivityForResult(intent, 1111);
+                } catch (Exception e) {
+                    System.out.println("PDF Exception = = = >" + e.toString());
+                }
+            } else {
+                Toast.makeText(this,
+                        "Please wait PDF being downloaded.....", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+    }
+
+    @Override
+    public void onRefrenceClickFromSrch(SearchData brandList) {
+
+        startTime = System.currentTimeMillis();
+        Refrencecode = brandList.getBrand_code();
+        Catcode = brandList.getPageCode();
+        CatName = brandList.getCat_Name();
+        if (brandList.getPageNamee().toLowerCase().contains("mp4")) {
+            Intent intent = new Intent(this,
+                    VideoPlay.class);
+            intent.putExtra("fileName", brandList.getPageNamee());
+            startActivityForResult(intent, 1111);
+
+        } else if (brandList.getPageNamee().contains("pdf")) {
+            String path1 = this.getFilesDir().getAbsolutePath() + "/"
+                    + brandList.getPageNamee();
+            File file1 = new File(path1);
+            if (file1.exists()) {
+                file1.setReadable(true, false);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(file1), "application/pdf");
+                try {
+                    startActivityForResult(intent, 1111);
+                } catch (Exception e) {
+                    System.out.println("PDF Exception = = = >" + e.toString());
+                }
+            } else {
+                Toast.makeText(this,
+                        "Please wait PDF being downloaded.....", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+    }
+
 
     class DownloadContentAsync extends AsyncTask<Void, Integer, Void> {
         ArrayList<String[]> urlString;
@@ -824,4 +928,58 @@ public class ContentLibrary extends AppCompatActivity implements RecyclerViewCli
         }
     }
 
+    private void saveData(RefrenceContent brandList) {
+        endTime = System.currentTimeMillis();
+
+        duration = endTime - startTime;
+        Date date = new Date();
+        String currentDate = new SimpleDateFormat("dd-MM-yyyy").format(date);
+        String data[][] = dbHandler.genericSelect("Select VAL FROM TBUPW", 1);
+        String[] upwData = data[0][0].split("\\^");
+        String BU = upwData[9];
+        String data2[][] = dbHandler.genericSelect("Select COL2 FROM TBCVR", 1);
+        String[] cvrData = data2[0][0].split("\\^");
+        String TERRITORY = cvrData[11];
+        GPSTracker gpsTracker = new GPSTracker(this);
+        double latitude = gpsTracker.getLatitude();
+        double longitude = gpsTracker.getLongitude();
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("COL0", BU); //BU
+        values.put("COL1", TERRITORY); //Territory
+        values.put("COL2", Patch); //Patch
+        values.put("COL3", currentDate); //Date
+        values.put("COL4", Catcode);
+
+        values.put("COL5", CatName);
+
+        values.put("COL6", ""); //brandcode
+        values.put("COL7", Refrencecode); //referenceid  String Refrencecode;
+        values.put("COL8", duration); //duration
+        values.put("COL9", latitude); //latitude
+        values.put("COL10", longitude); //longitude
+        values.put("COL11", "0"); //Syncflag
+        values.put("COL12", "1"); //hardcode
+        values.put("COL13", "0"); //Email
+        values.put("COL14", startTime); //start time
+        values.put("COL15", "L"); //Library
+        values.put("COL16", "0"); //like/dislike
+        values.put("COL17", ""); //reference pageid
+        values.put("COL18", randomnumber); //randrom number
+        values.put("COL19", Utility.getUniqueNo());
+        values.put("COL20", "0");
+        values.put("COL21", ""); //playlistid
+        db.insert("TXN102", null, values);
+        db.close();
+
+    }
+
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//       //     saveData(brandList);
+//
+//    }
 }

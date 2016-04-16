@@ -1,10 +1,7 @@
 package inc.gb.cp20.RecylerView;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,20 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.File;
 import java.util.List;
 
 import inc.gb.cp20.DB.DBHandler;
 import inc.gb.cp20.Models.RefrenceContent;
 import inc.gb.cp20.R;
-import inc.gb.cp20.container.VideoPlay;
-import inc.gb.cp20.interfaces.RecyclerViewClickListener;
+import inc.gb.cp20.interfaces.RefrenceListner;
 
 public class ThumbnailAdapterForRefrence extends RecyclerView.Adapter<ThumbnailAdapterForRefrence.MyViewHolder> {
 
-    private static RecyclerViewClickListener itemListener;
+    private static RefrenceListner itemListener;
 
     public static DBHandler dbHandler;
 
@@ -34,7 +28,16 @@ public class ThumbnailAdapterForRefrence extends RecyclerView.Adapter<ThumbnailA
     static Context mContext;
     FragmentManager fragmentManager;
 
-    public ThumbnailAdapterForRefrence(List<RefrenceContent> brandList, Context mContext, FragmentManager fragmentManager, RecyclerViewClickListener itemListener) {
+    static public long startTime = 0;
+    static public long endTime = 0;
+    static public long duration = 0;
+
+
+    String patch;
+    String randomNumber;
+
+
+    public ThumbnailAdapterForRefrence(List<RefrenceContent> brandList, Context mContext, FragmentManager fragmentManager, RefrenceListner itemListener, String patch, String randomNumber) {
         this.brandList = brandList;
         ThumbnailAdapterForRefrence.mContext = mContext;
         this.fragmentManager = fragmentManager;
@@ -43,6 +46,9 @@ public class ThumbnailAdapterForRefrence extends RecyclerView.Adapter<ThumbnailA
                 "fontawesome-webfont.ttf");
 
         dbHandler = DBHandler.getInstance(mContext);
+
+        this.patch = patch;
+        this.randomNumber = randomNumber;
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -57,34 +63,40 @@ public class ThumbnailAdapterForRefrence extends RecyclerView.Adapter<ThumbnailA
             page_name = (TextView) view.findViewById(R.id.page_name);
         }
 
-        public void bind(final RefrenceContent brandList, final RecyclerViewClickListener listener) {
+        public void bind(final RefrenceContent brandList, final RefrenceListner listener) {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (brandList.getRefrenceName().toLowerCase().contains("mp4")) {
-                        Intent intent = new Intent(mContext,
-                                VideoPlay.class);
-                        intent.putExtra("fileName", brandList.getRefrenceName());
-                        ((Activity) mContext).startActivityForResult(intent, 1001);
-                    } else if (brandList.getRefrenceName().contains("pdf")) {
-                        String path1 = mContext.getFilesDir().getAbsolutePath() + "/"
-                                + brandList.getRefrenceName();
-                        File file1 = new File(path1);
-                        if (file1.exists()) {
-                            file1.setReadable(true, false);
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setDataAndType(Uri.fromFile(file1), "application/pdf");
-                            try {
-                                ((Activity) mContext).startActivityForResult(intent, 1001);
-                            } catch (Exception e) {
-                                System.out.println("PDF Exception = = = >" + e.toString());
-                            }
-                        } else {
-                            Toast.makeText(mContext,
-                                    "Please wait PDF being downloaded.....", Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                    }
+
+                    listener.onRefrenceClick(brandList);
+//                    startTime = System.currentTimeMillis();
+//                    if (brandList.getRefrenceName().toLowerCase().contains("mp4")) {
+//                        Intent intent = new Intent(mContext,
+//                                VideoPlay.class);
+//                        intent.putExtra("fileName", brandList.getRefrenceName());
+//
+//                        Activity origin = (Activity) mContext;
+//                        origin.startActivityForResult(new Intent(mContext, ContentLibrary.class), 1111);
+//
+//                    } else if (brandList.getRefrenceName().contains("pdf")) {
+//                        String path1 = mContext.getFilesDir().getAbsolutePath() + "/"
+//                                + brandList.getRefrenceName();
+//                        File file1 = new File(path1);
+//                        if (file1.exists()) {
+//                            file1.setReadable(true, false);
+//                            Intent intent = new Intent(Intent.ACTION_VIEW);
+//                            intent.setDataAndType(Uri.fromFile(file1), "application/pdf");
+//                            try {
+//                                ((Activity) mContext).startActivityForResult(intent, 1001);
+//                            } catch (Exception e) {
+//                                System.out.println("PDF Exception = = = >" + e.toString());
+//                            }
+//                        } else {
+//                            Toast.makeText(mContext,
+//                                    "Please wait PDF being downloaded.....", Toast.LENGTH_SHORT)
+//                                    .show();
+//                        }
+//                    }
 
                 }
             });

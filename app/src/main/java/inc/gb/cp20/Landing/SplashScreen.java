@@ -19,6 +19,8 @@ public class SplashScreen extends Activity {
         setContentView(R.layout.activity_splash);
 
 
+
+
         new Handler().postDelayed(new Runnable() {
 
 			/*

@@ -119,7 +119,7 @@ public class LandingPage extends AlphaListActivity implements RecyclerViewClickL
         RHS_Deatailing = (LinearLayout) view.findViewById(R.id.rhsdetaling);
         LinearLayout lhsLinearLayout = (LinearLayout) view.findViewById(R.id.lhs);
 
-        dbHandler.ExecuteQuery("DELETE FROM TXN102");
+
 
         try {
             AlphabetsList alphabetsList = new AlphabetsList(this);

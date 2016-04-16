@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -54,8 +56,8 @@ public class LightContainer extends Activity {
 
         if (customer_name != null)
             name.setText(customer_name);
-        else{
-            Intent intent = new Intent(LightContainer.this, ContainerwithSwipe.class);
+        else {
+            Intent intent = new Intent(LightContainer.this, ContainerWithGesture.class);
             Bundle bundle = new Bundle();
             bundle.putString("category_code", category_code);
             bundle.putString("category_name", category_name);
@@ -93,7 +95,7 @@ public class LightContainer extends Activity {
             name.setVisibility(View.GONE);
             next.setVisibility(View.GONE);
 
-            Intent intent = new Intent(LightContainer.this, ContainerwithSwipe.class);
+            Intent intent = new Intent(LightContainer.this, ContainerWithGesture.class);
             Bundle bundle = new Bundle();
             if (customer_id != null && customer_name != null) {
                 bundle.putString("customer_id", customer_id);
@@ -109,4 +111,6 @@ public class LightContainer extends Activity {
             finish();
         }
     };
+
+
 }

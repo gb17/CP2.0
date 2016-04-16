@@ -17,6 +17,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -79,6 +81,11 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".container.ContainerwithSwipe"
+            android:label="@string/title_activity_containerwith_swipe"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".container.ContainerWithGesture"
             android:label="@string/title_activity_containerwith_swipe"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>

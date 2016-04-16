@@ -21,10 +21,10 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.File;
 import java.util.List;
 
+import inc.gb.cp20.ContentLib.ContentLibrary;
 import inc.gb.cp20.DB.DBHandler;
 import inc.gb.cp20.Models.SearchData;
 import inc.gb.cp20.R;
-import inc.gb.cp20.container.VideoPlay;
 import inc.gb.cp20.interfaces.RecyclerViewClickListener;
 
 /**
@@ -72,10 +72,9 @@ public class ThumbnailAdpForSearch extends RecyclerView.Adapter<ThumbnailAdpForS
                 public void onClick(View v) {
 
                     if (brandList.getPageNamee().toLowerCase().contains("mp4")) {
-                        Intent intent = new Intent(mContext,
-                                VideoPlay.class);
-                        intent.putExtra("fileName", brandList.getPageNamee());
-                        ((Activity) mContext).startActivityForResult(intent, 1001);
+
+                        ((ContentLibrary) mContext).onRefrenceClickFromSrch(brandList);
+
                     } else if (brandList.getPageNamee().contains("pdf")) {
                         String path1 = mContext.getFilesDir().getAbsolutePath() + "/"
                                 + brandList.getPageNamee();
